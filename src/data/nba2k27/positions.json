@@ -1,0 +1,96 @@
+{
+  "game": "NBA 2K27",
+  "version": 1,
+  "positions": [
+    {
+      "id": "PG",
+      "abbr_fr": "MJ",
+      "name_en": "Point Guard",
+      "height": {
+        "min": 69,
+        "max": 79
+      },
+      "weight": {
+        "min": 145,
+        "max": 230
+      },
+      "wingspan": {
+        "min": 69,
+        "max": 85
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "SG",
+      "abbr_fr": "A",
+      "name_en": "Shooting Guard",
+      "height": {
+        "min": 72,
+        "max": 80
+      },
+      "weight": {
+        "min": 165,
+        "max": 235
+      },
+      "wingspan": {
+        "min": 72,
+        "max": 86
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "SF",
+      "abbr_fr": "AI",
+      "name_en": "Small Forward",
+      "height": {
+        "min": 76,
+        "max": 82
+      },
+      "weight": {
+        "min": 175,
+        "max": 250
+      },
+      "wingspan": {
+        "min": 76,
+        "max": 88
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "PF",
+      "abbr_fr": "AF",
+      "name_en": "Power Forward",
+      "height": {
+        "min": 77,
+        "max": 84
+      },
+      "weight": {
+        "min": 210,
+        "max": 285
+      },
+      "wingspan": {
+        "min": 77,
+        "max": 90
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "C",
+      "abbr_fr": "P",
+      "name_en": "Center",
+      "height": {
+        "min": 79,
+        "max": 88
+      },
+      "weight": {
+        "min": 215,
+        "max": 290
+      },
+      "wingspan": {
+        "min": 79,
+        "max": 94
+      },
+      "status": "provisional"
+    }
+  ]
+}

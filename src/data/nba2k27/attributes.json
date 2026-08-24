@@ -1,0 +1,179 @@
+{
+  "game": "NBA 2K27",
+  "version": 1,
+  "attributes": [
+    {
+      "id": "closeShot",
+      "category": "finishing",
+      "name_en": "Close Shot",
+      "name_fr": "Tirs de près",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "drivingLayup",
+      "category": "finishing",
+      "name_en": "Driving Layup",
+      "name_fr": "Double-pas en pénétration",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "drivingDunk",
+      "category": "finishing",
+      "name_en": "Driving Dunk",
+      "name_fr": "Dunk en pénétration",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "standingDunk",
+      "category": "finishing",
+      "name_en": "Standing Dunk",
+      "name_fr": "Dunk sans élan",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "postControl",
+      "category": "finishing",
+      "name_en": "Post Control",
+      "name_fr": "Contrôle au poste",
+      "min": 25,
+      "max": 99
+    },
+
+    {
+      "id": "midRangeShot",
+      "category": "shooting",
+      "name_en": "Mid-Range Shot",
+      "name_fr": "Tirs à mi-distance",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "threePointShot",
+      "category": "shooting",
+      "name_en": "Three-Point Shot",
+      "name_fr": "Tir à 3 pts",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "freeThrow",
+      "category": "shooting",
+      "name_en": "Free Throw",
+      "name_fr": "Lancer-franc",
+      "min": 25,
+      "max": 99
+    },
+
+    {
+      "id": "passAccuracy",
+      "category": "playmaking",
+      "name_en": "Pass Accuracy",
+      "name_fr": "Précision des passes",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "ballHandle",
+      "category": "playmaking",
+      "name_en": "Ball Handle",
+      "name_fr": "Contrôle de ballon",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "speedWithBall",
+      "category": "playmaking",
+      "name_en": "Speed With Ball",
+      "name_fr": "Vitesse avec le ballon",
+      "min": 25,
+      "max": 99
+    },
+
+    {
+      "id": "interiorDefense",
+      "category": "defense",
+      "name_en": "Interior Defense",
+      "name_fr": "Défense intérieure",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "perimeterDefense",
+      "category": "defense",
+      "name_en": "Perimeter Defense",
+      "name_fr": "Défense extérieure",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "steal",
+      "category": "defense",
+      "name_en": "Steal",
+      "name_fr": "Interception",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "block",
+      "category": "defense",
+      "name_en": "Block",
+      "name_fr": "Contre",
+      "min": 25,
+      "max": 99
+    },
+
+    {
+      "id": "offensiveRebound",
+      "category": "rebounding",
+      "name_en": "Offensive Rebound",
+      "name_fr": "Rebond offensif",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "defensiveRebound",
+      "category": "rebounding",
+      "name_en": "Defensive Rebound",
+      "name_fr": "Rebond défensif",
+      "min": 25,
+      "max": 99
+    },
+
+    {
+      "id": "speed",
+      "category": "physicals",
+      "name_en": "Speed",
+      "name_fr": "Vitesse",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "agility",
+      "category": "physicals",
+      "name_en": "Agility",
+      "name_fr": "Agilité",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "strength",
+      "category": "physicals",
+      "name_en": "Strength",
+      "name_fr": "Force",
+      "min": 25,
+      "max": 99
+    },
+    {
+      "id": "vertical",
+      "category": "physicals",
+      "name_en": "Vertical",
+      "name_fr": "Détente",
+      "min": 25,
+      "max": 99
+    }
+  ]
+}

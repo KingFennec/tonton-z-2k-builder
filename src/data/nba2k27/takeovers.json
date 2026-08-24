@@ -1,0 +1,339 @@
+{
+  "game": "NBA 2K27",
+  "version": 1,
+  "status": "provisional",
+  "source": "NBA2KLab / NBA 2K27 Community Day",
+  "takeovers": [
+    {
+      "id": "default-shooting",
+      "name_en": "Default Shooting",
+      "discipline": "shooting",
+      "default": true,
+      "description_fr": "Augmente fortement les attributs de tir lorsque le Takeover est actif.",
+      "requirements": {
+        "always": true
+      }
+    },
+    {
+      "id": "shot-artist",
+      "name_en": "Shot Artist",
+      "discipline": "shooting",
+      "default": false,
+      "description_fr": "Améliore l'efficacité des tirs pris après un dribble.",
+      "requirements": {
+        "any": [
+          {
+            "attribute": "threePointShot",
+            "min": 89
+          },
+          {
+            "attribute": "midRangeShot",
+            "min": 89
+          }
+        ]
+      }
+    },
+    {
+      "id": "calibrated",
+      "name_en": "Calibrated",
+      "discipline": "shooting",
+      "default": false,
+      "description_fr": "Améliore l'efficacité des tirs à l'arrêt et en réception-tir.",
+      "requirements": {
+        "any": [
+          {
+            "attribute": "threePointShot",
+            "min": 85
+          },
+          {
+            "attribute": "midRangeShot",
+            "min": 85
+          }
+        ]
+      }
+    },
+    {
+      "id": "zip-code",
+      "name_en": "Zip Code",
+      "discipline": "shooting",
+      "default": false,
+      "description_fr": "Étend la distance depuis laquelle les tirs lointains restent efficaces.",
+      "requirements": {
+        "attribute": "threePointShot",
+        "min": 91
+      }
+    },
+
+    {
+      "id": "default-finishing",
+      "name_en": "Default Finishing",
+      "discipline": "finishing",
+      "default": true,
+      "description_fr": "Augmente fortement les attributs de finition lorsque le Takeover est actif.",
+      "requirements": {
+        "always": true
+      }
+    },
+    {
+      "id": "navigator",
+      "name_en": "Navigator",
+      "discipline": "finishing",
+      "default": false,
+      "description_fr": "Améliore les doubles-pas en pénétration ainsi que les finitions avancées comme les euros, hops et spins.",
+      "requirements": {
+        "attribute": "drivingLayup",
+        "min": 85
+      }
+    },
+    {
+      "id": "airspace",
+      "name_en": "Airspace",
+      "discipline": "finishing",
+      "default": false,
+      "description_fr": "Améliore fortement la capacité à conclure les dunks en pénétration.",
+      "requirements": {
+        "all": [
+          {
+            "attribute": "drivingDunk",
+            "min": 87
+          },
+          {
+            "attribute": "vertical",
+            "min": 75
+          }
+        ]
+      }
+    },
+    {
+      "id": "inside-touch",
+      "name_en": "Inside Touch",
+      "discipline": "finishing",
+      "default": false,
+      "description_fr": "Améliore les finitions sans élan près du cercle.",
+      "requirements": {
+        "attribute": "closeShot",
+        "min": 85
+      }
+    },
+    {
+      "id": "detonator",
+      "name_en": "Detonator",
+      "discipline": "finishing",
+      "default": false,
+      "description_fr": "Améliore les dunks sans élan dans la raquette.",
+      "requirements": {
+        "attribute": "standingDunk",
+        "min": 85
+      }
+    },
+    {
+      "id": "paint-surgeon",
+      "name_en": "Paint Surgeon",
+      "discipline": "finishing",
+      "default": false,
+      "description_fr": "Améliore les mouvements au poste ainsi que les crochets et fadeaways.",
+      "requirements": {
+        "all": [
+          {
+            "attribute": "closeShot",
+            "min": 80
+          },
+          {
+            "attribute": "postControl",
+            "min": 75
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "default-playmaking",
+      "name_en": "Default Playmaking",
+      "discipline": "playmaking",
+      "default": true,
+      "description_fr": "Augmente fortement les attributs d'organisation lorsque le Takeover est actif.",
+      "requirements": {
+        "always": true
+      }
+    },
+    {
+      "id": "blur",
+      "name_en": "Blur",
+      "discipline": "playmaking",
+      "default": false,
+      "description_fr": "Améliore la capacité à dépasser les défenseurs et à gagner les contacts balle en main.",
+      "requirements": {
+        "all": [
+          {
+            "attribute": "ballHandle",
+            "min": 85
+          },
+          {
+            "attribute": "speedWithBall",
+            "min": 80
+          }
+        ]
+      }
+    },
+    {
+      "id": "cook",
+      "name_en": "Cook",
+      "discipline": "playmaking",
+      "default": false,
+      "description_fr": "Augmente les chances de provoquer des cassages de chevilles.",
+      "requirements": {
+        "attribute": "ballHandle",
+        "min": 90
+      }
+    },
+    {
+      "id": "dishmaster",
+      "name_en": "Dishmaster",
+      "discipline": "playmaking",
+      "default": false,
+      "description_fr": "Augmente les bonus accordés aux attributs de finition et de tir du receveur d'une passe.",
+      "requirements": {
+        "attribute": "passAccuracy",
+        "min": 80
+      }
+    },
+
+    {
+      "id": "default-defense",
+      "name_en": "Default Defense",
+      "discipline": "defense",
+      "default": true,
+      "description_fr": "Augmente fortement les attributs défensifs lorsque le Takeover est actif.",
+      "requirements": {
+        "always": true
+      }
+    },
+    {
+      "id": "glue",
+      "name_en": "Glue",
+      "discipline": "defense",
+      "default": false,
+      "description_fr": "Améliore la capacité à forcer les porteurs de balle à interrompre leur dribble ou à perdre le ballon.",
+      "requirements": {
+        "attribute": "perimeterDefense",
+        "min": 85
+      }
+    },
+    {
+      "id": "hawk",
+      "name_en": "Hawk",
+      "discipline": "defense",
+      "default": false,
+      "description_fr": "Améliore les tentatives d'interception directement sur le porteur de balle.",
+      "requirements": {
+        "attribute": "steal",
+        "min": 85
+      }
+    },
+    {
+      "id": "rim-guardian",
+      "name_en": "Rim Guardian",
+      "discipline": "defense",
+      "default": false,
+      "description_fr": "Améliore la défense autour du cercle, au poste et les contres.",
+      "requirements": {
+        "all": [
+          {
+            "attribute": "interiorDefense",
+            "min": 80
+          },
+          {
+            "attribute": "block",
+            "min": 80
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "default-rebounding",
+      "name_en": "Default Rebounding",
+      "discipline": "rebounding",
+      "default": true,
+      "description_fr": "Augmente fortement les attributs de rebond lorsque le Takeover est actif.",
+      "requirements": {
+        "always": true
+      }
+    },
+    {
+      "id": "demolition",
+      "name_en": "Demolition",
+      "discipline": "rebounding",
+      "default": false,
+      "description_fr": "Améliore la puissance et l'efficacité des écrans.",
+      "requirements": {
+        "attribute": "strength",
+        "min": 88
+      }
+    },
+    {
+      "id": "muscle",
+      "name_en": "Muscle",
+      "discipline": "rebounding",
+      "default": false,
+      "description_fr": "Améliore les box-outs et la capacité à gagner les duels au rebond.",
+      "requirements": {
+        "all": [
+          {
+            "attribute": "offensiveRebound",
+            "min": 80
+          },
+          {
+            "attribute": "defensiveRebound",
+            "min": 80
+          },
+          {
+            "attribute": "strength",
+            "min": 80
+          }
+        ]
+      }
+    },
+    {
+      "id": "second-chance",
+      "name_en": "Second Chance",
+      "discipline": "rebounding",
+      "default": false,
+      "description_fr": "Affiche immédiatement le retour du tir et améliore les claquettes après rebond offensif.",
+      "requirements": {
+        "attribute": "offensiveRebound",
+        "min": 80
+      }
+    },
+    {
+      "id": "see-the-future",
+      "name_en": "See the Future",
+      "discipline": "rebounding",
+      "default": false,
+      "description_fr": "Indique à l'avance l'endroit où un tir manqué va retomber.",
+      "requirements": {
+        "all": [
+          {
+            "attribute": "offensiveRebound",
+            "min": 85
+          },
+          {
+            "attribute": "defensiveRebound",
+            "min": 85
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "hydration-hero",
+      "name_en": "Hydration Hero",
+      "discipline": "universal",
+      "default": false,
+      "description_fr": "Empêche temporairement la perte d'adrénaline et d'énergie. Peut être équipé dans n'importe quelle discipline de Takeover.",
+      "requirements": {
+        "always": true
+      }
+    }
+  ]
+}

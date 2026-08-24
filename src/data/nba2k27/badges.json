@@ -1,0 +1,754 @@
+{
+  "game": "NBA 2K27",
+  "version": 2,
+  "data_status": "provisional-pre-release",
+  "badges": [
+    {
+      "id": "aerial-wizard",
+      "name_en": "Aerial Wizard",
+      "name_fr": null,
+      "category": "finishing",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "any": [{ "attribute": "drivingDunk", "min": 60 }, { "attribute": "standingDunk", "min": 60 }] } },
+        "silver": { "requirements": { "any": [{ "attribute": "drivingDunk", "min": 70 }, { "attribute": "standingDunk", "min": 70 }] } },
+        "gold": { "requirements": { "any": [{ "attribute": "drivingDunk", "min": 80 }, { "attribute": "standingDunk", "min": 80 }] } },
+        "hof": { "requirements": { "any": [{ "attribute": "drivingDunk", "min": 94 }, { "attribute": "standingDunk", "min": 93 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "float-game",
+      "name_en": "Float Game",
+      "name_fr": null,
+      "category": "finishing",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "any": [{ "attribute": "closeShot", "min": 65 }, { "attribute": "drivingLayup", "min": 65 }] } },
+        "silver": { "requirements": { "any": [{ "attribute": "closeShot", "min": 80 }, { "attribute": "drivingLayup", "min": 85 }] } },
+        "gold": { "requirements": { "any": [{ "attribute": "closeShot", "min": 90 }, { "attribute": "drivingLayup", "min": 93 }] } },
+        "hof": { "requirements": { "any": [{ "attribute": "closeShot", "min": 96 }, { "attribute": "drivingLayup", "min": 95 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "ghost-stepper",
+      "name_en": "Ghost Stepper",
+      "name_fr": null,
+      "category": "finishing",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "any": [{ "attribute": "closeShot", "min": 55 }, { "attribute": "postControl", "min": 55 }] } },
+        "silver": { "requirements": { "any": [{ "attribute": "closeShot", "min": 77 }, { "attribute": "postControl", "min": 77 }] } },
+        "gold": { "requirements": { "any": [{ "attribute": "closeShot", "min": 86 }, { "attribute": "postControl", "min": 86 }] } },
+        "hof": { "requirements": { "any": [{ "attribute": "closeShot", "min": 94 }, { "attribute": "postControl", "min": 94 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "hook-specialist",
+      "name_en": "Hook Specialist",
+      "name_fr": null,
+      "category": "finishing",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "closeShot", "min": 60 }, { "attribute": "postControl", "min": 55 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "closeShot", "min": 75 }, { "attribute": "postControl", "min": 65 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "closeShot", "min": 87 }, { "attribute": "postControl", "min": 80 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "closeShot", "min": 94 }, { "attribute": "postControl", "min": 90 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "layup-mixmaster",
+      "name_en": "Layup Mixmaster",
+      "name_fr": null,
+      "category": "finishing",
+      "height": { "min": null, "max": 84 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "drivingLayup", "min": 70 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "drivingLayup", "min": 83 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "drivingLayup", "min": 90 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "drivingLayup", "min": 99 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "paint-prodigy",
+      "name_en": "Paint Prodigy",
+      "name_fr": null,
+      "category": "finishing",
+      "height": { "min": 75, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "closeShot", "min": 60 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "closeShot", "min": 85 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "closeShot", "min": 90 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "closeShot", "min": 96 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "physical-finisher",
+      "name_en": "Physical Finisher",
+      "name_fr": null,
+      "category": "finishing",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "drivingLayup", "min": 60 }, { "attribute": "strength", "min": 60 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "drivingLayup", "min": 80 }, { "attribute": "strength", "min": 70 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "drivingLayup", "min": 90 }, { "attribute": "strength", "min": 80 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "drivingLayup", "min": 96 }, { "attribute": "strength", "min": 90 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "post-powerhouse",
+      "name_en": "Post Powerhouse",
+      "name_fr": null,
+      "category": "finishing",
+      "height": { "min": 77, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "postControl", "min": 60 }, { "attribute": "strength", "min": 65 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "postControl", "min": 75 }, { "attribute": "strength", "min": 79 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "postControl", "min": 85 }, { "attribute": "strength", "min": 86 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "postControl", "min": 95 }, { "attribute": "strength", "min": 95 }] } }
+      },
+      "status": "conflict"
+    },
+    {
+      "id": "post-spin-catalyst",
+      "name_en": "Post Spin Catalyst",
+      "name_fr": null,
+      "category": "finishing",
+      "height": { "min": 73, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "postControl", "min": 65 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "postControl", "min": 83 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "postControl", "min": 91 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "postControl", "min": 99 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "posterizer",
+      "name_en": "Posterizer",
+      "name_fr": null,
+      "category": "finishing",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "drivingDunk", "min": 73 }, { "attribute": "vertical", "min": 65 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "drivingDunk", "min": 87 }, { "attribute": "vertical", "min": 75 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "drivingDunk", "min": 93 }, { "attribute": "vertical", "min": 80 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "drivingDunk", "min": 99 }, { "attribute": "vertical", "min": 90 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "rise-up",
+      "name_en": "Rise Up",
+      "name_fr": null,
+      "category": "finishing",
+      "height": { "min": 77, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "standingDunk", "min": 60 }, { "attribute": "vertical", "min": 55 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "standingDunk", "min": 81 }, { "attribute": "vertical", "min": 62 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "standingDunk", "min": 90 }, { "attribute": "vertical", "min": 66 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "standingDunk", "min": 99 }, { "attribute": "vertical", "min": 70 }] } }
+      },
+      "status": "provisional"
+    },
+
+    {
+      "id": "arc-cadence",
+      "name_en": "Arc Cadence",
+      "name_fr": null,
+      "category": "shooting",
+      "height": { "min": null, "max": 83 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "threePointShot", "min": 70 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "threePointShot", "min": 86 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "threePointShot", "min": 91 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "threePointShot", "min": 98 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "deadeye",
+      "name_en": "Deadeye",
+      "name_fr": null,
+      "category": "shooting",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "any": [{ "attribute": "midRangeShot", "min": 65 }, { "attribute": "threePointShot", "min": 65 }] } },
+        "silver": { "requirements": { "any": [{ "attribute": "midRangeShot", "min": 85 }, { "attribute": "threePointShot", "min": 85 }] } },
+        "gold": { "requirements": { "any": [{ "attribute": "midRangeShot", "min": 92 }, { "attribute": "threePointShot", "min": 92 }] } },
+        "hof": { "requirements": { "any": [{ "attribute": "midRangeShot", "min": 99 }, { "attribute": "threePointShot", "min": 99 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "limitless-range",
+      "name_en": "Limitless Range",
+      "name_fr": null,
+      "category": "shooting",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "threePointShot", "min": 83 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "threePointShot", "min": 89 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "threePointShot", "min": 93 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "threePointShot", "min": 99 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "mini-marksman",
+      "name_en": "Mini Marksman",
+      "name_fr": null,
+      "category": "shooting",
+      "height": { "min": null, "max": 76 },
+      "tiers": {
+        "bronze": { "requirements": { "any": [{ "attribute": "midRangeShot", "min": 60 }, { "attribute": "threePointShot", "min": 60 }] } },
+        "silver": { "requirements": { "any": [{ "attribute": "midRangeShot", "min": 79 }, { "attribute": "threePointShot", "min": 79 }] } },
+        "gold": { "requirements": { "any": [{ "attribute": "midRangeShot", "min": 94 }, { "attribute": "threePointShot", "min": 94 }] } },
+        "hof": { "requirements": { "any": [{ "attribute": "midRangeShot", "min": 99 }, { "attribute": "threePointShot", "min": 99 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "post-fade-phenom",
+      "name_en": "Post Fade Phenom",
+      "name_fr": null,
+      "category": "shooting",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "midRangeShot", "min": 60 }, { "attribute": "postControl", "min": 55 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "midRangeShot", "min": 71 }, { "attribute": "postControl", "min": 74 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "midRangeShot", "min": 84 }, { "attribute": "postControl", "min": 84 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "midRangeShot", "min": 91 }, { "attribute": "postControl", "min": 93 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "quick-trigger",
+      "name_en": "Quick Trigger",
+      "name_fr": null,
+      "category": "shooting",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "any": [{ "attribute": "midRangeShot", "min": 80 }, { "attribute": "threePointShot", "min": 80 }] } },
+        "silver": { "requirements": { "any": [{ "attribute": "midRangeShot", "min": 88 }, { "attribute": "threePointShot", "min": 88 }] } },
+        "gold": { "requirements": { "any": [{ "attribute": "midRangeShot", "min": 95 }, { "attribute": "threePointShot", "min": 95 }] } },
+        "hof": { "requirements": { "any": [{ "attribute": "midRangeShot", "min": 99 }, { "attribute": "threePointShot", "min": 99 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "set-and-fire",
+      "name_en": "Set and Fire",
+      "name_fr": null,
+      "category": "shooting",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "threePointShot", "min": 60 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "threePointShot", "min": 78 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "threePointShot", "min": 89 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "threePointShot", "min": 97 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "smooth-operator",
+      "name_en": "Smooth Operator",
+      "name_fr": null,
+      "category": "shooting",
+      "height": { "min": null, "max": 83 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "midRangeShot", "min": 70 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "midRangeShot", "min": 87 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "midRangeShot", "min": 93 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "midRangeShot", "min": 99 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "static-middy",
+      "name_en": "Static Middy",
+      "name_fr": null,
+      "category": "shooting",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "midRangeShot", "min": 55 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "midRangeShot", "min": 75 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "midRangeShot", "min": 85 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "midRangeShot", "min": 95 }] } }
+      },
+      "status": "provisional"
+    },
+
+    {
+      "id": "ankle-assassin",
+      "name_en": "Ankle Assassin",
+      "name_fr": null,
+      "category": "playmaking",
+      "height": { "min": null, "max": 82 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 75 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 86 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 93 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 96 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "bail-out",
+      "name_en": "Bail Out",
+      "name_fr": null,
+      "category": "playmaking",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 85 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 93 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 96 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 99 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "break-starter",
+      "name_en": "Break Starter",
+      "name_fr": null,
+      "category": "playmaking",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 65 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 77 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 89 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 97 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "dimer",
+      "name_en": "Dimer",
+      "name_fr": null,
+      "category": "playmaking",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 50 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 70 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 86 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 95 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "handles-for-days",
+      "name_en": "Handles for Days",
+      "name_fr": null,
+      "category": "playmaking",
+      "height": { "min": null, "max": 84 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 71 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 81 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 90 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 95 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "lightning-launch",
+      "name_en": "Lightning Launch",
+      "name_fr": null,
+      "category": "playmaking",
+      "height": { "min": null, "max": 83 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "speedWithBall", "min": 68 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "speedWithBall", "min": 75 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "speedWithBall", "min": 86 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "speedWithBall", "min": 91 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "pace",
+      "name_en": "Pace",
+      "name_fr": null,
+      "category": "playmaking",
+      "height": { "min": null, "max": 82 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "speedWithBall", "min": 70 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "speedWithBall", "min": 80 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "speedWithBall", "min": 88 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "speedWithBall", "min": 93 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "strong-handle",
+      "name_en": "Strong Handle",
+      "name_fr": null,
+      "category": "playmaking",
+      "height": { "min": null, "max": 83 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 60 }, { "attribute": "strength", "min": 75 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 67 }, { "attribute": "strength", "min": 82 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 73 }, { "attribute": "strength", "min": 89 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 78 }, { "attribute": "strength", "min": 95 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "unpluckable",
+      "name_en": "Unpluckable",
+      "name_fr": null,
+      "category": "playmaking",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "any": [{ "attribute": "postControl", "min": 65 }, { "attribute": "ballHandle", "min": 65 }] } },
+        "silver": { "requirements": { "any": [{ "attribute": "postControl", "min": 86 }, { "attribute": "ballHandle", "min": 80 }] } },
+        "gold": { "requirements": { "any": [{ "attribute": "postControl", "min": 96 }, { "attribute": "ballHandle", "min": 92 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "ballHandle", "min": 97 }] } }
+      },
+      "status": "conflict"
+    },
+    {
+      "id": "versatile-visionary",
+      "name_en": "Versatile Visionary",
+      "name_fr": null,
+      "category": "playmaking",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 65 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 80 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 90 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "passAccuracy", "min": 99 }] } }
+      },
+      "status": "provisional"
+    },
+
+    {
+      "id": "ankle-braces",
+      "name_en": "Ankle Braces",
+      "name_fr": null,
+      "category": "defense",
+      "height": { "min": null, "max": 81 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 60 }, { "attribute": "agility", "min": 65 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 86 }, { "attribute": "agility", "min": 82 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 93 }, { "attribute": "agility", "min": 89 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 95 }, { "attribute": "agility", "min": 92 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "challenger",
+      "name_en": "Challenger",
+      "name_fr": null,
+      "category": "defense",
+      "height": { "min": null, "max": 83 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 71 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 82 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 92 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 98 }] } }
+      },
+      "status": "conflict"
+    },
+    {
+      "id": "glove",
+      "name_en": "Glove",
+      "name_fr": null,
+      "category": "defense",
+      "height": { "min": null, "max": 84 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "steal", "min": 70 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "steal", "min": 83 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "steal", "min": 93 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "steal", "min": 99 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "high-flying-denier",
+      "name_en": "High-Flying Denier",
+      "name_fr": null,
+      "category": "defense",
+      "height": { "min": 75, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "block", "min": 68 }, { "attribute": "vertical", "min": 60 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "block", "min": 78 }, { "attribute": "vertical", "min": 74 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "block", "min": 88 }, { "attribute": "vertical", "min": 80 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "block", "min": 92 }, { "attribute": "vertical", "min": 83 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "immovable-enforcer",
+      "name_en": "Immovable Enforcer",
+      "name_fr": null,
+      "category": "defense",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 62 }, { "attribute": "strength", "min": 71 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 72 }, { "attribute": "strength", "min": 82 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 84 }, { "attribute": "strength", "min": 85 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 91 }, { "attribute": "strength", "min": 92 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "interceptor",
+      "name_en": "Interceptor",
+      "name_fr": null,
+      "category": "defense",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "steal", "min": 60 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "steal", "min": 77 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "steal", "min": 90 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "steal", "min": 97 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "off-ball-pest",
+      "name_en": "Off-Ball Pest",
+      "name_fr": null,
+      "category": "defense",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "any": [{ "attribute": "interiorDefense", "min": 60 }, { "attribute": "perimeterDefense", "min": 55 }] } },
+        "silver": { "requirements": { "any": [{ "attribute": "interiorDefense", "min": 76 }, { "attribute": "perimeterDefense", "min": 68 }] } },
+        "gold": { "requirements": { "any": [{ "attribute": "interiorDefense", "min": 85 }, { "attribute": "perimeterDefense", "min": 80 }] } },
+        "hof": { "requirements": { "any": [{ "attribute": "interiorDefense", "min": 93 }, { "attribute": "perimeterDefense", "min": 89 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "paint-patroller",
+      "name_en": "Paint Patroller",
+      "name_fr": null,
+      "category": "defense",
+      "height": { "min": 77, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "interiorDefense", "min": 60 }, { "attribute": "block", "min": 70 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "interiorDefense", "min": 71 }, { "attribute": "block", "min": 84 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "interiorDefense", "min": 77 }, { "attribute": "block", "min": 93 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "interiorDefense", "min": 84 }, { "attribute": "block", "min": 99 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "pick-dodger",
+      "name_en": "Pick Dodger",
+      "name_fr": null,
+      "category": "defense",
+      "height": { "min": null, "max": 82 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 73 }, { "attribute": "agility", "min": 71 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 83 }, { "attribute": "agility", "min": 81 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 90 }, { "attribute": "agility", "min": 88 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 97 }, { "attribute": "agility", "min": 91 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "post-lockdown",
+      "name_en": "Post Lockdown",
+      "name_fr": null,
+      "category": "defense",
+      "height": { "min": 77, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "interiorDefense", "min": 65 }, { "attribute": "strength", "min": 65 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "interiorDefense", "min": 82 }, { "attribute": "strength", "min": 74 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "interiorDefense", "min": 88 }, { "attribute": "strength", "min": 80 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "interiorDefense", "min": 93 }, { "attribute": "strength", "min": 88 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "seatbelt",
+      "name_en": "Seatbelt",
+      "name_fr": null,
+      "category": "defense",
+      "height": { "min": null, "max": 81 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 75 }, { "attribute": "agility", "min": 70 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 85 }, { "attribute": "agility", "min": 77 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 91 }, { "attribute": "agility", "min": 80 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "perimeterDefense", "min": 99 }, { "attribute": "agility", "min": 86 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "wall-up",
+      "name_en": "Wall Up",
+      "name_fr": null,
+      "category": "defense",
+      "height": { "min": 77, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "interiorDefense", "min": 80 }, { "attribute": "strength", "min": 75 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "interiorDefense", "min": 85 }, { "attribute": "strength", "min": 80 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "interiorDefense", "min": 95 }, { "attribute": "strength", "min": 90 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "interiorDefense", "min": 99 }, { "attribute": "strength", "min": 92 }] } }
+      },
+      "status": "conflict"
+    },
+
+    {
+      "id": "boxout-boss",
+      "name_en": "Boxout Boss",
+      "name_fr": null,
+      "category": "rebounding",
+      "height": { "min": 75, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "defensiveRebound", "min": 65 }, { "attribute": "strength", "min": 60 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "defensiveRebound", "min": 75 }, { "attribute": "strength", "min": 76 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "defensiveRebound", "min": 90 }, { "attribute": "strength", "min": 88 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "defensiveRebound", "min": 98 }, { "attribute": "strength", "min": 94 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "breaker",
+      "name_en": "Breaker",
+      "name_fr": null,
+      "category": "rebounding",
+      "height": { "min": 75, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "offensiveRebound", "min": 65 }, { "attribute": "strength", "min": 70 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "offensiveRebound", "min": 82 }, { "attribute": "strength", "min": 79 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "offensiveRebound", "min": 92 }, { "attribute": "strength", "min": 90 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "offensiveRebound", "min": 98 }, { "attribute": "strength", "min": 96 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "crasher",
+      "name_en": "Crasher",
+      "name_fr": null,
+      "category": "rebounding",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "offensiveRebound", "min": 60 }, { "attribute": "vertical", "min": 60 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "offensiveRebound", "min": 80 }, { "attribute": "vertical", "min": 65 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "offensiveRebound", "min": 93 }, { "attribute": "vertical", "min": 67 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "offensiveRebound", "min": 99 }, { "attribute": "vertical", "min": 70 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "possession-closer",
+      "name_en": "Possession Closer",
+      "name_fr": null,
+      "category": "rebounding",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "defensiveRebound", "min": 67 }, { "attribute": "vertical", "min": 60 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "defensiveRebound", "min": 87 }, { "attribute": "vertical", "min": 65 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "defensiveRebound", "min": 95 }, { "attribute": "vertical", "min": 67 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "defensiveRebound", "min": 99 }, { "attribute": "vertical", "min": 70 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "sync-snatcher",
+      "name_en": "Sync Snatcher",
+      "name_fr": null,
+      "category": "rebounding",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "any": [{ "attribute": "offensiveRebound", "min": 55 }, { "attribute": "defensiveRebound", "min": 55 }] } },
+        "silver": { "requirements": { "any": [{ "attribute": "offensiveRebound", "min": 70 }, { "attribute": "defensiveRebound", "min": 70 }] } },
+        "gold": { "requirements": { "any": [{ "attribute": "offensiveRebound", "min": 82 }, { "attribute": "defensiveRebound", "min": 82 }] } },
+        "hof": { "requirements": { "any": [{ "attribute": "offensiveRebound", "min": 90 }, { "attribute": "defensiveRebound", "min": 90 }] } }
+      },
+      "status": "provisional"
+    },
+
+    {
+      "id": "brick-wall",
+      "name_en": "Brick Wall",
+      "name_fr": null,
+      "category": "physicals",
+      "height": { "min": 77, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "strength", "min": 75 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "strength", "min": 83 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "strength", "min": 95 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "strength", "min": 99 }] } }
+      },
+      "status": "conflict"
+    },
+    {
+      "id": "bruiser",
+      "name_en": "Bruiser",
+      "name_fr": null,
+      "category": "physicals",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "strength", "min": 71 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "strength", "min": 84 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "strength", "min": 93 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "strength", "min": 99 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "flash",
+      "name_en": "Flash",
+      "name_fr": null,
+      "category": "physicals",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "speed", "min": 70 }, { "attribute": "agility", "min": 60 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "speed", "min": 82 }, { "attribute": "agility", "min": 78 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "speed", "min": 87 }, { "attribute": "agility", "min": 81 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "speed", "min": 95 }, { "attribute": "agility", "min": 91 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "pogo-stick",
+      "name_en": "Pogo Stick",
+      "name_fr": null,
+      "category": "physicals",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "vertical", "min": 63 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "vertical", "min": 70 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "vertical", "min": 80 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "vertical", "min": 90 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "slippery-off-ball",
+      "name_en": "Slippery Off-Ball",
+      "name_fr": null,
+      "category": "physicals",
+      "height": { "min": null, "max": 81 },
+      "tiers": {
+        "bronze": { "requirements": { "all": [{ "attribute": "speed", "min": 57 }, { "attribute": "agility", "min": 57 }] } },
+        "silver": { "requirements": { "all": [{ "attribute": "speed", "min": 73 }, { "attribute": "agility", "min": 65 }] } },
+        "gold": { "requirements": { "all": [{ "attribute": "speed", "min": 85 }, { "attribute": "agility", "min": 77 }] } },
+        "hof": { "requirements": { "all": [{ "attribute": "speed", "min": 94 }, { "attribute": "agility", "min": 90 }] } }
+      },
+      "status": "provisional"
+    },
+    {
+      "id": "work-horse",
+      "name_en": "Work Horse",
+      "name_fr": null,
+      "category": "physicals",
+      "height": { "min": null, "max": null },
+      "tiers": {
+        "bronze": { "requirements": { "any": [{ "attribute": "agility", "min": 60 }, { "attribute": "strength", "min": 60 }] } },
+        "silver": { "requirements": { "any": [{ "attribute": "agility", "min": 75 }, { "attribute": "strength", "min": 75 }] } },
+        "gold": { "requirements": { "any": [{ "attribute": "agility", "min": 85 }, { "attribute": "strength", "min": 85 }] } },
+        "hof": { "requirements": { "any": [{ "attribute": "agility", "min": 95 }, { "attribute": "strength", "min": 95 }] } }
+      },
+      "status": "provisional"
+    }
+  ]
+}
