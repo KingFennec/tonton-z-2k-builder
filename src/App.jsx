@@ -7,7 +7,6 @@ import {
 import attributesData from './data/nba2k27/attributes.json'
 import badgesData from './data/nba2k27/badges.json'
 import positionsData from './data/nba2k27/positions.json'
-import bodyCapsData from './data/nba2k27/bodyCaps.json'
 import takeoversData from './data/nba2k27/takeovers.json'
 
 import {
@@ -19,6 +18,10 @@ import {
   isBadgeTierUnlocked,
   mergeSelectedRequirements,
 } from './engine/badgeEngine'
+
+import {
+  getNativeBadgePerkProjection,
+} from './engine/badgeLegendEngine'
 
 import {
   getCompatiblePositions,
@@ -34,7 +37,6 @@ import {
 } from './engine/morphologyEngine'
 
 import {
-  getBodyCaps,
   isBadgeTierPossible,
   isRequirementOptionPossible,
 } from './engine/bodyCapEngine'
@@ -46,6 +48,17 @@ import {
 import {
   solveAttributeDependencies,
 } from './engine/attributeDependencyEngine'
+
+import {
+  calculateExactGnr,
+  getAllCapBreakerProjections,
+  getExactBodyCaps,
+  getExactDependencyRules,
+} from './engine/apkBuilderEngine'
+
+import {
+  determineBuildDescription,
+} from './engine/buildDescriptionEngine'
 
 import {
   clearBuildFromUrl,
@@ -155,18 +168,13 @@ const rightCategoryIds = [
 ]
 
 /*
- * Pour l'instant, on utilise
- * également les règles provisoires.
- *
- * Elles permettent de reproduire
- * les 7 relevés "research" que
- * nous avons validés.
- *
- * Elles restent identifiées comme
- * provisoires dans les données.
+ * Les dépendances viennent désormais directement
+ * des tables NBA 2K27 extraites de NBA 2K HQ.
+ * Les anciennes règles de recherche restent dans
+ * le dépôt uniquement comme historique de validation.
  */
 const INCLUDE_PROVISIONAL_DEPENDENCIES =
-  true
+  false
 
 const initialManualAttributes =
   Object.fromEntries(
@@ -435,6 +443,10 @@ function getAttributeName(
 function getTierLabel(
   tierId
 ) {
+  if (tierId === 'legend') {
+    return 'Legend'
+  }
+
   return (
     tiers.find(
       (tier) =>
@@ -1231,10 +1243,101 @@ function AttributeCategory({
   )
 }
 
+
+function CapBreakerPanel({ projections }) {
+  const rows = attributesData.attributes.map((attribute) => ({
+    attribute,
+    projection: projections?.[attribute.id] ?? null,
+  }))
+
+  const available = rows.some(({ projection }) => projection?.available)
+
+  return (
+    <section className="cap-breaker-panel">
+      <div className="cap-breaker-heading">
+        <div>
+          <div className="cap-breaker-title-line">
+            <h2>Cap Breakers</h2>
+            <span className="cap-breaker-apk-label">APK vérifié</span>
+          </div>
+          <p>
+            Projection native des cinq Cap Breakers possibles par attribut. En 2K27,
+            un Cap Breaker peut donner plus de +1 selon le coût GNR de l’attribut.
+          </p>
+        </div>
+      </div>
+
+      {!available ? (
+        <div className="cap-breaker-empty">
+          Sélectionne une morphologie complète pour afficher les projections.
+        </div>
+      ) : (
+        <div className="cap-breaker-table-wrap">
+          <table className="cap-breaker-table">
+            <thead>
+              <tr>
+                <th>Attribut</th>
+                <th>Base</th>
+                <th>CB 1</th>
+                <th>CB 2</th>
+                <th>CB 3</th>
+                <th>CB 4</th>
+                <th>CB 5</th>
+                <th>Total</th>
+                <th>Cap</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(({ attribute, projection }) => {
+                const boosts = projection?.boosts ?? [0, 0, 0, 0, 0]
+                const cumulative = projection?.cumulativeValues ?? []
+                return (
+                  <tr key={attribute.id}>
+                    <td>
+                      <strong>{attribute.name_fr ?? attribute.name_en}</strong>
+                      <small>{attribute.name_en}</small>
+                    </td>
+                    <td>{projection?.available ? projection.baseValue : '—'}</td>
+                    {boosts.map((boost, index) => (
+                      <td key={`${attribute.id}-cb-${index}`}>
+                        {projection?.available && boost > 0 ? (
+                          <span
+                            className="cap-breaker-boost"
+                            title={`Valeur après ce Cap Breaker : ${cumulative[index]}`}
+                          >
+                            +{boost}
+                            <small>→ {cumulative[index]}</small>
+                          </span>
+                        ) : (
+                          <span className="cap-breaker-zero">—</span>
+                        )}
+                      </td>
+                    ))}
+                    <td>
+                      {projection?.available ? (
+                        <strong className="cap-breaker-total">
+                          +{projection.totalBoost}
+                          <small>→ {projection.finalValue}</small>
+                        </strong>
+                      ) : '—'}
+                    </td>
+                    <td>{projection?.available ? projection.maxCap : '—'}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  )
+}
+
 function BadgeDetails({
   badge,
   selection,
   unlockedTier,
+  heightIn,
   activeCaps,
   isTierAvailable,
   onSelectTier,
@@ -1269,6 +1372,15 @@ function BadgeDetails({
         1
         ? allOptions[0]
         : null
+
+  const perkProjection =
+    unlockedTier && Number.isFinite(Number(heightIn))
+      ? getNativeBadgePerkProjection(
+          badge,
+          unlockedTier,
+          Number(heightIn)
+        )
+      : null
 
   return (
     <div className="badge-details">
@@ -1331,6 +1443,35 @@ function BadgeDetails({
           translation.description_fr
         }
       </p>
+
+      {perkProjection && (
+        <div className="badge-perk-projection">
+          <div>
+            <span>Niveau naturel</span>
+            <strong className={getTierClass(perkProjection.natural.finalTier)}>
+              {getTierLabel(perkProjection.natural.finalTier)}
+            </strong>
+          </div>
+
+          <div>
+            <span>Avec Max+1 / perk +1</span>
+            <strong className={getTierClass(perkProjection.maxPlus1.finalTier)}>
+              {getTierLabel(perkProjection.maxPlus1.finalTier)}
+            </strong>
+          </div>
+
+          <div>
+            <span>Avec Max+2 / perk +2</span>
+            <strong className={getTierClass(perkProjection.maxPlus2.finalTier)}>
+              {getTierLabel(perkProjection.maxPlus2.finalTier)}
+            </strong>
+          </div>
+
+          <small>
+            Calcul Legend APK vérifié. L’origine du bonus Max+/Build Specialization n’est pas attribuée automatiquement car NBA 2K HQ ne fournit pas sa table de distribution.
+          </small>
+        </div>
+      )}
 
       <div className="badge-level-picker">
         {tiers.map(
@@ -1516,6 +1657,7 @@ function BadgeDetails({
 function BadgeSidebar({
   selectedBadges,
   activeCaps,
+  heightIn,
   openBadgeId,
   onOpenBadge,
   onSelectTier,
@@ -1699,6 +1841,9 @@ function BadgeSidebar({
                         openedBadge
                       )
                     }
+                    heightIn={
+                      heightIn
+                    }
                     activeCaps={
                       activeCaps
                     }
@@ -1750,7 +1895,7 @@ function TakeoverPanel({
             </h2>
 
             <span className="takeover-provisional-label">
-              Community Day · provisoire
+              Éligibilité APK vérifiée
             </span>
           </div>
 
@@ -1943,6 +2088,12 @@ function TakeoverPanel({
                               {takeover.default && (
                                 <span className="takeover-default-label">
                                   Par défaut
+                                </span>
+                              )}
+
+                              {takeover.native_rank_label && (
+                                <span className="takeover-rank-label">
+                                  Rang {takeover.native_rank_label}
                                 </span>
                               )}
 
@@ -2216,12 +2367,22 @@ function App() {
   const bodyCapResult =
     useMemo(
       () =>
-        getBodyCaps(
-          bodyCapsData,
+        getExactBodyCaps(
           morphology
         ),
       [
         morphology,
+      ]
+    )
+
+  const exactDependencyRules =
+    useMemo(
+      () =>
+        getExactDependencyRules(
+          morphology.height
+        ),
+      [
+        morphology.height,
       ]
     )
 
@@ -2390,7 +2551,8 @@ function App() {
         0
           ? getWeightRangeForPositions(
               positionsForWeightRange,
-              selectedBadgeMorphologyLimits.weight
+              selectedBadgeMorphologyLimits.weight,
+              morphology.height
             )
           : {
               min: null,
@@ -2399,6 +2561,7 @@ function App() {
       [
         positionsForWeightRange,
         selectedBadgeMorphologyLimits,
+        morphology.height,
       ]
     )
 
@@ -2409,7 +2572,8 @@ function App() {
         0
           ? getWingspanRangeForPositions(
               positionsForWingspanRange,
-              selectedBadgeMorphologyLimits.wingspan
+              selectedBadgeMorphologyLimits.wingspan,
+              morphology.height
             )
           : {
               min: null,
@@ -2418,6 +2582,7 @@ function App() {
       [
         positionsForWingspanRange,
         selectedBadgeMorphologyLimits,
+        morphology.height,
       ]
     )
 
@@ -2565,12 +2730,16 @@ function App() {
             activeCaps ??
             {},
 
+          rules:
+            exactDependencyRules,
+
           includeProvisional:
             INCLUDE_PROVISIONAL_DEPENDENCIES,
         }),
       [
         dependencyRequestedAttributes,
         activeCaps,
+        exactDependencyRules,
       ]
     )
 
@@ -2582,6 +2751,50 @@ function App() {
    */
   const effectiveAttributes =
     dependencyResult.values
+
+  const gnrResult =
+    useMemo(
+      () =>
+        calculateExactGnr(
+          effectiveAttributes,
+          morphology.height,
+          {
+            caps:
+              activeCaps,
+          }
+        ),
+      [
+        effectiveAttributes,
+        morphology.height,
+        activeCaps,
+      ]
+    )
+
+  const buildDescriptionResult =
+    useMemo(
+      () =>
+        determineBuildDescription(
+          effectiveAttributes,
+          morphology.position
+        ),
+      [
+        effectiveAttributes,
+        morphology.position,
+      ]
+    )
+
+  const capBreakerProjections =
+    useMemo(
+      () =>
+        getAllCapBreakerProjections(
+          effectiveAttributes,
+          morphology
+        ),
+      [
+        effectiveAttributes,
+        morphology,
+      ]
+    )
 
   /*
    * =====================================================
@@ -2638,6 +2851,9 @@ function App() {
               activeCaps ??
               {},
 
+            rules:
+              exactDependencyRules,
+
             includeProvisional:
               INCLUDE_PROVISIONAL_DEPENDENCIES,
           })
@@ -2689,6 +2905,7 @@ function App() {
       manualAttributes,
       requiredByAttribute,
       activeCaps,
+      exactDependencyRules,
     ])
 
   /*
@@ -2710,7 +2927,11 @@ function App() {
       }
 
       return {
-        ...morphology,
+        position:
+          morphology.position,
+
+        height:
+          morphology.height,
 
         weight:
           Math.round(
@@ -2743,8 +2964,7 @@ function App() {
     useMemo(
       () =>
         neutralMorphology
-          ? getBodyCaps(
-              bodyCapsData,
+          ? getExactBodyCaps(
               neutralMorphology
             )
           : null,
@@ -3972,6 +4192,9 @@ function App() {
           activeCaps ??
           {},
 
+        rules:
+          exactDependencyRules,
+
         includeProvisional:
           INCLUDE_PROVISIONAL_DEPENDENCIES,
       })
@@ -4226,7 +4449,7 @@ function App() {
       bodyCapResult.quality ===
       'exact'
     ) {
-      return 'Caps morphologiques : relevé exact'
+      return 'Caps morphologiques : données exactes NBA 2K27 extraites de l’APK'
     }
 
     if (
@@ -4597,6 +4820,9 @@ function App() {
             activeCaps={
               activeCaps
             }
+            heightIn={
+              Number(morphology.height)
+            }
             openBadgeId={
               openBadgeId
             }
@@ -4625,14 +4851,86 @@ function App() {
 
           <div className="attributes-main">
             <div className="attributes-heading">
-              <h2>
-                Attributs
-              </h2>
+              <div className="attributes-title-row">
+                <h2>
+                  Attributs
+                </h2>
+
+                <div className="attributes-title-metrics">
+                  <div
+                    className={`build-archetype-display ${
+                      buildDescriptionResult.available
+                        ? 'is-available'
+                        : ''
+                    }`}
+                    title={
+                      buildDescriptionResult.available
+                        ? `ATTRIBUTES_DetermineDescription · ${buildDescriptionResult.selectedCount} attributs dominants · masque 0x${buildDescriptionResult.mask.toString(16).toUpperCase()}`
+                        : 'Sélectionne un poste pour calculer l’archétype 2K27.'
+                    }
+                  >
+                    <span>
+                      Archétype 2K27
+                    </span>
+
+                    <strong>
+                      {
+                        buildDescriptionResult.available
+                          ? (
+                              buildDescriptionResult.name_fr ||
+                              buildDescriptionResult.name_en
+                            )
+                          : '—'
+                      }
+                    </strong>
+
+                    {
+                      buildDescriptionResult.available &&
+                      buildDescriptionResult.name_en &&
+                      buildDescriptionResult.name_en !==
+                        buildDescriptionResult.name_fr && (
+                        <em>
+                          {buildDescriptionResult.name_en}
+                        </em>
+                      )
+                    }
+
+                    <small>
+                      APK vérifié
+                    </small>
+                  </div>
+
+                  <div
+                    className="gnr-display"
+                    title={
+                      gnrResult.available
+                        ? `GNR détaillé : ${gnrResult.detailed.toFixed(3)} · Player Type ${gnrResult.playerType}`
+                        : 'Sélectionne une taille pour calculer le GNR.'
+                    }
+                  >
+                    <span>
+                      GNR
+                    </span>
+
+                    <strong>
+                      {
+                        gnrResult.available
+                          ? gnrResult.displayed
+                          : '—'
+                      }
+                    </strong>
+
+                    <small>
+                      APK 2K27
+                    </small>
+                  </div>
+                </div>
+              </div>
 
               <p>
                 Les attributs liés montent automatiquement.
                 Le second nombre correspond au cap maximum autorisé.
-                Modèle de dépendances vérifié sur le profil MJ 6'7" / 215 lbs / 6'10".
+                Caps et dépendances : données exactes NBA 2K27 extraites de NBA 2K HQ.
               </p>
             </div>
 
@@ -4715,6 +5013,12 @@ function App() {
                 )}
               </div>
             </div>
+
+            <CapBreakerPanel
+              projections={
+                capBreakerProjections
+              }
+            />
 
             <TakeoverPanel
               takeoverProgress={

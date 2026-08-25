@@ -1,0 +1,41 @@
+{
+  "game": "NBA 2K27",
+  "source": "NBA 2K HQ / GameLib BADGES_GetMaxLevel + careermode_progression_tuning",
+  "native_function": {
+    "export": "BADGES_GetMaxLevel",
+    "export_stub_hex": "0x2360a4",
+    "body_hex": "0x2832e0",
+    "boost_parameter": "numLevelsBoostedFromPerks"
+  },
+  "levels": {
+    "0": "unequipped",
+    "1": "bronze",
+    "2": "silver",
+    "3": "gold",
+    "4": "hof",
+    "5": "legend"
+  },
+  "direct_attribute_requirement_levels": [1, 2, 3, 4],
+  "direct_level_5_requirements": "empty-in-serialized-tuning",
+  "perk_boost_rule": {
+    "requires_natural_level_at_least": 1,
+    "operation": "result = min(naturalLevel + numLevelsBoostedFromPerks, maxLevelAllowedAtHeight)",
+    "verified_from_native_code": true
+  },
+  "height_ceiling": {
+    "serialized_allowed_value": 5,
+    "serialized_disallowed_value": 0,
+    "note": "BADGES_GetMaxLevel reads a signed per-height/per-badge max-level byte from the runtime table. The packed tuning uses 5 for allowed badge-height cells and 0 for forbidden cells. The post-natural perk increment is definitely capped against that runtime byte."
+  },
+  "builder_policy": {
+    "natural_levels": "bronze-through-hof-from-apk-attribute-thresholds",
+    "legend": "shown-only-as-a-perk-boost-projection",
+    "automatic_specialization_assignment": false,
+    "reason": "NBA 2K HQ exposes the generic perk-level input but does not expose a verified mapping from Build Specialization / Max+ rewards to numLevelsBoostedFromPerks."
+  },
+  "validation_status": {
+    "perk_increment_algorithm": "apk-verified",
+    "legend_enum": "apk-verified",
+    "build_specialization_to_perk_mapping": "not-present-or-not-verifiable-in-hq"
+  }
+}

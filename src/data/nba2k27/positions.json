@@ -18,7 +18,8 @@
         "min": 69,
         "max": 85
       },
-      "status": "provisional"
+      "status": "exact-apk",
+      "source": "NBA 2K HQ careermode_progression_tuning"
     },
     {
       "id": "SG",
@@ -36,7 +37,8 @@
         "min": 72,
         "max": 86
       },
-      "status": "provisional"
+      "status": "exact-apk",
+      "source": "NBA 2K HQ careermode_progression_tuning"
     },
     {
       "id": "SF",
@@ -54,7 +56,8 @@
         "min": 76,
         "max": 88
       },
-      "status": "provisional"
+      "status": "exact-apk",
+      "source": "NBA 2K HQ careermode_progression_tuning"
     },
     {
       "id": "PF",
@@ -72,7 +75,8 @@
         "min": 77,
         "max": 90
       },
-      "status": "provisional"
+      "status": "exact-apk",
+      "source": "NBA 2K HQ careermode_progression_tuning"
     },
     {
       "id": "C",
@@ -90,7 +94,8 @@
         "min": 79,
         "max": 94
       },
-      "status": "provisional"
+      "status": "exact-apk",
+      "source": "NBA 2K HQ careermode_progression_tuning"
     }
   ]
 }

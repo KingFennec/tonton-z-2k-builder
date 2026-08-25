@@ -1,0 +1,1657 @@
+{
+  "game": "NBA 2K27",
+  "source": "NBA 2K HQ / careermode_progression_tuning + GameLib native code",
+  "status": "apk-verified",
+  "extraction": {
+    "tuning_file": "careermode_progression_tuning.bin",
+    "tuning_sha256": "a51b88b7901bc218ceece007e27d5ccffbd8ccbc279e453f461120500f782ca0",
+    "serialized_struct_offset_hex": "0x13bdbf",
+    "serialized_struct_size_hex": "0x47c",
+    "runtime_layout": {
+      "TakeoverXPRequiredForLevel": "0x000 (21 x int32)",
+      "TakeoverXPEarnedPerHighestStateReachedInGame": "0x054 (3 x 6 x int32)",
+      "TakeoverRewardForLevel": "0x09c (21 x {reward_type:int32, discipline:int32})",
+      "TakeoverProgressionSpeedPerLocationContext": "0x144 (206 x int32)",
+      "total_size": "0x47c"
+    },
+    "native_evidence": {
+      "get_xp_required_for_level_body_hex": "0x293208",
+      "get_level_from_xp_body_hex": "0x293234",
+      "calculate_xp_from_highest_states_body_hex": "0x29343c",
+      "get_reward_for_level_body_hex": "0x2947a8",
+      "location_context_count": 206,
+      "discipline_state_count": 5,
+      "takeover_state_count": 6,
+      "progression_speed_count": 3
+    }
+  },
+  "level_progression": {
+    "max_level": 21,
+    "xp_thresholds": [
+      {
+        "level": 1,
+        "total_xp_required": 30
+      },
+      {
+        "level": 2,
+        "total_xp_required": 60
+      },
+      {
+        "level": 3,
+        "total_xp_required": 90
+      },
+      {
+        "level": 4,
+        "total_xp_required": 120
+      },
+      {
+        "level": 5,
+        "total_xp_required": 150
+      },
+      {
+        "level": 6,
+        "total_xp_required": 250
+      },
+      {
+        "level": 7,
+        "total_xp_required": 300
+      },
+      {
+        "level": 8,
+        "total_xp_required": 350
+      },
+      {
+        "level": 9,
+        "total_xp_required": 400
+      },
+      {
+        "level": 10,
+        "total_xp_required": 450
+      },
+      {
+        "level": 11,
+        "total_xp_required": 500
+      },
+      {
+        "level": 12,
+        "total_xp_required": 575
+      },
+      {
+        "level": 13,
+        "total_xp_required": 650
+      },
+      {
+        "level": 14,
+        "total_xp_required": 725
+      },
+      {
+        "level": 15,
+        "total_xp_required": 800
+      },
+      {
+        "level": 16,
+        "total_xp_required": 900
+      },
+      {
+        "level": 17,
+        "total_xp_required": 1000
+      },
+      {
+        "level": 18,
+        "total_xp_required": 1100
+      },
+      {
+        "level": 19,
+        "total_xp_required": 1200
+      },
+      {
+        "level": 20,
+        "total_xp_required": 1300
+      },
+      {
+        "level": 21,
+        "total_xp_required": 1400
+      }
+    ],
+    "level_semantics": "Level 0 below 30 XP; each threshold is inclusive; level 21 begins at 1400 XP."
+  },
+  "xp_per_highest_state": {
+    "state_order": [
+      "FROZEN_STATE",
+      "COLD_STATE",
+      "NEUTRAL_STATE",
+      "WARM_STATE",
+      "HOT_STATE",
+      "TAKEOVER_STATE"
+    ],
+    "speed_order": [
+      "SLOW",
+      "MEDIUM",
+      "FAST"
+    ],
+    "matrix_by_speed": {
+      "SLOW": {
+        "FROZEN_STATE": 0,
+        "COLD_STATE": 0,
+        "NEUTRAL_STATE": 0,
+        "WARM_STATE": 1,
+        "HOT_STATE": 2,
+        "TAKEOVER_STATE": 3
+      },
+      "MEDIUM": {
+        "FROZEN_STATE": 0,
+        "COLD_STATE": 0,
+        "NEUTRAL_STATE": 0,
+        "WARM_STATE": 2,
+        "HOT_STATE": 3,
+        "TAKEOVER_STATE": 5
+      },
+      "FAST": {
+        "FROZEN_STATE": 0,
+        "COLD_STATE": 0,
+        "NEUTRAL_STATE": 0,
+        "WARM_STATE": 3,
+        "HOT_STATE": 6,
+        "TAKEOVER_STATE": 9
+      }
+    },
+    "calculation": "For a game, the native code sums one matrix value for each of the 5 Takeover disciplines using that discipline's highest state reached and the current location-context progression speed."
+  },
+  "level_rewards": [
+    {
+      "level": 1,
+      "reward_type_id": 1,
+      "reward_type": "DISCIPLINE_UNLOCKED",
+      "discipline_id": 5,
+      "discipline": "REBOUNDING"
+    },
+    {
+      "level": 2,
+      "reward_type_id": 1,
+      "reward_type": "DISCIPLINE_UNLOCKED",
+      "discipline_id": 1,
+      "discipline": "FINISHING"
+    },
+    {
+      "level": 3,
+      "reward_type_id": 1,
+      "reward_type": "DISCIPLINE_UNLOCKED",
+      "discipline_id": 3,
+      "discipline": "PLAYMAKING"
+    },
+    {
+      "level": 4,
+      "reward_type_id": 1,
+      "reward_type": "DISCIPLINE_UNLOCKED",
+      "discipline_id": 4,
+      "discipline": "DEFENSE"
+    },
+    {
+      "level": 5,
+      "reward_type_id": 1,
+      "reward_type": "DISCIPLINE_UNLOCKED",
+      "discipline_id": 2,
+      "discipline": "SHOOTING"
+    },
+    {
+      "level": 6,
+      "reward_type_id": 2,
+      "reward_type": "HYDRATION_HERO",
+      "discipline_id": 0,
+      "discipline": "NONE"
+    },
+    {
+      "level": 7,
+      "reward_type_id": 3,
+      "reward_type": "LONGEVITY_PERK",
+      "discipline_id": 5,
+      "discipline": "REBOUNDING"
+    },
+    {
+      "level": 8,
+      "reward_type_id": 4,
+      "reward_type": "OVERDRIVE_PERK",
+      "discipline_id": 3,
+      "discipline": "PLAYMAKING"
+    },
+    {
+      "level": 9,
+      "reward_type_id": 5,
+      "reward_type": "ACCELERATOR_PERK",
+      "discipline_id": 4,
+      "discipline": "DEFENSE"
+    },
+    {
+      "level": 10,
+      "reward_type_id": 4,
+      "reward_type": "OVERDRIVE_PERK",
+      "discipline_id": 1,
+      "discipline": "FINISHING"
+    },
+    {
+      "level": 11,
+      "reward_type_id": 3,
+      "reward_type": "LONGEVITY_PERK",
+      "discipline_id": 3,
+      "discipline": "PLAYMAKING"
+    },
+    {
+      "level": 12,
+      "reward_type_id": 5,
+      "reward_type": "ACCELERATOR_PERK",
+      "discipline_id": 5,
+      "discipline": "REBOUNDING"
+    },
+    {
+      "level": 13,
+      "reward_type_id": 4,
+      "reward_type": "OVERDRIVE_PERK",
+      "discipline_id": 2,
+      "discipline": "SHOOTING"
+    },
+    {
+      "level": 14,
+      "reward_type_id": 5,
+      "reward_type": "ACCELERATOR_PERK",
+      "discipline_id": 1,
+      "discipline": "FINISHING"
+    },
+    {
+      "level": 15,
+      "reward_type_id": 3,
+      "reward_type": "LONGEVITY_PERK",
+      "discipline_id": 4,
+      "discipline": "DEFENSE"
+    },
+    {
+      "level": 16,
+      "reward_type_id": 4,
+      "reward_type": "OVERDRIVE_PERK",
+      "discipline_id": 4,
+      "discipline": "DEFENSE"
+    },
+    {
+      "level": 17,
+      "reward_type_id": 3,
+      "reward_type": "LONGEVITY_PERK",
+      "discipline_id": 2,
+      "discipline": "SHOOTING"
+    },
+    {
+      "level": 18,
+      "reward_type_id": 5,
+      "reward_type": "ACCELERATOR_PERK",
+      "discipline_id": 3,
+      "discipline": "PLAYMAKING"
+    },
+    {
+      "level": 19,
+      "reward_type_id": 4,
+      "reward_type": "OVERDRIVE_PERK",
+      "discipline_id": 5,
+      "discipline": "REBOUNDING"
+    },
+    {
+      "level": 20,
+      "reward_type_id": 3,
+      "reward_type": "LONGEVITY_PERK",
+      "discipline_id": 1,
+      "discipline": "FINISHING"
+    },
+    {
+      "level": 21,
+      "reward_type_id": 5,
+      "reward_type": "ACCELERATOR_PERK",
+      "discipline_id": 2,
+      "discipline": "SHOOTING"
+    }
+  ],
+  "location_context_progression_speeds": [
+    {
+      "location_context_id": 0,
+      "location_context": "NONE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 1,
+      "location_context": "UNSPECIFIED",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 2,
+      "location_context": "NBA_GAME",
+      "progression_speed_id": 2,
+      "progression_speed": "FAST"
+    },
+    {
+      "location_context_id": 3,
+      "location_context": "MYPLAYER_ONLINE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 4,
+      "location_context": "REC",
+      "progression_speed_id": 2,
+      "progression_speed": "FAST"
+    },
+    {
+      "location_context_id": 5,
+      "location_context": "PROAM_PRIVATE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 6,
+      "location_context": "CREW_HQ_3V3_RANKED",
+      "progression_speed_id": 1,
+      "progression_speed": "MEDIUM"
+    },
+    {
+      "location_context_id": 7,
+      "location_context": "CREW_HQ_5V5_RANKED",
+      "progression_speed_id": 2,
+      "progression_speed": "FAST"
+    },
+    {
+      "location_context_id": 8,
+      "location_context": "CREW_HQ_3V3_PRIVATE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 9,
+      "location_context": "CREW_HQ_5V5_PRIVATE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 10,
+      "location_context": "PARK_1V1",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 11,
+      "location_context": "PARK_2V2",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 12,
+      "location_context": "PARK_3V3",
+      "progression_speed_id": 1,
+      "progression_speed": "MEDIUM"
+    },
+    {
+      "location_context_id": 13,
+      "location_context": "PARK_4V4",
+      "progression_speed_id": 1,
+      "progression_speed": "MEDIUM"
+    },
+    {
+      "location_context_id": 14,
+      "location_context": "PARK_5V5",
+      "progression_speed_id": 1,
+      "progression_speed": "MEDIUM"
+    },
+    {
+      "location_context_id": 15,
+      "location_context": "MYCOURT_SCRIMMAGE_1_ON_1",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 16,
+      "location_context": "MYCOURT_SCRIMMAGE_2_ON_2",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 17,
+      "location_context": "MYCOURT_SCRIMMAGE_3_ON_3",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 18,
+      "location_context": "MYCOURT_SCRIMMAGE_4_ON_4",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 19,
+      "location_context": "WNBA_CONTACT_GAME_1_ON_1",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 20,
+      "location_context": "WNBA_CONTACT_GAME_2_ON_2",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 21,
+      "location_context": "WNBA_CONTACT_GAME_3_ON_3",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 22,
+      "location_context": "WORLD_GARAGE_HOOPS",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 23,
+      "location_context": "STREETBALL_COURT_A",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 24,
+      "location_context": "STREETBALL_COURT_B",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 25,
+      "location_context": "STREETBALL_COURT_C",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 26,
+      "location_context": "STREETBALL_COURT_COOP_PVE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 27,
+      "location_context": "OPEN_RUN_FACILITY",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 28,
+      "location_context": "TRAMPOLINE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 29,
+      "location_context": "MATCHMAKING_BUILDING_1V1",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 30,
+      "location_context": "MATCHMAKING_BUILDING_2V2",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 31,
+      "location_context": "MATCHMAKING_BUILDING_3V3",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 32,
+      "location_context": "MATCHMAKING_BUILDING_4V4",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 33,
+      "location_context": "MATCHMAKING_BUILDING_5V5",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 34,
+      "location_context": "TKWORLD_PVE_EVENT",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 35,
+      "location_context": "TKWORLD_NBA_EVENT",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 36,
+      "location_context": "PROVING_GROUNDS_1V1",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 37,
+      "location_context": "PROVING_GROUNDS_2V2",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 38,
+      "location_context": "PROVING_GROUNDS_3V3",
+      "progression_speed_id": 1,
+      "progression_speed": "MEDIUM"
+    },
+    {
+      "location_context_id": 39,
+      "location_context": "PROVING_GROUNDS_5V5",
+      "progression_speed_id": 2,
+      "progression_speed": "FAST"
+    },
+    {
+      "location_context_id": 40,
+      "location_context": "FLASHBACK_NBA_GAME",
+      "progression_speed_id": 1,
+      "progression_speed": "MEDIUM"
+    },
+    {
+      "location_context_id": 41,
+      "location_context": "FLASHBACK_OPEN_RUN_SCRIMMAGE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 42,
+      "location_context": "STORY_PRACTICE_GAME",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 43,
+      "location_context": "DYNASTY_EXHIBITION_GAME",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 44,
+      "location_context": "MYCOURT_OPEN_RUN",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 45,
+      "location_context": "MYCOURT_STATE_FARM_CHALLENGE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 46,
+      "location_context": "MYCOURT_DRILLS",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 47,
+      "location_context": "PARK_CASUAL",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 48,
+      "location_context": "MATCHMAKING_CASUAL",
+      "progression_speed_id": 1,
+      "progression_speed": "MEDIUM"
+    },
+    {
+      "location_context_id": 49,
+      "location_context": "ANTE_UP_1V1",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 50,
+      "location_context": "ANTE_UP_2V2",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 51,
+      "location_context": "ANTE_UP_3V3",
+      "progression_speed_id": 1,
+      "progression_speed": "MEDIUM"
+    },
+    {
+      "location_context_id": 52,
+      "location_context": "DRILL_GAUNTLET_REBOUND",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 53,
+      "location_context": "DRILL_GAUNTLET_REBOUND_MARKER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 54,
+      "location_context": "DRILL_KNOCKOUT",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 55,
+      "location_context": "DRILL_LAYUP_TIMING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 56,
+      "location_context": "DRILL_LIVE_HORSE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 57,
+      "location_context": "DRILL_SKILL_DUNKS",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 58,
+      "location_context": "DRILL_TWO_BOUNCE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 59,
+      "location_context": "DRILL_ACROBAT_DROPPER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 60,
+      "location_context": "DRILL_ACROBAT_DROPPER_HOP",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 61,
+      "location_context": "DRILL_ACROBAT_DROPPER_SCOOP",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 62,
+      "location_context": "DRILL_ACROBAT_DROPPER_SPIN",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 63,
+      "location_context": "DRILL_AGILITY_SHOOTING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 64,
+      "location_context": "DRILL_ANKLE_BREAKER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 65,
+      "location_context": "DRILL_CHARGE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 66,
+      "location_context": "DRILL_CONTINUOUS_3_ON_3",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 67,
+      "location_context": "DRILL_DEFENSIVE_STOPPER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 68,
+      "location_context": "DRILL_DEFENSIVE_STOPPER_POST",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 69,
+      "location_context": "DRILL_UNPLUCKABLE_DRILL",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 70,
+      "location_context": "DRILL_OFF_BALL_PEST",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 71,
+      "location_context": "DRILL_DRIBBLING_MOVE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 72,
+      "location_context": "DRILL_DRIBBLING_MOVE_DEFENDERS",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 73,
+      "location_context": "DRILL_DRIBBLING_MOVE_TOUGH_MOVES",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 74,
+      "location_context": "DRILL_EURO_FINISHING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 75,
+      "location_context": "DRILL_FASTBREAK_2ON1",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 76,
+      "location_context": "DRILL_FASTBREAK_3ON2",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 77,
+      "location_context": "DRILL_FASTBREAK_4ON3",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 78,
+      "location_context": "DRILL_FASTBREAK_DEFENSE_2ON1",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 79,
+      "location_context": "DRILL_FLEX_SHOOTING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 80,
+      "location_context": "DRILL_FLOPPY_LOOP_SHOOTING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 81,
+      "location_context": "DRILL_FLOPPY_SHOOTING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 82,
+      "location_context": "DRILL_FOURTH_QUARTER_SCRIMMAGE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 83,
+      "location_context": "DRILL_TEAM_PRACTICE_SCRIMMAGE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 84,
+      "location_context": "DRILL_FREE_THROW_GOLF",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 85,
+      "location_context": "DRILL_FULLCOURT_3ON3",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 86,
+      "location_context": "DRILL_GAUNTLET_PICKPOCKET",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 87,
+      "location_context": "DRILL_GAUNTLET_DEFENSE_POST",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 88,
+      "location_context": "DRILL_GAUNTLET_DEFENSE_TOP",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 89,
+      "location_context": "DRILL_GAUNTLET_DEFENSE_WING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 90,
+      "location_context": "DRILL_GAUNTLET_OFFENSE_WING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 91,
+      "location_context": "DRILL_HALFCOURT_1ON1",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 92,
+      "location_context": "DRILL_HELP_AND_RECOVER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 93,
+      "location_context": "DRILL_HOT_ZONE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 94,
+      "location_context": "DRILL_ICON_PASSING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 95,
+      "location_context": "DRILL_ICON_PASSING_TIMED",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 96,
+      "location_context": "DRILL_JAB_SHOOTING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 97,
+      "location_context": "DRILL_JAB_SHOOTING_EXTENDED_MOVES",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 98,
+      "location_context": "DRILL_JUMP_TO_BALL",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 99,
+      "location_context": "DRILL_LOB_CITY_PASSER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 100,
+      "location_context": "DRILL_LOOP_SHOOTING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 101,
+      "location_context": "DRILL_NBA_PREGAME_SHOOTAROUND",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 102,
+      "location_context": "DRILL_ONE_MAN_FASTBREAK",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 103,
+      "location_context": "DRILL_ONE_ON_ONE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 104,
+      "location_context": "DRILL_PARTNER_SHOOTING_TIMED",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 105,
+      "location_context": "DRILL_PICK_AND_ROLL_2",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 106,
+      "location_context": "DRILL_PICK_AND_ROLL_COMBO",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 107,
+      "location_context": "DRILL_PICK_DODGER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 108,
+      "location_context": "DRILL_PIN_TO_FLARE_SHOOTING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 109,
+      "location_context": "DRILL_POSTERIZER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 110,
+      "location_context": "DRILL_POST_CONTROL_FADEAWAY_WITH_DEFENDER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 111,
+      "location_context": "DRILL_POST_CONTROL_ONE_ON_ONE_WITH_DEFENDER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 112,
+      "location_context": "DRILL_POST_CONTROL_ONE_ON_ONE_WITH_SMALL_DEFENDER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 113,
+      "location_context": "DRILL_BAILOUT_PASS",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 114,
+      "location_context": "DRILL_KILLER_COMBOS",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 115,
+      "location_context": "DRILL_LETHAL_SHOOTER_ATTEMPTS",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 116,
+      "location_context": "DRILL_LETHAL_SHOOTER_TIMED",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 117,
+      "location_context": "DRILL_LETHAL_SHOOTER_DUEL",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 118,
+      "location_context": "DRILL_PUTBACK_KING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 119,
+      "location_context": "DRILL_QUICK_DUNKS",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 120,
+      "location_context": "DRILL_REACTION",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 121,
+      "location_context": "DRILL_REACTION_TIME",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 122,
+      "location_context": "DRILL_READING_THE_SCREEN",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 123,
+      "location_context": "DRILL_RELENTLESS_FINISHER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 124,
+      "location_context": "DRILL_RIM_PROTECTOR",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 125,
+      "location_context": "DRILL_RIP_THROUGH_SHOOTING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 126,
+      "location_context": "DRILL_SHOOTING_TIMING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 127,
+      "location_context": "DRILL_SHOOTING_STORY",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 128,
+      "location_context": "DRILL_QUICK_PLAYS_STORY",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 129,
+      "location_context": "DRILL_TEAR_DROPPER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 130,
+      "location_context": "DRILL_THREE_POINT_CHALLENGE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 131,
+      "location_context": "DRILL_THREE_POINT_CHALLENGE_FRENZY",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 132,
+      "location_context": "DRILL_TIRELESS_SCORER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 133,
+      "location_context": "DRILL_TWENTY_ONE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 134,
+      "location_context": "DRILL_TWO_NINE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 135,
+      "location_context": "DRILL_WNBA_SCRIMMAGE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 136,
+      "location_context": "DRILL_WORK_ON_YOUR_GAME_CORNER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 137,
+      "location_context": "DRILL_WORK_ON_YOUR_GAME_TOP",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 138,
+      "location_context": "DRILL_WORK_ON_YOUR_GAME_TOP_LONG",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 139,
+      "location_context": "DRILL_THREE_HUSTLE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 140,
+      "location_context": "DRILL_BOXOUT_TRAINING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 141,
+      "location_context": "DRILL_DEFEND_THE_GATES_STEAL",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 142,
+      "location_context": "DRILL_DEFEND_THE_GATES_BLOCK",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 143,
+      "location_context": "DRILL_DEFEND_THE_GATES_BODYUP",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 144,
+      "location_context": "DRILL_INTERCEPTOR_DRILL",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 145,
+      "location_context": "DRILL_BLOCK_WORK",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 146,
+      "location_context": "DRILL_BRUISER_DRILL",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 147,
+      "location_context": "DRILL_CLOSE_OUT_SHOOTING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 148,
+      "location_context": "DRILL_OUTLET_PASSING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 149,
+      "location_context": "DRILL_POST_PASSER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 150,
+      "location_context": "DRILL_BEAT_THE_PRO_15_FEET",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 151,
+      "location_context": "DRILL_CHASE_DOWN",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 152,
+      "location_context": "DRILL_POST_CONTROL_DROP_STEP_WITH_DEFENDER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 153,
+      "location_context": "DRILL_POST_CONTROL_SPIN_WITH_DEFENDER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 154,
+      "location_context": "DRILL_POST_CONTROL_UP_AND_DOWN_WITH_DEFENDER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 155,
+      "location_context": "DRILL_FREE_THROW",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 156,
+      "location_context": "DRILL_BEST_OF_TEN",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 157,
+      "location_context": "DRILL_AROUND_THE_WORLD",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 158,
+      "location_context": "DRILL_REBOUND_DOMINATION",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 159,
+      "location_context": "DRILL_PUTBACK",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 160,
+      "location_context": "DRILL_DEFAULT_HORSE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 161,
+      "location_context": "DRILL_THREE_DRIBBLE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 162,
+      "location_context": "DRILL_PARTNER_SHOOTING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 163,
+      "location_context": "DRILL_DAILY_SHOOTING",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 164,
+      "location_context": "STORY_DRILL",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 165,
+      "location_context": "WORKOUT_GATORADE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 166,
+      "location_context": "WORKOUT_BOX",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 167,
+      "location_context": "WORKOUT_BENCH_PRESS",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 168,
+      "location_context": "WORKOUT_SQUATS",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 169,
+      "location_context": "WORKOUT_LADDER",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 170,
+      "location_context": "WORKOUT_SPRINT",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 171,
+      "location_context": "WORKOUT_AGILITY_HURDLES",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 172,
+      "location_context": "WORKOUT_TREADMILLS",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 173,
+      "location_context": "WORKOUT_GATORADE_HAND_EYE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 174,
+      "location_context": "WORKOUT_PULLUP",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 175,
+      "location_context": "WORKOUT_YOGA_BALL",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 176,
+      "location_context": "WORKOUT_STATIONARY_BIKE",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 177,
+      "location_context": "WORKOUT_PUNCHING_BAG",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 178,
+      "location_context": "WORKOUT_DRB_TENNIS",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 179,
+      "location_context": "WORKOUT_SCRIMMAGE_3V3",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 180,
+      "location_context": "WNBA_PROGRESSION_EVENT",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 181,
+      "location_context": "CASUAL_CORNER_PVE_3V3",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 182,
+      "location_context": "CASUAL_CORNER_PVP_3V3",
+      "progression_speed_id": 1,
+      "progression_speed": "MEDIUM"
+    },
+    {
+      "location_context_id": 183,
+      "location_context": "CASUAL_CORNER_PVE_5V5",
+      "progression_speed_id": 1,
+      "progression_speed": "MEDIUM"
+    },
+    {
+      "location_context_id": 184,
+      "location_context": "CASUAL_CORNER_PVP_5V5",
+      "progression_speed_id": 2,
+      "progression_speed": "FAST"
+    },
+    {
+      "location_context_id": 185,
+      "location_context": "BUILDER_TEST_GAME",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 186,
+      "location_context": "PLACEHOLDER0",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 187,
+      "location_context": "PLACEHOLDER1",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 188,
+      "location_context": "PLACEHOLDER2",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 189,
+      "location_context": "PLACEHOLDER3",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 190,
+      "location_context": "PLACEHOLDER4",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 191,
+      "location_context": "PLACEHOLDER5",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 192,
+      "location_context": "PLACEHOLDER6",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 193,
+      "location_context": "PLACEHOLDER7",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 194,
+      "location_context": "PLACEHOLDER8",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 195,
+      "location_context": "PLACEHOLDER9",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 196,
+      "location_context": "PLACEHOLDER10",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 197,
+      "location_context": "PLACEHOLDER11",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 198,
+      "location_context": "PLACEHOLDER12",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 199,
+      "location_context": "PLACEHOLDER13",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 200,
+      "location_context": "PLACEHOLDER14",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 201,
+      "location_context": "PLACEHOLDER15",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 202,
+      "location_context": "PLACEHOLDER16",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 203,
+      "location_context": "PLACEHOLDER17",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 204,
+      "location_context": "PLACEHOLDER18",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    },
+    {
+      "location_context_id": 205,
+      "location_context": "PLACEHOLDER19",
+      "progression_speed_id": 0,
+      "progression_speed": "SLOW"
+    }
+  ],
+  "location_speed_summary": {
+    "SLOW": 191,
+    "MEDIUM": 10,
+    "FAST": 5,
+    "non_slow": [
+      {
+        "location_context_id": 2,
+        "location_context": "NBA_GAME",
+        "progression_speed_id": 2,
+        "progression_speed": "FAST"
+      },
+      {
+        "location_context_id": 4,
+        "location_context": "REC",
+        "progression_speed_id": 2,
+        "progression_speed": "FAST"
+      },
+      {
+        "location_context_id": 6,
+        "location_context": "CREW_HQ_3V3_RANKED",
+        "progression_speed_id": 1,
+        "progression_speed": "MEDIUM"
+      },
+      {
+        "location_context_id": 7,
+        "location_context": "CREW_HQ_5V5_RANKED",
+        "progression_speed_id": 2,
+        "progression_speed": "FAST"
+      },
+      {
+        "location_context_id": 12,
+        "location_context": "PARK_3V3",
+        "progression_speed_id": 1,
+        "progression_speed": "MEDIUM"
+      },
+      {
+        "location_context_id": 13,
+        "location_context": "PARK_4V4",
+        "progression_speed_id": 1,
+        "progression_speed": "MEDIUM"
+      },
+      {
+        "location_context_id": 14,
+        "location_context": "PARK_5V5",
+        "progression_speed_id": 1,
+        "progression_speed": "MEDIUM"
+      },
+      {
+        "location_context_id": 38,
+        "location_context": "PROVING_GROUNDS_3V3",
+        "progression_speed_id": 1,
+        "progression_speed": "MEDIUM"
+      },
+      {
+        "location_context_id": 39,
+        "location_context": "PROVING_GROUNDS_5V5",
+        "progression_speed_id": 2,
+        "progression_speed": "FAST"
+      },
+      {
+        "location_context_id": 40,
+        "location_context": "FLASHBACK_NBA_GAME",
+        "progression_speed_id": 1,
+        "progression_speed": "MEDIUM"
+      },
+      {
+        "location_context_id": 48,
+        "location_context": "MATCHMAKING_CASUAL",
+        "progression_speed_id": 1,
+        "progression_speed": "MEDIUM"
+      },
+      {
+        "location_context_id": 51,
+        "location_context": "ANTE_UP_3V3",
+        "progression_speed_id": 1,
+        "progression_speed": "MEDIUM"
+      },
+      {
+        "location_context_id": 182,
+        "location_context": "CASUAL_CORNER_PVP_3V3",
+        "progression_speed_id": 1,
+        "progression_speed": "MEDIUM"
+      },
+      {
+        "location_context_id": 183,
+        "location_context": "CASUAL_CORNER_PVE_5V5",
+        "progression_speed_id": 1,
+        "progression_speed": "MEDIUM"
+      },
+      {
+        "location_context_id": 184,
+        "location_context": "CASUAL_CORNER_PVP_5V5",
+        "progression_speed_id": 2,
+        "progression_speed": "FAST"
+      }
+    ]
+  },
+  "rank_attribute_modifier": {
+    "values": {
+      "NONE": -6,
+      "RANK_D": -3,
+      "RANK_C": 0,
+      "RANK_B": 3,
+      "RANK_A": 6,
+      "RANK_S": 6
+    },
+    "value_status": "apk-verified",
+    "gameplay_effect_status": "unverified-in-hq",
+    "note": "NBA 2K HQ contains the rank-indexed AttributeModifier values but no verified gameplay callsite applying them. The Builder stores these values as metadata and does not modify ratings from them."
+  }
+}

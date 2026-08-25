@@ -1,8 +1,22 @@
 {
   "game": "NBA 2K27",
-  "version": 1,
-  "status": "provisional",
-  "source": "NBA2KLab / NBA 2K27 Community Day",
+  "version": 3,
+  "status": "apk-verified-eligibility-ranks-progression-metadata",
+  "source": {
+    "eligibility_requirements": "NBA 2K HQ / careermode_progression_tuning + GameLib",
+    "eligibility_requirements_status": "apk-verified",
+    "native_rank": "NBA 2K HQ / careermode_progression_tuning + GameLib",
+    "native_rank_status": "apk-verified",
+    "display_names_and_descriptions": "existing NBA 2K27 Community Day research dataset",
+    "display_names_and_descriptions_status": "retained-research-copy",
+    "discipline_grouping": "existing Builder grouping",
+    "discipline_grouping_status": "retained-research-copy",
+    "rank_attribute_modifier": "NBA 2K HQ / careermode_progression_tuning + GameLib",
+    "rank_attribute_modifier_value_status": "apk-verified",
+    "rank_attribute_modifier_effect_status": "unverified-in-hq-not-applied",
+    "takeover_progression": "NBA 2K HQ / careermode_progression_tuning + GameLib",
+    "takeover_progression_status": "apk-verified"
+  },
   "takeovers": [
     {
       "id": "default-shooting",
@@ -12,7 +26,20 @@
       "description_fr": "Augmente fortement les attributs de tir lorsque le Takeover est actif.",
       "requirements": {
         "always": true
-      }
+      },
+      "native_special_ability_id": 8,
+      "native_enum_name": "DEFAULT_SHOOTING",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "native_rank_label": null,
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": -6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "shot-artist",
@@ -31,7 +58,20 @@
             "min": 89
           }
         ]
-      }
+      },
+      "native_special_ability_id": 5,
+      "native_enum_name": "SHOT_ARTIST",
+      "native_rank_id": 4,
+      "native_rank": "RANK_A",
+      "native_rank_label": "A",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "calibrated",
@@ -50,7 +90,20 @@
             "min": 85
           }
         ]
-      }
+      },
+      "native_special_ability_id": 6,
+      "native_enum_name": "CALIBRATED",
+      "native_rank_id": 3,
+      "native_rank": "RANK_B",
+      "native_rank_label": "B",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 3,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "zip-code",
@@ -61,9 +114,21 @@
       "requirements": {
         "attribute": "threePointShot",
         "min": 91
-      }
+      },
+      "native_special_ability_id": 7,
+      "native_enum_name": "ZIP_CODE",
+      "native_rank_id": 5,
+      "native_rank": "RANK_S",
+      "native_rank_label": "S",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
-
     {
       "id": "default-finishing",
       "name_en": "Default Finishing",
@@ -72,7 +137,20 @@
       "description_fr": "Augmente fortement les attributs de finition lorsque le Takeover est actif.",
       "requirements": {
         "always": true
-      }
+      },
+      "native_special_ability_id": 4,
+      "native_enum_name": "DEFAULT_FINISHING",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "native_rank_label": null,
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": -6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "navigator",
@@ -83,7 +161,20 @@
       "requirements": {
         "attribute": "drivingLayup",
         "min": 85
-      }
+      },
+      "native_special_ability_id": 21,
+      "native_enum_name": "NAVIGATOR",
+      "native_rank_id": 3,
+      "native_rank": "RANK_B",
+      "native_rank_label": "B",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 3,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "airspace",
@@ -102,7 +193,20 @@
             "min": 75
           }
         ]
-      }
+      },
+      "native_special_ability_id": 3,
+      "native_enum_name": "AIRSPACE",
+      "native_rank_id": 5,
+      "native_rank": "RANK_S",
+      "native_rank_label": "S",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "inside-touch",
@@ -113,7 +217,20 @@
       "requirements": {
         "attribute": "closeShot",
         "min": 85
-      }
+      },
+      "native_special_ability_id": 1,
+      "native_enum_name": "INSIDE_TOUCH",
+      "native_rank_id": 1,
+      "native_rank": "RANK_D",
+      "native_rank_label": "D",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": -3,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "detonator",
@@ -124,7 +241,20 @@
       "requirements": {
         "attribute": "standingDunk",
         "min": 85
-      }
+      },
+      "native_special_ability_id": 2,
+      "native_enum_name": "DETONATOR",
+      "native_rank_id": 4,
+      "native_rank": "RANK_A",
+      "native_rank_label": "A",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "paint-surgeon",
@@ -143,9 +273,21 @@
             "min": 75
           }
         ]
-      }
+      },
+      "native_special_ability_id": 18,
+      "native_enum_name": "PAINT_SURGEON",
+      "native_rank_id": 2,
+      "native_rank": "RANK_C",
+      "native_rank_label": "C",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 0,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
-
     {
       "id": "default-playmaking",
       "name_en": "Default Playmaking",
@@ -154,7 +296,20 @@
       "description_fr": "Augmente fortement les attributs d'organisation lorsque le Takeover est actif.",
       "requirements": {
         "always": true
-      }
+      },
+      "native_special_ability_id": 10,
+      "native_enum_name": "DEFAULT_PLAYMAKING",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "native_rank_label": null,
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": -6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "blur",
@@ -173,7 +328,20 @@
             "min": 80
           }
         ]
-      }
+      },
+      "native_special_ability_id": 17,
+      "native_enum_name": "BLUR",
+      "native_rank_id": 5,
+      "native_rank": "RANK_S",
+      "native_rank_label": "S",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "cook",
@@ -184,7 +352,20 @@
       "requirements": {
         "attribute": "ballHandle",
         "min": 90
-      }
+      },
+      "native_special_ability_id": 9,
+      "native_enum_name": "COOK",
+      "native_rank_id": 4,
+      "native_rank": "RANK_A",
+      "native_rank_label": "A",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "dishmaster",
@@ -195,9 +376,21 @@
       "requirements": {
         "attribute": "passAccuracy",
         "min": 80
-      }
+      },
+      "native_special_ability_id": 15,
+      "native_enum_name": "DISHMASTER",
+      "native_rank_id": 3,
+      "native_rank": "RANK_B",
+      "native_rank_label": "B",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 3,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
-
     {
       "id": "default-defense",
       "name_en": "Default Defense",
@@ -206,7 +399,20 @@
       "description_fr": "Augmente fortement les attributs défensifs lorsque le Takeover est actif.",
       "requirements": {
         "always": true
-      }
+      },
+      "native_special_ability_id": 12,
+      "native_enum_name": "DEFAULT_DEFENSE",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "native_rank_label": null,
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": -6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "glue",
@@ -217,7 +423,20 @@
       "requirements": {
         "attribute": "perimeterDefense",
         "min": 85
-      }
+      },
+      "native_special_ability_id": 16,
+      "native_enum_name": "GLUE",
+      "native_rank_id": 5,
+      "native_rank": "RANK_S",
+      "native_rank_label": "S",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "hawk",
@@ -228,7 +447,20 @@
       "requirements": {
         "attribute": "steal",
         "min": 85
-      }
+      },
+      "native_special_ability_id": 11,
+      "native_enum_name": "HAWK",
+      "native_rank_id": 3,
+      "native_rank": "RANK_B",
+      "native_rank_label": "B",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 3,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "rim-guardian",
@@ -247,9 +479,21 @@
             "min": 80
           }
         ]
-      }
+      },
+      "native_special_ability_id": 22,
+      "native_enum_name": "RIM_GUARDIAN",
+      "native_rank_id": 4,
+      "native_rank": "RANK_A",
+      "native_rank_label": "A",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
-
     {
       "id": "default-rebounding",
       "name_en": "Default Rebounding",
@@ -258,7 +502,20 @@
       "description_fr": "Augmente fortement les attributs de rebond lorsque le Takeover est actif.",
       "requirements": {
         "always": true
-      }
+      },
+      "native_special_ability_id": 14,
+      "native_enum_name": "DEFAULT_REBOUND",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "native_rank_label": null,
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": -6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "demolition",
@@ -269,7 +526,20 @@
       "requirements": {
         "attribute": "strength",
         "min": 88
-      }
+      },
+      "native_special_ability_id": 19,
+      "native_enum_name": "DEMOLITION",
+      "native_rank_id": 3,
+      "native_rank": "RANK_B",
+      "native_rank_label": "B",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 3,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "muscle",
@@ -292,7 +562,20 @@
             "min": 80
           }
         ]
-      }
+      },
+      "native_special_ability_id": 20,
+      "native_enum_name": "MUSCLE",
+      "native_rank_id": 4,
+      "native_rank": "RANK_A",
+      "native_rank_label": "A",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "second-chance",
@@ -303,7 +586,20 @@
       "requirements": {
         "attribute": "offensiveRebound",
         "min": 80
-      }
+      },
+      "native_special_ability_id": 13,
+      "native_enum_name": "SECOND_CHANCE",
+      "native_rank_id": 2,
+      "native_rank": "RANK_C",
+      "native_rank_label": "C",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 0,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
     {
       "id": "see-the-future",
@@ -322,9 +618,21 @@
             "min": 85
           }
         ]
-      }
+      },
+      "native_special_ability_id": 23,
+      "native_enum_name": "SEE_THE_FUTURE",
+      "native_rank_id": 5,
+      "native_rank": "RANK_S",
+      "native_rank_label": "S",
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": 6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     },
-
     {
       "id": "hydration-hero",
       "name_en": "Hydration Hero",
@@ -333,7 +641,21 @@
       "description_fr": "Empêche temporairement la perte d'adrénaline et d'énergie. Peut être équipé dans n'importe quelle discipline de Takeover.",
       "requirements": {
         "always": true
-      }
+      },
+      "native_special_ability_id": 24,
+      "native_enum_name": "HYDRATION_HERO",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "native_rank_label": null,
+      "requirements_source": "apk",
+      "requirements_status": "apk-verified",
+      "rank_source": "apk",
+      "rank_status": "apk-verified",
+      "eligibility_status": "apk-verified",
+      "native_rank_modifier": -6,
+      "rank_modifier_value_status": "apk-verified",
+      "rank_modifier_effect_status": "unverified-in-hq-not-applied"
     }
-  ]
+  ],
+  "data_status": "apk-verified-myplayer-requirements-and-ranks"
 }

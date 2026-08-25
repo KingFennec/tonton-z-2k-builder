@@ -1,0 +1,17 @@
+{
+  "schema_version": "nba2k27-cap-breakers-v1",
+  "source": "NBA 2K HQ APK / libcsharplib_mobile_CLEAN_OPT.so",
+  "native_function": "ATTRIBUTES_GetCapBreakerBoostValuesForAttrAtIndex",
+  "native_function_va": "0x235fac",
+  "internal_function_va": "0x27c074",
+  "max_points_per_attribute": 5,
+  "max_cap_source": "morphology cap (ATTRIBUTES_GetMaxValue equivalent)",
+  "dependency_constraints_applied": false,
+  "notes": [
+    "The native function returns five successive attribute-rating boosts for one attribute.",
+    "Each boost is at least +1 while room remains below the morphology cap.",
+    "Boost size depends on current rating and on the selected GNR player type's attribute weight.",
+    "The result is capped at the morphology maximum and unused slots return 0.",
+    "The five boosts are computed from the build passed into the native function; this file does not assume a global number of Cap Breakers owned by the user."
+  ]
+}

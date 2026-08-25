@@ -1,0 +1,2924 @@
+{
+  "game": "NBA 2K27",
+  "source": "NBA 2K HQ / careermode_progression_tuning + GameLib",
+  "extraction": {
+    "tuning_file": "careermode_progression_tuning.bin",
+    "tuning_sha256": "a51b88b7901bc218ceece007e27d5ccffbd8ccbc279e453f461120500f782ca0",
+    "native_function": "TAKEOVERS_PlayerData_Takeover_GetSpecialAbilityMinAttributeRequirements_Common",
+    "native_export_stub_hex": "0x236118",
+    "native_function_body_hex": "0x27582c",
+    "native_special_ability_count": 30,
+    "native_enum_layout": "0=NONE, 1..24=real abilities, 25..29=placeholders",
+    "native_rank_enum": {
+      "0": "NONE",
+      "1": "RANK_D",
+      "2": "RANK_C",
+      "3": "RANK_B",
+      "4": "RANK_A",
+      "5": "RANK_S"
+    },
+    "rank_base_hex": "0x3a91de",
+    "packed_myplayer_requirement_base_hex": "0x3a9256",
+    "packed_nba_requirement_base_hex": "0x3a9580",
+    "packed_requirement_record_bytes": 27,
+    "requirements_per_ability": 3,
+    "packed_requirement_tuple_bytes": 9,
+    "connector_semantics": {
+      "0": "OR",
+      "1": "AND",
+      "2": "END"
+    },
+    "playerdata_attribute_sentinel": 155,
+    "attribute_modifier_base_hex": "0x3a98aa",
+    "attribute_modifier_rank_order": [
+      "NONE",
+      "RANK_D",
+      "RANK_C",
+      "RANK_B",
+      "RANK_A",
+      "RANK_S"
+    ],
+    "attribute_modifier_values": [
+      -6,
+      -3,
+      0,
+      3,
+      6,
+      6
+    ]
+  },
+  "validation": {
+    "mapped_real_takeover_count": 24,
+    "project_requirement_matches": 24,
+    "project_requirement_differences": 0,
+    "placeholder_count": 5,
+    "native_rank_values_seen": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "separate_nba_requirement_table_extracted": true,
+    "separate_height_or_position_restriction_field_found_in_playerdata_takeover_tuning": false,
+    "note": "The native PLAYERDATA_TAKEOVER_TUNING object exposes rank, MyPLAYER requirements, NBA requirements, and AttributeModifier. No separate height/position eligibility table is present in this object."
+  },
+  "attribute_modifier_by_rank": {
+    "NONE": -6,
+    "RANK_D": -3,
+    "RANK_C": 0,
+    "RANK_B": 3,
+    "RANK_A": 6,
+    "RANK_S": 6
+  },
+  "slots": [
+    {
+      "native_special_ability_id": 0,
+      "native_enum_name": "NONE",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "project_id": null,
+      "myplayer_requirements": {
+        "always": true
+      },
+      "nba_requirements": {
+        "always": true
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 1,
+      "native_enum_name": "INSIDE_TOUCH",
+      "native_rank_id": 1,
+      "native_rank": "RANK_D",
+      "project_id": "inside-touch",
+      "myplayer_requirements": {
+        "attribute": "closeShot",
+        "min": 85
+      },
+      "nba_requirements": {
+        "attribute": "closeShot",
+        "min": 87
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 5,
+          "attribute": "closeShot",
+          "min": 85,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 5,
+          "attribute": "closeShot",
+          "min": 87,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 2,
+      "native_enum_name": "DETONATOR",
+      "native_rank_id": 4,
+      "native_rank": "RANK_A",
+      "project_id": "detonator",
+      "myplayer_requirements": {
+        "attribute": "standingDunk",
+        "min": 85
+      },
+      "nba_requirements": {
+        "attribute": "standingDunk",
+        "min": 75
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 21,
+          "attribute": "standingDunk",
+          "min": 85,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 21,
+          "attribute": "standingDunk",
+          "min": 75,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 3,
+      "native_enum_name": "AIRSPACE",
+      "native_rank_id": 5,
+      "native_rank": "RANK_S",
+      "project_id": "airspace",
+      "myplayer_requirements": {
+        "all": [
+          {
+            "attribute": "drivingDunk",
+            "min": 87
+          },
+          {
+            "attribute": "vertical",
+            "min": 75
+          }
+        ]
+      },
+      "nba_requirements": {
+        "all": [
+          {
+            "attribute": "drivingDunk",
+            "min": 82
+          },
+          {
+            "attribute": "vertical",
+            "min": 60
+          }
+        ]
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 22,
+          "attribute": "drivingDunk",
+          "min": 87,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 25,
+          "attribute": "vertical",
+          "min": 75,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 22,
+          "attribute": "drivingDunk",
+          "min": 82,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 25,
+          "attribute": "vertical",
+          "min": 60,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 4,
+      "native_enum_name": "DEFAULT_FINISHING",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "project_id": "default-finishing",
+      "myplayer_requirements": {
+        "always": true
+      },
+      "nba_requirements": {
+        "always": true
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 5,
+      "native_enum_name": "SHOT_ARTIST",
+      "native_rank_id": 4,
+      "native_rank": "RANK_A",
+      "project_id": "shot-artist",
+      "myplayer_requirements": {
+        "any": [
+          {
+            "attribute": "threePointShot",
+            "min": 89
+          },
+          {
+            "attribute": "midRangeShot",
+            "min": 89
+          }
+        ]
+      },
+      "nba_requirements": {
+        "any": [
+          {
+            "attribute": "threePointShot",
+            "min": 80
+          },
+          {
+            "attribute": "midRangeShot",
+            "min": 80
+          }
+        ]
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 7,
+          "attribute": "threePointShot",
+          "min": 89,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 6,
+          "attribute": "midRangeShot",
+          "min": 89,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 7,
+          "attribute": "threePointShot",
+          "min": 80,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 6,
+          "attribute": "midRangeShot",
+          "min": 80,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 6,
+      "native_enum_name": "CALIBRATED",
+      "native_rank_id": 3,
+      "native_rank": "RANK_B",
+      "project_id": "calibrated",
+      "myplayer_requirements": {
+        "any": [
+          {
+            "attribute": "threePointShot",
+            "min": 85
+          },
+          {
+            "attribute": "midRangeShot",
+            "min": 85
+          }
+        ]
+      },
+      "nba_requirements": {
+        "any": [
+          {
+            "attribute": "threePointShot",
+            "min": 75
+          },
+          {
+            "attribute": "midRangeShot",
+            "min": 75
+          }
+        ]
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 7,
+          "attribute": "threePointShot",
+          "min": 85,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 6,
+          "attribute": "midRangeShot",
+          "min": 85,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 7,
+          "attribute": "threePointShot",
+          "min": 75,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 6,
+          "attribute": "midRangeShot",
+          "min": 75,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 7,
+      "native_enum_name": "ZIP_CODE",
+      "native_rank_id": 5,
+      "native_rank": "RANK_S",
+      "project_id": "zip-code",
+      "myplayer_requirements": {
+        "attribute": "threePointShot",
+        "min": 91
+      },
+      "nba_requirements": {
+        "attribute": "threePointShot",
+        "min": 82
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 7,
+          "attribute": "threePointShot",
+          "min": 91,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 7,
+          "attribute": "threePointShot",
+          "min": 82,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 8,
+      "native_enum_name": "DEFAULT_SHOOTING",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "project_id": "default-shooting",
+      "myplayer_requirements": {
+        "always": true
+      },
+      "nba_requirements": {
+        "always": true
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 9,
+      "native_enum_name": "COOK",
+      "native_rank_id": 4,
+      "native_rank": "RANK_A",
+      "project_id": "cook",
+      "myplayer_requirements": {
+        "attribute": "ballHandle",
+        "min": 90
+      },
+      "nba_requirements": {
+        "attribute": "ballHandle",
+        "min": 81
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 9,
+          "attribute": "ballHandle",
+          "min": 90,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 9,
+          "attribute": "ballHandle",
+          "min": 81,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 10,
+      "native_enum_name": "DEFAULT_PLAYMAKING",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "project_id": "default-playmaking",
+      "myplayer_requirements": {
+        "always": true
+      },
+      "nba_requirements": {
+        "always": true
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 11,
+      "native_enum_name": "HAWK",
+      "native_rank_id": 3,
+      "native_rank": "RANK_B",
+      "project_id": "hawk",
+      "myplayer_requirements": {
+        "attribute": "steal",
+        "min": 85
+      },
+      "nba_requirements": {
+        "attribute": "steal",
+        "min": 75
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 18,
+          "attribute": "steal",
+          "min": 85,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 18,
+          "attribute": "steal",
+          "min": 75,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 12,
+      "native_enum_name": "DEFAULT_DEFENSE",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "project_id": "default-defense",
+      "myplayer_requirements": {
+        "always": true
+      },
+      "nba_requirements": {
+        "always": true
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 13,
+      "native_enum_name": "SECOND_CHANCE",
+      "native_rank_id": 2,
+      "native_rank": "RANK_C",
+      "project_id": "second-chance",
+      "myplayer_requirements": {
+        "attribute": "offensiveRebound",
+        "min": 80
+      },
+      "nba_requirements": {
+        "attribute": "offensiveRebound",
+        "min": 65
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 12,
+          "attribute": "offensiveRebound",
+          "min": 80,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 12,
+          "attribute": "offensiveRebound",
+          "min": 65,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 14,
+      "native_enum_name": "DEFAULT_REBOUND",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "project_id": "default-rebounding",
+      "myplayer_requirements": {
+        "always": true
+      },
+      "nba_requirements": {
+        "always": true
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 15,
+      "native_enum_name": "DISHMASTER",
+      "native_rank_id": 3,
+      "native_rank": "RANK_B",
+      "project_id": "dishmaster",
+      "myplayer_requirements": {
+        "attribute": "passAccuracy",
+        "min": 80
+      },
+      "nba_requirements": {
+        "attribute": "passAccuracy",
+        "min": 75
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 11,
+          "attribute": "passAccuracy",
+          "min": 80,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 11,
+          "attribute": "passAccuracy",
+          "min": 75,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 16,
+      "native_enum_name": "GLUE",
+      "native_rank_id": 5,
+      "native_rank": "RANK_S",
+      "project_id": "glue",
+      "myplayer_requirements": {
+        "attribute": "perimeterDefense",
+        "min": 85
+      },
+      "nba_requirements": {
+        "attribute": "perimeterDefense",
+        "min": 76
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 15,
+          "attribute": "perimeterDefense",
+          "min": 85,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 15,
+          "attribute": "perimeterDefense",
+          "min": 76,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 17,
+      "native_enum_name": "BLUR",
+      "native_rank_id": 5,
+      "native_rank": "RANK_S",
+      "project_id": "blur",
+      "myplayer_requirements": {
+        "all": [
+          {
+            "attribute": "ballHandle",
+            "min": 85
+          },
+          {
+            "attribute": "speedWithBall",
+            "min": 80
+          }
+        ]
+      },
+      "nba_requirements": {
+        "all": [
+          {
+            "attribute": "ballHandle",
+            "min": 80
+          },
+          {
+            "attribute": "speedWithBall",
+            "min": 75
+          }
+        ]
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 9,
+          "attribute": "ballHandle",
+          "min": 85,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 24,
+          "attribute": "speedWithBall",
+          "min": 80,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 9,
+          "attribute": "ballHandle",
+          "min": 80,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 24,
+          "attribute": "speedWithBall",
+          "min": 75,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 18,
+      "native_enum_name": "PAINT_SURGEON",
+      "native_rank_id": 2,
+      "native_rank": "RANK_C",
+      "project_id": "paint-surgeon",
+      "myplayer_requirements": {
+        "all": [
+          {
+            "attribute": "closeShot",
+            "min": 80
+          },
+          {
+            "attribute": "postControl",
+            "min": 75
+          }
+        ]
+      },
+      "nba_requirements": {
+        "all": [
+          {
+            "attribute": "closeShot",
+            "min": 75
+          },
+          {
+            "attribute": "postControl",
+            "min": 70
+          }
+        ]
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 5,
+          "attribute": "closeShot",
+          "min": 80,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 3,
+          "attribute": "postControl",
+          "min": 75,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 5,
+          "attribute": "closeShot",
+          "min": 75,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 3,
+          "attribute": "postControl",
+          "min": 70,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 19,
+      "native_enum_name": "DEMOLITION",
+      "native_rank_id": 3,
+      "native_rank": "RANK_B",
+      "project_id": "demolition",
+      "myplayer_requirements": {
+        "attribute": "strength",
+        "min": 88
+      },
+      "nba_requirements": {
+        "attribute": "strength",
+        "min": 75
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 26,
+          "attribute": "strength",
+          "min": 88,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 26,
+          "attribute": "strength",
+          "min": 75,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 20,
+      "native_enum_name": "MUSCLE",
+      "native_rank_id": 4,
+      "native_rank": "RANK_A",
+      "project_id": "muscle",
+      "myplayer_requirements": {
+        "all": [
+          {
+            "attribute": "offensiveRebound",
+            "min": 80
+          },
+          {
+            "attribute": "defensiveRebound",
+            "min": 80
+          },
+          {
+            "attribute": "strength",
+            "min": 80
+          }
+        ]
+      },
+      "nba_requirements": {
+        "all": [
+          {
+            "attribute": "defensiveRebound",
+            "min": 70
+          },
+          {
+            "attribute": "offensiveRebound",
+            "min": 60
+          },
+          {
+            "attribute": "strength",
+            "min": 60
+          }
+        ]
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 12,
+          "attribute": "offensiveRebound",
+          "min": 80,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 13,
+          "attribute": "defensiveRebound",
+          "min": 80,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 26,
+          "attribute": "strength",
+          "min": 80,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 13,
+          "attribute": "defensiveRebound",
+          "min": 70,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 12,
+          "attribute": "offensiveRebound",
+          "min": 60,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 26,
+          "attribute": "strength",
+          "min": 60,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 21,
+      "native_enum_name": "NAVIGATOR",
+      "native_rank_id": 3,
+      "native_rank": "RANK_B",
+      "project_id": "navigator",
+      "myplayer_requirements": {
+        "attribute": "drivingLayup",
+        "min": 85
+      },
+      "nba_requirements": {
+        "attribute": "drivingLayup",
+        "min": 83
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 0,
+          "attribute": "drivingLayup",
+          "min": 85,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 0,
+          "attribute": "drivingLayup",
+          "min": 83,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 22,
+      "native_enum_name": "RIM_GUARDIAN",
+      "native_rank_id": 4,
+      "native_rank": "RANK_A",
+      "project_id": "rim-guardian",
+      "myplayer_requirements": {
+        "all": [
+          {
+            "attribute": "interiorDefense",
+            "min": 80
+          },
+          {
+            "attribute": "block",
+            "min": 80
+          }
+        ]
+      },
+      "nba_requirements": {
+        "all": [
+          {
+            "attribute": "interiorDefense",
+            "min": 70
+          },
+          {
+            "attribute": "block",
+            "min": 65
+          }
+        ]
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 14,
+          "attribute": "interiorDefense",
+          "min": 80,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 17,
+          "attribute": "block",
+          "min": 80,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 14,
+          "attribute": "interiorDefense",
+          "min": 70,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 17,
+          "attribute": "block",
+          "min": 65,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 23,
+      "native_enum_name": "SEE_THE_FUTURE",
+      "native_rank_id": 5,
+      "native_rank": "RANK_S",
+      "project_id": "see-the-future",
+      "myplayer_requirements": {
+        "all": [
+          {
+            "attribute": "offensiveRebound",
+            "min": 85
+          },
+          {
+            "attribute": "defensiveRebound",
+            "min": 85
+          }
+        ]
+      },
+      "nba_requirements": {
+        "all": [
+          {
+            "attribute": "defensiveRebound",
+            "min": 70
+          },
+          {
+            "attribute": "offensiveRebound",
+            "min": 60
+          }
+        ]
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 12,
+          "attribute": "offensiveRebound",
+          "min": 85,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 13,
+          "attribute": "defensiveRebound",
+          "min": 85,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 13,
+          "attribute": "defensiveRebound",
+          "min": 70,
+          "connector_id": 1,
+          "connector": "AND",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 12,
+          "attribute": "offensiveRebound",
+          "min": 60,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 24,
+      "native_enum_name": "HYDRATION_HERO",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "project_id": "hydration-hero",
+      "myplayer_requirements": {
+        "always": true
+      },
+      "nba_requirements": {
+        "always": true
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 25,
+      "native_enum_name": "PLACEHOLDER_01",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "project_id": null,
+      "myplayer_requirements": {
+        "always": true
+      },
+      "nba_requirements": {
+        "always": true
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 26,
+      "native_enum_name": "PLACEHOLDER_02",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "project_id": null,
+      "myplayer_requirements": {
+        "always": true
+      },
+      "nba_requirements": {
+        "always": true
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 27,
+      "native_enum_name": "PLACEHOLDER_03",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "project_id": null,
+      "myplayer_requirements": {
+        "always": true
+      },
+      "nba_requirements": {
+        "always": true
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 28,
+      "native_enum_name": "PLACEHOLDER_04",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "project_id": null,
+      "myplayer_requirements": {
+        "always": true
+      },
+      "nba_requirements": {
+        "always": true
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "native_special_ability_id": 29,
+      "native_enum_name": "PLACEHOLDER_05",
+      "native_rank_id": 0,
+      "native_rank": "NONE",
+      "project_id": null,
+      "myplayer_requirements": {
+        "always": true
+      },
+      "nba_requirements": {
+        "always": true
+      },
+      "raw_myplayer_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "raw_nba_tuples": [
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 2,
+          "connector": "END",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "playerdata_attribute_index": 155,
+          "attribute": null,
+          "min": 0,
+          "connector_id": 0,
+          "connector": "OR",
+          "packed_padding": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ],
+  "attribute_modifier_interpretation": {
+    "value_status": "apk-verified",
+    "gameplay_effect_status": "unverified-in-hq",
+    "note": "The rank-indexed values are present in NBA 2K HQ tuning, but no verified HQ gameplay callsite applies them to player ratings. Do not apply them as an attribute/GNR bonus or penalty without main-game evidence."
+  }
+}

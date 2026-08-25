@@ -1,3 +1,7 @@
+import {
+  getExactBodyBounds,
+} from './apkBuilderEngine.js'
+
 const DEFAULT_LIMITS = {
   height: {
     min: null,
@@ -429,6 +433,61 @@ export function getSelectedBadgeMorphologyLimits(
   return limits
 }
 
+function getPositionFieldRange(
+  position,
+  field,
+  morphology = {}
+) {
+  const fallback =
+    position?.[field] ?? {
+      min: null,
+      max: null,
+    }
+
+  if (
+    (field !== 'weight' &&
+      field !== 'wingspan') ||
+    morphology?.height === '' ||
+    morphology?.height === null ||
+    morphology?.height === undefined
+  ) {
+    return fallback
+  }
+
+  const exactBounds =
+    getExactBodyBounds(
+      morphology.height,
+      position?.id ?? null
+    )
+
+  const exactRange =
+    exactBounds?.[field]
+
+  if (!exactRange) {
+    return fallback
+  }
+
+  const intersection =
+    intersectRanges(
+      fallback,
+      exactRange
+    )
+
+  if (intersection.impossible) {
+    return fallback
+  }
+
+  return {
+    min:
+      intersection.min ??
+      fallback.min,
+
+    max:
+      intersection.max ??
+      fallback.max,
+  }
+}
+
 export function isPositionCompatibleWithConstraints(
   position,
   morphology = {},
@@ -455,11 +514,11 @@ export function isPositionCompatibleWithConstraints(
     of fields
   ) {
     const positionRange =
-      position[field] ??
-      {
-        min: null,
-        max: null,
-      }
+      getPositionFieldRange(
+        position,
+        field,
+        morphology
+      )
 
     const badgeRange =
       limits[field] ??
@@ -765,33 +824,113 @@ function getRangeForPositions(
   }
 }
 
+function getExactRangeForPositions(
+  positions,
+  field,
+  fallback,
+  badgeLimit,
+  height
+) {
+  if (
+    height === '' ||
+    height === null ||
+    height === undefined
+  ) {
+    return getRangeForPositions(
+      positions,
+      field,
+      fallback,
+      badgeLimit
+    )
+  }
+
+  const ranges =
+    positions
+      .map((position) =>
+        getPositionFieldRange(
+          position,
+          field,
+          { height }
+        )
+      )
+      .filter((range) =>
+        range?.min !== null &&
+        range?.max !== null
+      )
+
+  if (ranges.length === 0) {
+    return getRangeForPositions(
+      positions,
+      field,
+      fallback,
+      badgeLimit
+    )
+  }
+
+  const baseRange = {
+    min: Math.min(
+      ...ranges.map(
+        (range) => range.min
+      )
+    ),
+    max: Math.max(
+      ...ranges.map(
+        (range) => range.max
+      )
+    ),
+  }
+
+  const intersection =
+    intersectRanges(
+      baseRange,
+      badgeLimit
+    )
+
+  if (intersection.impossible) {
+    return baseRange
+  }
+
+  return {
+    min:
+      intersection.min ??
+      baseRange.min,
+    max:
+      intersection.max ??
+      baseRange.max,
+  }
+}
+
 export function getWeightRangeForPositions(
   positions,
-  badgeLimit = null
+  badgeLimit = null,
+  height = null
 ) {
-  return getRangeForPositions(
+  return getExactRangeForPositions(
     positions,
     'weight',
     {
       min: 145,
       max: 290,
     },
-    badgeLimit
+    badgeLimit,
+    height
   )
 }
 
 export function getWingspanRangeForPositions(
   positions,
-  badgeLimit = null
+  badgeLimit = null,
+  height = null
 ) {
-  return getRangeForPositions(
+  return getExactRangeForPositions(
     positions,
     'wingspan',
     {
       min: 69,
       max: 94,
     },
-    badgeLimit
+    badgeLimit,
+    height
   )
 }
 
