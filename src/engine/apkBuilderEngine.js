@@ -433,7 +433,7 @@ function calculateGnrDirect(ratingsInput, heightIn, clampFinalLerp = false) {
   }
 }
 
-export function calculateExactGnr(
+function calculateUpgradeRoundedDetailedGnr(
   ratingsInput,
   heightIn,
   { caps = null, clampFinalLerp = false, uiRounding = true } = {}
@@ -453,11 +453,21 @@ export function calculateExactGnr(
     caps == null
       ? Array(21).fill(99)
       : normalizeRatings(caps, 99).map((value) => Math.trunc(value))
-  const capsWereSupplied = caps != null
 
   const current = calculateGnrDirect(values, heightIn, clampFinalLerp)
   let detailed = f32(current.detailed)
 
+  /*
+   * ATTRIBUTES_GetUncappedDetailedOverallRatingWithUpgradeAvailabilityBasedRounding
+   *
+   * NBA 2K27 applies a special UI rounding between detailed OVR 84 and 99.
+   * If no remaining +1 upgrade can stay inside the current displayed OVR,
+   * the value is rounded up to the next integer.
+   *
+   * IMPORTANT: this helper deliberately does NOT clamp the result to 99.
+   * CareerBuilder_AttributeManager uses this uncapped value when deciding
+   * whether the next attribute increment is legal.
+   */
   if (uiRounding && detailed >= 84 && detailed <= 99) {
     const nearest = f32(roundTiesEven(detailed))
 
@@ -486,6 +496,144 @@ export function calculateExactGnr(
     }
   }
 
+  return {
+    available: true,
+    displayed: Math.floor(detailed),
+    detailed: Number(detailed),
+    rawWeightedRating: current.rawWeightedRating,
+    playerType: current.playerType,
+    heightIndex: current.heightIndex,
+    source: 'nba2k27-apk',
+  }
+}
+
+/**
+ * Exact uncapped detailed GNR used internally by the NBA 2K27 Builder.
+ *
+ * This mirrors the value stored by CareerBuilder_AttributeManager before
+ * the UI display is capped. It is the value compared against 99.0 when
+ * testing whether another attribute point may be spent.
+ */
+export function calculateExactUncappedGnr(
+  ratingsInput,
+  heightIn,
+  options = {}
+) {
+  return calculateUpgradeRoundedDetailedGnr(
+    ratingsInput,
+    heightIn,
+    options
+  )
+}
+
+/**
+ * Reproduction of the CareerBuilder next-increment overall budget gate.
+ *
+ * Native flow observed in CareerBuilder_AttributeManager:
+ * 1. current displayed OVR must be <= 98;
+ * 2. simulate the next increment (including associated attributes);
+ * 3. the resulting uncapped detailed OVR must be <= 99.0f.
+ *
+ * The caller is responsible for solving associated-attribute constraints
+ * before passing candidateRatings.
+ */
+export function testExactOverallIncrement(
+  currentRatings,
+  candidateRatings,
+  heightIn,
+  { caps = null, clampFinalLerp = false } = {}
+) {
+  const current = calculateUpgradeRoundedDetailedGnr(
+    currentRatings,
+    heightIn,
+    {
+      caps,
+      clampFinalLerp,
+      uiRounding: true,
+    }
+  )
+
+  const candidate = calculateUpgradeRoundedDetailedGnr(
+    candidateRatings,
+    heightIn,
+    {
+      caps,
+      clampFinalLerp,
+      uiRounding: true,
+    }
+  )
+
+  if (!current.available || !candidate.available) {
+    return {
+      allowed: false,
+      reason: 'gnr-unavailable',
+      current,
+      candidate,
+      source: 'nba2k27-apk',
+    }
+  }
+
+  if (current.displayed > 98) {
+    return {
+      allowed: false,
+      reason: 'overall-already-99',
+      current,
+      candidate,
+      source: 'nba2k27-apk',
+    }
+  }
+
+  if (f32(candidate.detailed) > f32(99)) {
+    return {
+      allowed: false,
+      reason: 'candidate-over-99',
+      current,
+      candidate,
+      source: 'nba2k27-apk',
+    }
+  }
+
+  return {
+    allowed: true,
+    reason: null,
+    current,
+    candidate,
+    source: 'nba2k27-apk',
+  }
+}
+
+export function calculateExactGnr(
+  ratingsInput,
+  heightIn,
+  { caps = null, clampFinalLerp = false, uiRounding = true } = {}
+) {
+  const uncapped = calculateUpgradeRoundedDetailedGnr(
+    ratingsInput,
+    heightIn,
+    {
+      caps,
+      clampFinalLerp,
+      uiRounding,
+    }
+  )
+
+  if (!uncapped.available) {
+    return uncapped
+  }
+
+  const values = normalizeRatings(ratingsInput, 25).map((value) => Math.trunc(value))
+  const capValues =
+    caps == null
+      ? Array(21).fill(99)
+      : normalizeRatings(caps, 99).map((value) => Math.trunc(value))
+  const capsWereSupplied = caps != null
+  let detailed = f32(uncapped.detailed)
+
+  /*
+   * Public Builder display remains capped at 99.
+   * Keep the uncapped values in the result so validation code can use the
+   * same hidden value as the native CareerBuilder.
+   */
   if (capsWereSupplied) {
     if (values.every((value, index) => value >= capValues[index])) {
       detailed = f32(99)
@@ -497,13 +645,11 @@ export function calculateExactGnr(
   }
 
   return {
-    available: true,
+    ...uncapped,
     displayed: Math.floor(detailed),
     detailed: Number(detailed),
-    rawWeightedRating: current.rawWeightedRating,
-    playerType: current.playerType,
-    heightIndex: current.heightIndex,
-    source: 'nba2k27-apk',
+    uncappedDisplayed: uncapped.displayed,
+    uncappedDetailed: uncapped.detailed,
   }
 }
 

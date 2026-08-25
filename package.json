@@ -8,13 +8,14 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "verify:apk": "node scripts/verifyApkIntegration.mjs && node scripts/verifyBadgeApkData.mjs && node scripts/verifyTakeoverApkData.mjs && node scripts/verifyTakeoverProgressionApkData.mjs && node scripts/verifyCapBreakerApkData.mjs && npm run verify:legend && npm run verify:buildnames",
+    "verify:apk": "node scripts/verifyApkIntegration.mjs && node scripts/verifyBadgeApkData.mjs && node scripts/verifyTakeoverApkData.mjs && node scripts/verifyTakeoverProgressionApkData.mjs && node scripts/verifyCapBreakerApkData.mjs && node scripts/verifyOverallBudgetApkData.mjs && npm run verify:legend && npm run verify:buildnames",
     "verify:badges": "node scripts/verifyBadgeApkData.mjs",
     "verify:takeovers": "node scripts/verifyTakeoverApkData.mjs",
     "verify:progression": "node scripts/verifyTakeoverProgressionApkData.mjs",
     "verify:capbreakers": "node scripts/verifyCapBreakerApkData.mjs",
     "verify:legend": "node scripts/verifyBadgeLegendApkData.mjs",
-    "verify:buildnames": "node scripts/verifyBuildDescriptions.mjs"
+    "verify:buildnames": "node scripts/verifyBuildDescriptions.mjs",
+    "verify:overall-budget": "node scripts/verifyOverallBudgetApkData.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",

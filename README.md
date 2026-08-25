@@ -7,6 +7,7 @@ Builder React/Vite alimenté progressivement par les données réelles extraites
 - morphologie et caps des 21 attributs ;
 - dépendances entre attributs selon la taille ;
 - calcul du GNR avec les 15 Player Types ;
+- budget réel des points d’attribut et blocage natif à la limite GNR 99 ;
 - badges Bronze → HOF et restrictions de taille ;
 - mécanique Legend / perk-level boost ;
 - Takeovers, rangs D→S et progression ;
@@ -37,13 +38,24 @@ La V10 utilise `player_descriptions` et `ATTRIBUTES_DetermineDescription` :
 
 Voir `BUILD_NAMES_APK_V10.md`.
 
+## Budget GNR V10.2
+
+La V10.2 reproduit le contrôle natif du `CareerBuilder_AttributeManager` avant chaque hausse d’attribut :
+
+- GNR entier actuel <= 98 ;
+- simulation de la hausse et de ses dépendances ;
+- GNR détaillé non plafonné du candidat <= 99.000 ;
+- arrêt du slider au dernier point légal.
+
+Voir `OVERALL_BUDGET_APK_V10_2.md`.
+
 ## Validation
 
 ```bash
 npm run verify:apk
 ```
 
-Cette commande vérifie caps, dépendances, GNR, badges, Takeovers, progression, Cap Breakers, Legend et noms de builds.
+Cette commande vérifie caps, dépendances, GNR, budget des points d’attribut, badges, Takeovers, progression, Cap Breakers, Legend et noms de builds.
 
 Vérification dédiée aux archétypes :
 

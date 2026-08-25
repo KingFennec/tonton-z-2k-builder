@@ -51,6 +51,7 @@ import {
 
 import {
   calculateExactGnr,
+  testExactOverallIncrement,
   getAllCapBreakerProjections,
   getExactBodyCaps,
   getExactDependencyRules,
@@ -899,6 +900,7 @@ function AttributeCategory({
   activeCaps,
   capImpactByAttribute,
   blockedWarnings,
+  overallBudgetLocked,
   onChangeAttribute,
 }) {
   const categoryAttributes =
@@ -1000,7 +1002,8 @@ function AttributeCategory({
               minimumAllowed
 
             const canIncrease =
-              value < cap
+              value < cap &&
+              !overallBudgetLocked
 
             const badgeControlled =
               badgeMinimum >
@@ -4161,14 +4164,273 @@ function App() {
       return
     }
 
+    const setAttributeWarning = (
+      message
+    ) => {
+      setBlockedWarnings(
+        (current) => {
+          if (!message) {
+            if (
+              !current[
+                attribute.id
+              ]
+            ) {
+              return current
+            }
+
+            const updated = {
+              ...current,
+            }
+
+            delete updated[
+              attribute.id
+            ]
+
+            return updated
+          }
+
+          return {
+            ...current,
+
+            [attribute.id]:
+              message,
+          }
+        }
+      )
+    }
+
+    const getNewCapConflict = (
+      previousResult,
+      candidateResult
+    ) => {
+      const previousConflictKeys =
+        new Set(
+          previousResult
+            .capConflicts
+            .map(
+              getCapConflictKey
+            )
+        )
+
+      return candidateResult
+        .capConflicts
+        .find(
+          (conflict) =>
+            !previousConflictKeys.has(
+              getCapConflictKey(
+                conflict
+              )
+            )
+        ) ?? null
+    }
+
+    const hasEffectiveChange = (
+      previousValues,
+      candidateValues
+    ) =>
+      attributesData.attributes.some(
+        (item) =>
+          Number(
+            previousValues?.[
+              item.id
+            ] ?? item.min
+          ) !==
+          Number(
+            candidateValues?.[
+              item.id
+            ] ?? item.min
+          )
+      )
+
+    const currentEffectiveValue =
+      Number(
+        effectiveAttributes[
+          attribute.id
+        ] ??
+        attribute.min
+      )
+
     /*
-     * Avant d'accepter une hausse,
-     * on simule le futur build.
+     * =====================================================
+     * BUDGET GNR NATIF 2K27
+     * =====================================================
      *
-     * Si cette hausse crée une
-     * NOUVELLE dépendance qui
-     * dépasse un cap morphologique,
-     * on bloque la modification.
+     * CareerBuilder_AttributeManager vérifie chaque hausse
+     * AVANT de l'accepter :
+     *
+     * 1. le GNR entier actuel doit être <= 98 ;
+     * 2. la hausse et toutes ses dépendances sont simulées ;
+     * 3. le GNR détaillé non plafonné du candidat doit être
+     *    <= 99.000f.
+     *
+     * Un drag de slider est donc testé point par point et
+     * s'arrête au dernier point réellement achetable.
+     */
+    if (
+      safeValue >
+      currentEffectiveValue
+    ) {
+      let acceptedManualValue =
+        Number(
+          manualAttributes[
+            attribute.id
+          ] ??
+          attribute.min
+        )
+
+      let acceptedResult =
+        dependencyResult
+
+      let stoppedWarning =
+        null
+
+      for (
+        let stepValue =
+          currentEffectiveValue + 1;
+        stepValue <=
+          safeValue;
+        stepValue += 1
+      ) {
+        const candidateManual = {
+          ...manualAttributes,
+
+          [attribute.id]:
+            stepValue,
+        }
+
+        const candidateRequested =
+          createDependencyRequestedAttributes(
+            candidateManual,
+            requiredByAttribute
+          )
+
+        const candidateResult =
+          solveAttributeDependencies({
+            requestedAttributes:
+              candidateRequested,
+
+            caps:
+              activeCaps ??
+              {},
+
+            rules:
+              exactDependencyRules,
+
+            includeProvisional:
+              INCLUDE_PROVISIONAL_DEPENDENCIES,
+          })
+
+        const conflict =
+          getNewCapConflict(
+            acceptedResult,
+            candidateResult
+          )
+
+        if (conflict) {
+          const sourceName =
+            getAttributeName(
+              conflict.source
+            )
+
+          const targetName =
+            getAttributeName(
+              conflict.target
+            )
+
+          stoppedWarning =
+            `${sourceName} ${conflict.sourceValue ?? stepValue} imposerait ${targetName} ${conflict.required}, mais son cap morphologique est ${conflict.cap}.`
+
+          break
+        }
+
+        if (
+          hasEffectiveChange(
+            acceptedResult.values,
+            candidateResult.values
+          )
+        ) {
+          const overallCheck =
+            testExactOverallIncrement(
+              acceptedResult.values,
+              candidateResult.values,
+              morphology.height,
+              {
+                caps:
+                  activeCaps,
+              }
+            )
+
+          if (
+            !overallCheck.allowed
+          ) {
+            if (
+              overallCheck.reason ===
+              'overall-already-99'
+            ) {
+              stoppedWarning =
+                'Budget GNR épuisé : le build est déjà à 99. Baisse un autre attribut avant d’en augmenter un.'
+            } else if (
+              overallCheck.reason ===
+              'candidate-over-99'
+            ) {
+              const candidateDetailed =
+                overallCheck.candidate
+                  ?.detailed
+
+              stoppedWarning =
+                Number.isFinite(
+                  candidateDetailed
+                )
+                  ? `Budget GNR épuisé : ce point ferait passer le GNR détaillé à ${candidateDetailed.toFixed(3)} (> 99.000).`
+                  : 'Budget GNR épuisé : ce point dépasserait la limite interne de 99.000.'
+            } else {
+              stoppedWarning =
+                'Impossible de vérifier le budget GNR pour cette hausse.'
+            }
+
+            break
+          }
+        }
+
+        acceptedManualValue =
+          stepValue
+
+        acceptedResult =
+          candidateResult
+      }
+
+      const originalManualValue =
+        Number(
+          manualAttributes[
+            attribute.id
+          ] ??
+          attribute.min
+        )
+
+      if (
+        acceptedManualValue !==
+        originalManualValue
+      ) {
+        setManualAttributes(
+          (current) => ({
+            ...current,
+
+            [attribute.id]:
+              acceptedManualValue,
+          })
+        )
+      }
+
+      setAttributeWarning(
+        stoppedWarning
+      )
+
+      return
+    }
+
+    /*
+     * Baisse (ou saisie identique) : pas de coût GNR.
+     * On conserve le contrôle des caps/dépendances existant.
      */
     const candidateManual = {
       ...manualAttributes,
@@ -4199,34 +4461,13 @@ function App() {
           INCLUDE_PROVISIONAL_DEPENDENCIES,
       })
 
-    const existingConflictKeys =
-      new Set(
-        dependencyResult
-          .capConflicts
-          .map(
-            getCapConflictKey
-          )
+    const conflict =
+      getNewCapConflict(
+        dependencyResult,
+        candidateResult
       )
 
-    const newConflicts =
-      candidateResult
-        .capConflicts
-        .filter(
-          (conflict) =>
-            !existingConflictKeys.has(
-              getCapConflictKey(
-                conflict
-              )
-            )
-        )
-
-    if (
-      newConflicts.length >
-      0
-    ) {
-      const conflict =
-        newConflicts[0]
-
+    if (conflict) {
       const sourceName =
         getAttributeName(
           conflict.source
@@ -4237,38 +4478,15 @@ function App() {
           conflict.target
         )
 
-      setBlockedWarnings(
-        (current) => ({
-          ...current,
-
-          [attribute.id]:
-            `${sourceName} ${conflict.sourceValue ?? safeValue} imposerait ${targetName} ${conflict.required}, mais son cap morphologique est ${conflict.cap}.`,
-        })
+      setAttributeWarning(
+        `${sourceName} ${conflict.sourceValue ?? safeValue} imposerait ${targetName} ${conflict.required}, mais son cap morphologique est ${conflict.cap}.`
       )
 
       return
     }
 
-    setBlockedWarnings(
-      (current) => {
-        if (
-          !current[
-            attribute.id
-          ]
-        ) {
-          return current
-        }
-
-        const updated = {
-          ...current,
-        }
-
-        delete updated[
-          attribute.id
-        ]
-
-        return updated
-      }
+    setAttributeWarning(
+      null
     )
 
     /*
@@ -4904,7 +5122,7 @@ function App() {
                     className="gnr-display"
                     title={
                       gnrResult.available
-                        ? `GNR détaillé : ${gnrResult.detailed.toFixed(3)} · Player Type ${gnrResult.playerType}`
+                        ? `GNR détaillé : ${gnrResult.detailed.toFixed(3)} · non plafonné : ${(gnrResult.uncappedDetailed ?? gnrResult.detailed).toFixed(3)} · Player Type ${gnrResult.playerType}`
                         : 'Sélectionne une taille pour calculer le GNR.'
                     }
                   >
@@ -4921,7 +5139,12 @@ function App() {
                     </strong>
 
                     <small>
-                      APK 2K27
+                      {
+                        gnrResult.available &&
+                        gnrResult.displayed >= 99
+                          ? 'Budget atteint · APK 2K27'
+                          : 'APK 2K27'
+                      }
                     </small>
                   </div>
                 </div>
@@ -4930,7 +5153,8 @@ function App() {
               <p>
                 Les attributs liés montent automatiquement.
                 Le second nombre correspond au cap maximum autorisé.
-                Caps et dépendances : données exactes NBA 2K27 extraites de NBA 2K HQ.
+                À GNR 99, les hausses sont bloquées selon le budget interne 2K27.
+                Caps, dépendances et budget GNR : données exactes NBA 2K27 extraites de NBA 2K HQ.
               </p>
             </div>
 
@@ -4965,6 +5189,10 @@ function App() {
                       }
                       blockedWarnings={
                         blockedWarnings
+                      }
+                      overallBudgetLocked={
+                        gnrResult.available &&
+                        gnrResult.displayed >= 99
                       }
                       onChangeAttribute={
                         changeAttribute
@@ -5004,6 +5232,10 @@ function App() {
                       }
                       blockedWarnings={
                         blockedWarnings
+                      }
+                      overallBudgetLocked={
+                        gnrResult.available &&
+                        gnrResult.displayed >= 99
                       }
                       onChangeAttribute={
                         changeAttribute

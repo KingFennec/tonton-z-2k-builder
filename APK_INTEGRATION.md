@@ -76,11 +76,11 @@ Commande locale :
 npm run verify:apk
 ```
 
-## Ce qui n'a pas encore été remplacé par l'APK
+## État actuel de l'intégration APK
 
-Les takeovers utilisent encore les données actuelles du projet. Les caps, dépendances, GNR et badges sont désormais alimentés par des données APK vérifiées.
+Les caps, dépendances, GNR, budget des points d'attribut, badges, Takeovers, progression Takeover, Cap Breakers, mécanique Legend et noms d'archétypes sont désormais alimentés par des données ou fonctions APK vérifiées.
 
-Les anciens fichiers de recherche manuelle sont conservés pour comparaison et historique, mais ne pilotent plus les caps, dépendances, GNR ou règles de badges.
+Les anciens fichiers de recherche manuelle sont conservés pour comparaison et historique, mais ne pilotent plus ces systèmes.
 
 ## Badges — APK V5
 
@@ -129,3 +129,9 @@ Le nom d'archétype affiché par le Builder provient désormais de l'asset `play
 - 1 020 fixtures indépendantes conformes.
 
 Le nom personnalisé de sauvegarde reste séparé de l'archétype 2K27.
+
+## V10.2 — Budget des points d'attribut / limite GNR 99
+
+Le contrôle natif de `CareerBuilder_AttributeManager` a été reproduit. Avant une hausse, 2K vérifie le GNR entier actuel, simule le nouvel état avec les dépendances, puis refuse l'achat lorsque le GNR détaillé non plafonné dépasse `99.000f`.
+
+La V10.2 teste les sliders point par point et s'arrête au dernier point légal. Voir `OVERALL_BUDGET_APK_V10_2.md` et `npm run verify:overall-budget`.
