@@ -1,0 +1,424 @@
+{
+  "schema_version": 1,
+  "game": "NBA 2K27",
+  "source": "NBA 2K HQ CloudContent/animation_glossary.json + IL2CPP native logic",
+  "cache_version": "a038d16f-3332-401c-8708-5a63d4180f79_1.1.3",
+  "glossary_version": "1.1.3",
+  "total_animations": 2914,
+  "tabs": [
+    {
+      "id": "SCORING_MOVES",
+      "name_en": "Scoring Moves",
+      "name_fr": "Scoring",
+      "groups": [
+        {
+          "index": 0,
+          "anim_type": "SHOT_JUMPER",
+          "name_fr": "Tir en suspension",
+          "count": 785
+        },
+        {
+          "index": 1,
+          "anim_type": "FREE_THROW",
+          "name_fr": "Lancer franc",
+          "count": 229
+        },
+        {
+          "index": 2,
+          "anim_type": "GO_TO_SHOT",
+          "name_fr": "Tir signature",
+          "count": 81
+        },
+        {
+          "index": 3,
+          "anim_type": "SHOT_DRIBBLE_PULLUP",
+          "name_fr": "Dribble plus tir en suspension",
+          "count": 155
+        },
+        {
+          "index": 4,
+          "anim_type": "SHOT_SPIN",
+          "name_fr": "Tir après un dribble renversé",
+          "count": 34
+        },
+        {
+          "index": 5,
+          "anim_type": "SHOT_SIDE_HOP",
+          "name_fr": "Hop Jumper",
+          "count": 83
+        },
+        {
+          "index": 6,
+          "anim_type": "LAYUP",
+          "name_fr": "Style de double-pas",
+          "count": 81
+        },
+        {
+          "index": 7,
+          "anim_type": "POST_FADE",
+          "name_fr": "Fadeaway au poste",
+          "count": 63
+        },
+        {
+          "index": 8,
+          "anim_type": "POST_HOOK",
+          "name_fr": "Bras roulé au poste",
+          "count": 28
+        },
+        {
+          "index": 9,
+          "anim_type": "POST_1STEP_PULLUP",
+          "name_fr": "Hop Shot au poste",
+          "count": 18
+        },
+        {
+          "index": 10,
+          "anim_type": "POST_GO_TO_SHOT",
+          "name_fr": "Tir signature au poste",
+          "count": 28
+        },
+        {
+          "index": 11,
+          "anim_type": "MOTION_STYLE",
+          "name_fr": "Style de mouvement",
+          "count": 354
+        }
+      ]
+    },
+    {
+      "id": "DUNKS",
+      "name_en": "Dunks",
+      "name_fr": "Dunks",
+      "groups": [
+        {
+          "index": 0,
+          "anim_type": "DUNKS",
+          "name_fr": "Dunks à 2 pieds en mouvement - Dunks NBA",
+          "count": 35
+        },
+        {
+          "index": 1,
+          "anim_type": "BT_DUNKS",
+          "name_fr": "Dunks à 2 pieds en mouvement - Dunks ville",
+          "count": 6
+        },
+        {
+          "index": 2,
+          "anim_type": "CONTACT_DUNKS",
+          "name_fr": "Dunks à 2 pieds en mouvement - Dunks en contact",
+          "count": 3
+        },
+        {
+          "index": 3,
+          "anim_type": "DUNKS",
+          "name_fr": "Dunks à un pied en mouvement - Dunks NBA",
+          "count": 25
+        },
+        {
+          "index": 4,
+          "anim_type": "BT_DUNKS",
+          "name_fr": "Dunks à un pied en mouvement - Dunks ville",
+          "count": 5
+        },
+        {
+          "index": 5,
+          "anim_type": "CONTACT_DUNKS",
+          "name_fr": "Dunks à un pied en mouvement - Dunks en contact",
+          "count": 3
+        },
+        {
+          "index": 6,
+          "anim_type": "DUNKS",
+          "name_fr": "Dunks sans élan - Dunks NBA",
+          "count": 6
+        },
+        {
+          "index": 7,
+          "anim_type": "CONTACT_DUNKS",
+          "name_fr": "Dunks sans élan - Dunks en contact",
+          "count": 2
+        },
+        {
+          "index": 8,
+          "anim_type": "DUNKS",
+          "name_fr": "Dunks signature - Joueurs",
+          "count": 64
+        },
+        {
+          "index": 9,
+          "anim_type": "ALLEYOOP",
+          "name_fr": "Alley-oops - Alley-oops classiques",
+          "count": 8
+        },
+        {
+          "index": 10,
+          "anim_type": "BT_ALLEYOOP",
+          "name_fr": "Alley-oops - Alley-oops ville",
+          "count": 6
+        },
+        {
+          "index": 11,
+          "anim_type": "ALLEYOOP",
+          "name_fr": "Alley-oops - Alley-oops après contact",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "PLAYMAKING_MOVES",
+      "name_en": "Playmaking Moves",
+      "name_fr": "Playmaking",
+      "groups": [
+        {
+          "index": 0,
+          "anim_type": "PASS_STYLE",
+          "name_fr": "Style de passes",
+          "count": 60
+        },
+        {
+          "index": 1,
+          "anim_type": "DRIBBLE_STYLE",
+          "name_fr": "Style de dribbles",
+          "count": 39
+        },
+        {
+          "index": 2,
+          "anim_type": "ISO_CROSSOVER",
+          "name_fr": "Crossover",
+          "count": 47
+        },
+        {
+          "index": 3,
+          "anim_type": "ISO_TWEENLEGS",
+          "name_fr": "Crossover entre les jambes",
+          "count": 45
+        },
+        {
+          "index": 4,
+          "anim_type": "ISO_SIZEUP_SIG",
+          "name_fr": "Sizeup personnalisé",
+          "count": 30
+        },
+        {
+          "index": 5,
+          "anim_type": "ISO_BREAKDOWN",
+          "name_fr": "Combo Breakdown",
+          "count": 64
+        },
+        {
+          "index": 6,
+          "anim_type": "ISO_BREAKDOWNMOVE",
+          "name_fr": "Combo Breakdown en mouvement",
+          "count": 34
+        },
+        {
+          "index": 7,
+          "anim_type": "ISO_ESCAPECROSS",
+          "name_fr": "Crossover (dégagement)",
+          "count": 26
+        },
+        {
+          "index": 8,
+          "anim_type": "ISO_ESCAPEHES",
+          "name_fr": "Hésitation (dégagement)",
+          "count": 26
+        },
+        {
+          "index": 9,
+          "anim_type": "ISO_ESCAPETWEEN",
+          "name_fr": "Dégagement entre les jambes",
+          "count": 26
+        },
+        {
+          "index": 10,
+          "anim_type": "ISO_ESCAPEBEHINDBACK",
+          "name_fr": "Dégagement dans le dos",
+          "count": 36
+        },
+        {
+          "index": 11,
+          "anim_type": "ISO_MISDIRECTHES",
+          "name_fr": "Feinte d'hésitation",
+          "count": 11
+        },
+        {
+          "index": 12,
+          "anim_type": "ISO_MISDIRECTCROSS",
+          "name_fr": "Feinte de crossover",
+          "count": 8
+        },
+        {
+          "index": 13,
+          "anim_type": "ISO_MISDIRECTBEHINDBACK",
+          "name_fr": "Feinte derrière le dos",
+          "count": 5
+        },
+        {
+          "index": 14,
+          "anim_type": "ISO_CROSSCOMBO",
+          "name_fr": "Mouvement combo",
+          "count": 27
+        },
+        {
+          "index": 15,
+          "anim_type": "ISO_COMBOHESICROSS",
+          "name_fr": "Combo Crossover hésitation",
+          "count": 24
+        },
+        {
+          "index": 16,
+          "anim_type": "ISO_COMBODOUBLECROSS",
+          "name_fr": "Combo double crossover",
+          "count": 26
+        },
+        {
+          "index": 17,
+          "anim_type": "ISO_BEHINDBACK",
+          "name_fr": "Dans le dos",
+          "count": 36
+        },
+        {
+          "index": 18,
+          "anim_type": "ISO_BEHINDBACKLAUNCH",
+          "name_fr": "Passe dans le dos",
+          "count": 15
+        },
+        {
+          "index": 19,
+          "anim_type": "ISO_SPIN",
+          "name_fr": "Dribble renversé",
+          "count": 26
+        },
+        {
+          "index": 20,
+          "anim_type": "ISO_CROSSSPIN",
+          "name_fr": "Cross Spin",
+          "count": 22
+        },
+        {
+          "index": 21,
+          "anim_type": "ISO_INANDOUT",
+          "name_fr": "In-and-out",
+          "count": 8
+        },
+        {
+          "index": 22,
+          "anim_type": "ISO_HESITATION",
+          "name_fr": "Hésitation",
+          "count": 26
+        },
+        {
+          "index": 23,
+          "anim_type": "ISO_HESITATIONLATERAL",
+          "name_fr": "Hésitation latérale",
+          "count": 26
+        },
+        {
+          "index": 24,
+          "anim_type": "ISO_STEPBACK",
+          "name_fr": "Step Back",
+          "count": 15
+        },
+        {
+          "index": 25,
+          "anim_type": "ISO_STEPBACKCROSS",
+          "name_fr": "Crossover Step Back",
+          "count": 23
+        },
+        {
+          "index": 26,
+          "anim_type": "ISO_STEPBACKLATERAL",
+          "name_fr": "Step Back latéral",
+          "count": 16
+        },
+        {
+          "index": 27,
+          "anim_type": "TRIPLETHREAT_STYLE",
+          "name_fr": "Style Triple menace",
+          "count": 13
+        },
+        {
+          "index": 28,
+          "anim_type": "TRIPLETHREAT_BREAKDOWN",
+          "name_fr": "Breakdown Triple menace",
+          "count": 20
+        },
+        {
+          "index": 29,
+          "anim_type": "TRIPLETHREAT_JAB",
+          "name_fr": "Jab Steps Triple menace",
+          "count": 13
+        },
+        {
+          "index": 30,
+          "anim_type": "TRIPLETHREAT_STEPOVER",
+          "name_fr": "Step Overs Triple menace",
+          "count": 7
+        },
+        {
+          "index": 31,
+          "anim_type": "BT_PASS",
+          "name_fr": "Passe spectaculaires Playground",
+          "count": 8
+        }
+      ]
+    }
+  ],
+  "allowed_size_counts": {
+    "ANY": 413,
+    "BIGS_AND_SWINGS": 283,
+    "BIGS_ONLY": 349,
+    "SMALLS_ONLY": 608,
+    "SWINGS_AND_SMALLS": 611,
+    "SWINGS_ONLY": 650
+  },
+  "requirement_operator_counts": {
+    "AND": 1776,
+    "OR": 1138
+  },
+  "requirements_per_animation_counts": {
+    "0": 417,
+    "1": 855,
+    "2": 1611,
+    "3": 31
+  },
+  "attribute_types": [
+    "Agility",
+    "BallControl",
+    "DrivingDunk",
+    "DrivingLayup",
+    "PassAccuracy",
+    "PostControl",
+    "ShotMidrange",
+    "ShotThree",
+    "Speed",
+    "SpeedWithBall",
+    "StandingDunk",
+    "Vertical"
+  ],
+  "prized_counts": {
+    "false": 2914,
+    "true": 0
+  },
+  "season_specific_counts": {
+    "false": 2884,
+    "true": 30
+  },
+  "season_specific_window": {
+    "start": 1,
+    "end": 9,
+    "count": 30
+  },
+  "native_height_rules": {
+    "small_swing_threshold": 195,
+    "swing_big_threshold": 208,
+    "builder_inches": {
+      "SMALLS_ONLY": "<=76",
+      "SWINGS_ONLY": "77..81",
+      "BIGS_ONLY": ">=82",
+      "SWINGS_AND_SMALLS": "<=81",
+      "BIGS_AND_SWINGS": ">=77",
+      "ANY": "any"
+    }
+  }
+}

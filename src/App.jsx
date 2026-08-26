@@ -14,6 +14,16 @@ import {
 } from './data/nba2k27/badgeTranslations'
 
 import {
+  getAttributeCategoryHeader,
+  getAttributeCategoryIcon,
+  getBadgeIcon,
+  getBrandingAsset,
+  getBuilderUiAsset,
+  getTakeoverDisciplineIcon,
+  getTakeoverIcon,
+} from './data/nba2k27/assetResolver'
+
+import {
   getBadgeTierOptions,
   isBadgeTierUnlocked,
   mergeSelectedRequirements,
@@ -73,6 +83,7 @@ import {
 } from './engine/buildPersistence'
 
 import BuildLibrary from './components/BuildLibrary'
+import FindMyBuild from './components/FindMyBuild'
 
 import './App.css'
 
@@ -143,18 +154,10 @@ const takeoverDisciplines = [
     id: 'rebounding',
     label: 'Rebonds',
   },
-  {
-    id: 'universal',
-    label: 'Universel',
-  },
 ]
 
 const playableTakeoverDisciplines =
-  takeoverDisciplines.filter(
-    (discipline) =>
-      discipline.id !==
-      'universal'
-  )
+  takeoverDisciplines
 
 const leftCategoryIds = [
   'finishing',
@@ -229,6 +232,14 @@ const validTakeoverDisciplines =
     playableTakeoverDisciplines.map(
       (discipline) =>
         discipline.id
+    )
+  )
+
+const validAttributeIds =
+  new Set(
+    attributesData.attributes.map(
+      (attribute) =>
+        attribute.id
     )
   )
 
@@ -325,6 +336,43 @@ function sanitizeImportedBuild(
       takeoverId
   }
 
+  const selectedCapBreakers =
+    {}
+
+  for (
+    const [
+      attributeId,
+      rawCount,
+    ]
+    of Object.entries(
+      importedBuild
+        .selectedCapBreakers ??
+        {}
+    )
+  ) {
+    const count =
+      Math.trunc(
+        Number(rawCount)
+      )
+
+    if (
+      !validAttributeIds.has(
+        attributeId
+      ) ||
+      !Number.isFinite(
+        count
+      ) ||
+      count <= 0
+    ) {
+      continue
+    }
+
+    selectedCapBreakers[
+      attributeId
+    ] =
+      Math.min(5, count)
+  }
+
   const importedPosition =
     importedBuild
       .morphology
@@ -369,6 +417,8 @@ function sanitizeImportedBuild(
     selectedBadges,
 
     selectedTakeovers,
+
+    selectedCapBreakers,
   }
 }
 
@@ -915,9 +965,25 @@ function AttributeCategory({
       className={`attribute-panel category-${category.id}`}
     >
       <div className="attribute-panel-header">
-        <h3>
-          {category.label}
-        </h3>
+        <img
+          className="attribute-panel-header-art"
+          src={getAttributeCategoryHeader(category.id)}
+          alt=""
+          aria-hidden="true"
+        />
+
+        <div className="attribute-panel-title">
+          <img
+            className="attribute-category-icon"
+            src={getAttributeCategoryIcon(category.id)}
+            alt=""
+            aria-hidden="true"
+          />
+
+          <h3>
+            {category.label}
+          </h3>
+        </div>
 
         <div className="category-indicator">
           <span />
@@ -1072,7 +1138,7 @@ function AttributeCategory({
                 >
                   <button
                     type="button"
-                    className="attribute-step-button"
+                    className="attribute-step-button attribute-step-button-minus"
                     disabled={
                       !canTryDecrease
                     }
@@ -1214,7 +1280,7 @@ function AttributeCategory({
 
                   <button
                     type="button"
-                    className="attribute-step-button"
+                    className="attribute-step-button attribute-step-button-plus"
                     disabled={
                       !canIncrease
                     }
@@ -1247,90 +1313,358 @@ function AttributeCategory({
 }
 
 
-function CapBreakerPanel({ projections }) {
-  const rows = attributesData.attributes.map((attribute) => ({
-    attribute,
-    projection: projections?.[attribute.id] ?? null,
-  }))
+function CapBreakerPanel({
+  projections,
+  baseAttributes,
+  projectedAttributes,
+  selectedCapBreakers,
+  onSelectCount,
+  onReset,
+  isTierAvailable,
+}) {
+  const [isCollapsed, setIsCollapsed] = useState(false)
+
+  const rows = attributesData.attributes.map((attribute) => {
+    const projection = projections?.[attribute.id] ?? null
+    const requestedCount = Math.max(
+      0,
+      Math.min(
+        5,
+        Math.trunc(
+          Number(
+            selectedCapBreakers?.[attribute.id] ?? 0
+          )
+        )
+      )
+    )
+
+    const availableCount = projection?.available
+      ? projection.boosts.filter((boost) => boost > 0).length
+      : 0
+
+    const appliedCount = Math.min(requestedCount, availableCount)
+
+    return {
+      attribute,
+      projection,
+      requestedCount,
+      appliedCount,
+      before: Number(
+        baseAttributes?.[attribute.id] ??
+        projection?.baseValue ??
+        attribute.min
+      ),
+      after: Number(
+        projectedAttributes?.[attribute.id] ??
+        baseAttributes?.[attribute.id] ??
+        projection?.baseValue ??
+        attribute.min
+      ),
+    }
+  })
 
   const available = rows.some(({ projection }) => projection?.available)
 
+  const changedRows = rows.filter(
+    ({ appliedCount, after, before }) =>
+      appliedCount > 0 && after > before
+  )
+
+  const totalApplied = rows.reduce(
+    (sum, row) => sum + row.appliedCount,
+    0
+  )
+
+  const totalAttributeBoost = changedRows.reduce(
+    (sum, row) => sum + (row.after - row.before),
+    0
+  )
+
+  const badgeGains = useMemo(() => {
+    if (!baseAttributes || !projectedAttributes) {
+      return []
+    }
+
+    const getHighest = (badge, attributes) => {
+      let highest = null
+
+      for (const tier of tiers) {
+        if (!isTierAvailable(badge, tier.id)) {
+          continue
+        }
+
+        if (isBadgeTierUnlocked(badge, tier.id, attributes)) {
+          highest = tier.id
+        }
+      }
+
+      return highest
+    }
+
+    return badgesData.badges
+      .map((badge) => {
+        const beforeTier = getHighest(badge, baseAttributes)
+        const afterTier = getHighest(badge, projectedAttributes)
+
+        const beforeIndex = beforeTier
+          ? tiers.findIndex((tier) => tier.id === beforeTier)
+          : -1
+        const afterIndex = afterTier
+          ? tiers.findIndex((tier) => tier.id === afterTier)
+          : -1
+
+        if (afterIndex <= beforeIndex) {
+          return null
+        }
+
+        return {
+          badge,
+          beforeTier,
+          afterTier,
+          translation: getBadgeTranslation(badge),
+        }
+      })
+      .filter(Boolean)
+  }, [
+    baseAttributes,
+    projectedAttributes,
+    isTierAvailable,
+  ])
+
   return (
-    <section className="cap-breaker-panel">
+    <section className={`cap-breaker-panel ${isCollapsed ? 'is-collapsed' : ''}`}>
       <div className="cap-breaker-heading">
         <div>
           <div className="cap-breaker-title-line">
             <h2>Cap Breakers</h2>
             <span className="cap-breaker-apk-label">APK vérifié</span>
           </div>
-          <p>
-            Projection native des cinq Cap Breakers possibles par attribut. En 2K27,
-            un Cap Breaker peut donner plus de +1 selon le coût GNR de l’attribut.
-          </p>
+
+          {!isCollapsed && (
+            <p>
+              Clique sur CB1 à CB5 pour simuler les Cap Breakers. Les boosts sont
+              successifs : sélectionner CB3 applique CB1 + CB2 + CB3.
+            </p>
+          )}
+        </div>
+
+        <div className="panel-heading-actions">
+          {!isCollapsed && (
+            <button
+              type="button"
+              className="cap-breaker-reset-button"
+              disabled={totalApplied === 0}
+              onClick={onReset}
+            >
+              Réinitialiser
+            </button>
+          )}
+
+          <button
+            type="button"
+            className="panel-collapse-button"
+            onClick={() => setIsCollapsed((value) => !value)}
+            aria-expanded={!isCollapsed}
+            aria-label={isCollapsed ? 'Déployer les Cap Breakers' : 'Réduire les Cap Breakers'}
+            title={isCollapsed ? 'Déployer' : 'Réduire'}
+          >
+            <span aria-hidden="true">{isCollapsed ? '▾' : '▴'}</span>
+          </button>
         </div>
       </div>
 
-      {!available ? (
-        <div className="cap-breaker-empty">
-          Sélectionne une morphologie complète pour afficher les projections.
-        </div>
-      ) : (
-        <div className="cap-breaker-table-wrap">
-          <table className="cap-breaker-table">
-            <thead>
-              <tr>
-                <th>Attribut</th>
-                <th>Base</th>
-                <th>CB 1</th>
-                <th>CB 2</th>
-                <th>CB 3</th>
-                <th>CB 4</th>
-                <th>CB 5</th>
-                <th>Total</th>
-                <th>Cap</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(({ attribute, projection }) => {
-                const boosts = projection?.boosts ?? [0, 0, 0, 0, 0]
-                const cumulative = projection?.cumulativeValues ?? []
-                return (
-                  <tr key={attribute.id}>
-                    <td>
-                      <strong>{attribute.name_fr ?? attribute.name_en}</strong>
-                      <small>{attribute.name_en}</small>
-                    </td>
-                    <td>{projection?.available ? projection.baseValue : '—'}</td>
-                    {boosts.map((boost, index) => (
-                      <td key={`${attribute.id}-cb-${index}`}>
-                        {projection?.available && boost > 0 ? (
-                          <span
-                            className="cap-breaker-boost"
-                            title={`Valeur après ce Cap Breaker : ${cumulative[index]}`}
-                          >
-                            +{boost}
-                            <small>→ {cumulative[index]}</small>
-                          </span>
-                        ) : (
-                          <span className="cap-breaker-zero">—</span>
-                        )}
-                      </td>
+      {!isCollapsed && (
+        !available ? (
+          <div className="cap-breaker-empty">
+            Sélectionne une morphologie complète pour afficher les projections.
+          </div>
+        ) : (
+          <>
+            <div className="cap-breaker-simulation-summary">
+              <div className="cap-breaker-summary-column">
+                <span className="cap-breaker-summary-label">Avant</span>
+
+                {changedRows.length > 0 ? (
+                  <div className="cap-breaker-summary-list">
+                    {changedRows.map(({ attribute, before }) => (
+                      <div key={`before-${attribute.id}`}>
+                        <span>{attribute.name_fr ?? attribute.name_en}</span>
+                        <strong>{before}</strong>
+                      </div>
                     ))}
-                    <td>
-                      {projection?.available ? (
-                        <strong className="cap-breaker-total">
-                          +{projection.totalBoost}
-                          <small>→ {projection.finalValue}</small>
+                  </div>
+                ) : (
+                  <p>Aucun Cap Breaker appliqué.</p>
+                )}
+              </div>
+
+              <div className="cap-breaker-summary-column cap-breaker-summary-after">
+                <span className="cap-breaker-summary-label">Après</span>
+
+                {changedRows.length > 0 ? (
+                  <div className="cap-breaker-summary-list">
+                    {changedRows.map(({ attribute, before, after }) => (
+                      <div key={`after-${attribute.id}`}>
+                        <span>{attribute.name_fr ?? attribute.name_en}</span>
+                        <strong>
+                          {after}
+                          <small> +{after - before}</small>
                         </strong>
-                      ) : '—'}
-                    </td>
-                    <td>{projection?.available ? projection.maxCap : '—'}</td>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>Choisis un Cap Breaker dans le tableau.</p>
+                )}
+
+                {totalApplied > 0 && (
+                  <small className="cap-breaker-summary-total">
+                    {totalApplied} Cap Breaker{totalApplied > 1 ? 's' : ''} • +{totalAttributeBoost} point{totalAttributeBoost > 1 ? 's' : ''} d’attribut
+                  </small>
+                )}
+              </div>
+
+              <div className="cap-breaker-summary-column cap-breaker-summary-badges">
+                <span className="cap-breaker-summary-label">Badges gagnés</span>
+
+                {badgeGains.length > 0 ? (
+                  <div className="cap-breaker-badge-gains">
+                    {badgeGains.map(({ badge, beforeTier, afterTier, translation }) => (
+                      <div className="cap-breaker-badge-gain" key={badge.id}>
+                        <img
+                          src={getBadgeIcon(badge.id)}
+                          alt=""
+                          aria-hidden="true"
+                        />
+
+                        <span>
+                          <strong>{translation.name_fr}</strong>
+                          <small>
+                            {getTierLabel(beforeTier)} →{' '}
+                            <b className={getTierClass(afterTier)}>
+                              {getTierLabel(afterTier)}
+                            </b>
+                          </small>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>
+                    {totalApplied > 0
+                      ? 'Aucun nouveau niveau de badge avec cette simulation.'
+                      : 'Les nouveaux niveaux de badge apparaîtront ici.'}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="cap-breaker-table-wrap">
+              <table className="cap-breaker-table">
+                <thead>
+                  <tr>
+                    <th>Attribut</th>
+                    <th>Avant</th>
+                    <th>CB 1</th>
+                    <th>CB 2</th>
+                    <th>CB 3</th>
+                    <th>CB 4</th>
+                    <th>CB 5</th>
+                    <th>Après</th>
+                    <th>Cap</th>
                   </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {rows.map(({ attribute, projection, appliedCount, before, after }) => {
+                    const boosts = projection?.boosts ?? [0, 0, 0, 0, 0]
+                    const cumulative = projection?.cumulativeValues ?? []
+                    const maxSelectable = boosts.filter((boost) => boost > 0).length
+
+                    return (
+                      <tr
+                        key={attribute.id}
+                        className={`cap-breaker-row cap-breaker-row-${attribute.category}`}
+                        style={{
+                          '--cap-breaker-row-art': `url("${getBuilderUiAsset(
+                            'cap-breakers',
+                            attribute.category
+                          )}")`,
+                        }}
+                      >
+                        <td className="cap-breaker-attribute-cell">
+                          <strong>{attribute.name_fr ?? attribute.name_en}</strong>
+                          <small>{attribute.name_en}</small>
+                        </td>
+
+                        <td className="cap-breaker-box-cell">
+                          {projection?.available ? before : '—'}
+                        </td>
+
+                        {boosts.map((boost, index) => {
+                          const stage = index + 1
+                          const selectable = projection?.available && boost > 0
+                          const selected = selectable && stage <= appliedCount
+
+                          return (
+                            <td
+                              key={`${attribute.id}-cb-${index}`}
+                              className={`cap-breaker-box-cell ${selected ? 'cap-breaker-box-selected' : ''}`}
+                            >
+                              {selectable ? (
+                                <button
+                                  type="button"
+                                  className="cap-breaker-stage-button"
+                                  aria-pressed={selected}
+                                  title={`Après CB${stage} : ${cumulative[index]}`}
+                                  onClick={() => {
+                                    const nextCount = appliedCount === stage
+                                      ? stage - 1
+                                      : stage
+
+                                    onSelectCount(attribute.id, nextCount)
+                                  }}
+                                >
+                                  <span>+{boost}</span>
+                                  <small>→ {cumulative[index]}</small>
+                                </button>
+                              ) : (
+                                <span className="cap-breaker-zero">—</span>
+                              )}
+                            </td>
+                          )
+                        })}
+
+                        <td className={`cap-breaker-total-cell ${appliedCount > 0 ? 'cap-breaker-total-selected' : ''}`}>
+                          {projection?.available ? (
+                            <button
+                              type="button"
+                              className="cap-breaker-total-button"
+                              disabled={maxSelectable === 0}
+                              onClick={() =>
+                                onSelectCount(
+                                  attribute.id,
+                                  appliedCount === maxSelectable ? 0 : maxSelectable
+                                )
+                              }
+                              title={maxSelectable > 0 ? 'Appliquer / retirer tous les Cap Breakers disponibles sur cet attribut' : ''}
+                            >
+                              <strong>{after}</strong>
+                              {after > before && <small>+{after - before}</small>}
+                            </button>
+                          ) : '—'}
+                        </td>
+
+                        <td className="cap-breaker-cap-cell">
+                          {projection?.available ? projection.maxCap : '—'}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )
       )}
     </section>
   )
@@ -1388,7 +1722,17 @@ function BadgeDetails({
   return (
     <div className="badge-details">
       <div className="badge-details-heading">
-        <div>
+        <div className="badge-details-title">
+          {getBadgeIcon(badge) && (
+            <img
+              className="badge-details-icon"
+              src={getBadgeIcon(badge)}
+              alt=""
+              aria-hidden="true"
+            />
+          )}
+
+          <div>
           <h4>
             {
               translation.name_fr
@@ -1400,6 +1744,7 @@ function BadgeDetails({
               badge.name_en
             }
           </span>
+          </div>
         </div>
 
         {selection ? (
@@ -1707,6 +2052,13 @@ function BadgeSidebar({
                 }
               >
                 <div className="badge-category-header">
+                  <img
+                    className="badge-category-icon"
+                    src={getAttributeCategoryIcon(category.id)}
+                    alt=""
+                    aria-hidden="true"
+                  />
+
                   <h3>
                     {
                       category.label
@@ -1789,10 +2141,21 @@ function BadgeSidebar({
                             )
                           }}
                         >
-                          <span className="badge-chip-label">
-                            {
-                              translation.name_fr
-                            }
+                          <span className="badge-chip-content">
+                            {getBadgeIcon(badge) && (
+                              <img
+                                className="badge-chip-icon"
+                                src={getBadgeIcon(badge)}
+                                alt=""
+                                aria-hidden="true"
+                              />
+                            )}
+
+                            <span className="badge-chip-label">
+                              {
+                                translation.name_fr
+                              }
+                            </span>
                           </span>
 
                           <span
@@ -1888,8 +2251,10 @@ function TakeoverPanel({
   selectedTakeovers,
   onSelectTakeover,
 }) {
+  const [isCollapsed, setIsCollapsed] = useState(false)
+
   return (
-    <section className="takeovers-section">
+    <section className={`takeovers-section ${isCollapsed ? 'is-collapsed' : ''}`}>
       <div className="takeovers-heading">
         <div>
           <div className="takeovers-title-line">
@@ -1902,375 +2267,269 @@ function TakeoverPanel({
             </span>
           </div>
 
-          <p>
-            Une capacité peut être équipée par discipline parmi celles débloquées.
-          </p>
+          {!isCollapsed && (
+            <p>
+              Une capacité peut être équipée par discipline parmi celles débloquées.
+              Le Takeover Universel est proposé directement dans chaque catégorie.
+            </p>
+          )}
         </div>
 
-        <div className="takeover-legend">
-          <span>
-            <i className="takeover-legend-unlocked" />
-            Débloqué
-          </span>
+        {!isCollapsed && (
+          <div className="takeover-legend">
+            <span>
+              <i className="takeover-legend-unlocked" />
+              Débloqué
+            </span>
 
-          <span>
-            <i className="takeover-legend-selected" />
-            Équipé
-          </span>
+            <span>
+              <i className="takeover-legend-selected" />
+              Équipé
+            </span>
 
-          <span>
-            <i className="takeover-legend-near" />
-            Proche
-          </span>
+            <span>
+              <i className="takeover-legend-near" />
+              Proche
+            </span>
 
-          <span>
-            <i className="takeover-legend-impossible" />
-            Impossible
-          </span>
-        </div>
+            <span>
+              <i className="takeover-legend-impossible" />
+              Impossible
+            </span>
+          </div>
+        )}
+
+        <button
+          type="button"
+          className="panel-collapse-button"
+          onClick={() => setIsCollapsed((value) => !value)}
+          aria-expanded={!isCollapsed}
+          aria-label={isCollapsed ? 'Déployer les Takeovers' : 'Réduire les Takeovers'}
+          title={isCollapsed ? 'Déployer' : 'Réduire'}
+        >
+          <span aria-hidden="true">{isCollapsed ? '▾' : '▴'}</span>
+        </button>
       </div>
 
-      <div className="takeover-disciplines">
-        {takeoverDisciplines.map(
-          (discipline) => {
+      {!isCollapsed && (
+        <div className="takeover-disciplines">
+          {takeoverDisciplines.map((discipline) => {
             const disciplineTakeovers =
-              takeoverProgress.filter(
-                ({
-                  takeover,
-                }) =>
-                  takeover.discipline ===
-                  discipline.id
+              takeoverProgress.filter(({ takeover }) =>
+                takeover.discipline === discipline.id ||
+                takeover.discipline === 'universal'
               )
 
             const selectedId =
-              selectedTakeovers[
-                discipline.id
-              ] ??
-              null
+              selectedTakeovers[discipline.id] ?? null
 
-            const selectedTakeover =
-              selectedId
-                ? takeoversData.takeovers.find(
-                    (takeover) =>
-                      takeover.id ===
-                      selectedId
-                  )
-                : null
-
-            const hydrationAssigned =
-              playableTakeoverDisciplines.filter(
-                (
-                  targetDiscipline
-                ) =>
-                  selectedTakeovers[
-                    targetDiscipline.id
-                  ] ===
-                  'hydration-hero'
-              )
+            const selectedTakeover = selectedId
+              ? takeoversData.takeovers.find(
+                  (takeover) => takeover.id === selectedId
+                )
+              : null
 
             return (
               <article
-                key={
-                  discipline.id
-                }
+                key={discipline.id}
                 className={`takeover-discipline takeover-${discipline.id}`}
               >
                 <div className="takeover-discipline-header">
-                  <h3>
-                    {
-                      discipline.label
-                    }
-                  </h3>
-
-                  {discipline.id !==
-                    'universal' &&
-                    selectedTakeover && (
-                      <span className="takeover-equipped-label">
-                        ✓{' '}
-                        {
-                          selectedTakeover.name_en
-                        }
-                      </span>
+                  <div className="takeover-discipline-title">
+                    {getTakeoverDisciplineIcon(discipline.id) && (
+                      <img
+                        className="takeover-discipline-icon"
+                        src={getTakeoverDisciplineIcon(discipline.id)}
+                        alt=""
+                        aria-hidden="true"
+                      />
                     )}
+
+                    <h3>{discipline.label}</h3>
+                  </div>
+
+                  {selectedTakeover && (
+                    <span className="takeover-equipped-label">
+                      ✓ {selectedTakeover.name_en}
+                    </span>
+                  )}
                 </div>
 
                 <div className="takeover-chip-list">
-                  {disciplineTakeovers.map(
-                    ({
-                      takeover,
-                      state,
-                    }) => {
-                      const unlocked =
-                        state.status ===
-                        'unlocked'
+                  {disciplineTakeovers.map(({ takeover, state }) => {
+                    const unlocked = state.status === 'unlocked'
 
-                      const nearUnlock =
-                        state.status ===
-                          'locked' &&
-                        Number.isFinite(
-                          state.totalDelta
-                        ) &&
-                        state.totalDelta <=
-                          5
+                    const nearUnlock =
+                      state.status === 'locked' &&
+                      Number.isFinite(state.totalDelta) &&
+                      state.totalDelta <= 5
 
-                      const visualState =
-                        unlocked
-                          ? 'unlocked'
-                          : state.status ===
-                              'impossible'
-                            ? 'impossible'
-                            : nearUnlock
-                              ? 'near'
-                              : 'locked'
+                    const visualState = unlocked
+                      ? 'unlocked'
+                      : state.status === 'impossible'
+                        ? 'impossible'
+                        : nearUnlock
+                          ? 'near'
+                          : 'locked'
 
-                      const isSelected =
-                        discipline.id ===
-                        'universal'
-                          ? hydrationAssigned.length >
-                            0
-                          : selectedId ===
-                            takeover.id
+                    const isSelected = selectedId === takeover.id
+                    const isUniversal = takeover.discipline === 'universal'
 
-                      return (
-                        <div
-                          key={
-                            takeover.id
-                          }
-                          className="takeover-chip-wrapper"
-                        >
-                          <button
-                            type="button"
-                            aria-disabled={
-                              !unlocked ||
-                              discipline.id ===
-                                'universal'
+                    return (
+                      <div
+                        key={`${discipline.id}-${takeover.id}`}
+                        className="takeover-chip-wrapper"
+                      >
+                        <button
+                          type="button"
+                          aria-disabled={!unlocked}
+                          className={[
+                            'takeover-chip',
+                            `takeover-state-${visualState}`,
+                            unlocked ? 'takeover-chip-clickable' : '',
+                            isSelected ? 'takeover-chip-selected' : '',
+                            takeover.default ? 'takeover-default' : '',
+                            isUniversal ? 'takeover-universal-choice' : '',
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
+                          onClick={() => {
+                            if (!unlocked) {
+                              return
                             }
-                            className={[
-                              'takeover-chip',
 
-                              `takeover-state-${visualState}`,
-
-                              unlocked &&
-                              discipline.id !==
-                                'universal'
-                                ? 'takeover-chip-clickable'
-                                : '',
-
-                              isSelected
-                                ? 'takeover-chip-selected'
-                                : '',
-
-                              takeover.default
-                                ? 'takeover-default'
-                                : '',
-                            ]
-                              .filter(Boolean)
-                              .join(' ')}
-                            onClick={() => {
-                              if (
-                                !unlocked ||
-                                discipline.id ===
-                                  'universal'
-                              ) {
-                                return
-                              }
-
-                              onSelectTakeover(
-                                discipline.id,
-                                takeover.id
-                              )
-                            }}
-                          >
-                            <div className="takeover-chip-main">
-                              <strong>
-                                {
-                                  takeover.name_en
-                                }
-                              </strong>
-
-                              {takeover.default && (
-                                <span className="takeover-default-label">
-                                  Par défaut
-                                </span>
-                              )}
-
-                              {takeover.native_rank_label && (
-                                <span className="takeover-rank-label">
-                                  Rang {takeover.native_rank_label}
-                                </span>
-                              )}
-
-                              {isSelected &&
-                                discipline.id !==
-                                  'universal' && (
-                                  <span className="takeover-selected-check">
-                                    ✓
-                                  </span>
+                            onSelectTakeover(
+                              discipline.id,
+                              takeover.id
+                            )
+                          }}
+                        >
+                          <div className="takeover-chip-main">
+                            {getTakeoverIcon(
+                              takeover,
+                              unlocked || isSelected ? 'color' : 'grey'
+                            ) && (
+                              <img
+                                className="takeover-chip-icon"
+                                src={getTakeoverIcon(
+                                  takeover,
+                                  unlocked || isSelected ? 'color' : 'grey'
                                 )}
+                                alt=""
+                                aria-hidden="true"
+                              />
+                            )}
 
-                              {visualState ===
-                                'near' && (
-                                <span className="takeover-delta">
-                                  +
-                                  {
-                                    state.totalDelta
-                                  }
-                                </span>
-                              )}
-                            </div>
+                            <strong>{takeover.name_en}</strong>
 
-                            <div
-                              className="takeover-tooltip"
-                              role="tooltip"
-                            >
-                              <strong>
-                                {
-                                  takeover.name_en
-                                }
-                              </strong>
-
-                              <span className="takeover-tooltip-status">
-                                {isSelected &&
-                                discipline.id !==
-                                  'universal'
-                                  ? 'Équipé'
-                                  : state.status ===
-                                      'unlocked'
-                                    ? 'Débloqué'
-                                    : state.status ===
-                                        'impossible'
-                                      ? 'Impossible avec cette morphologie'
-                                      : nearUnlock
-                                        ? `Proche du déblocage : ${state.totalDelta} point${state.totalDelta > 1 ? 's' : ''} à ajouter`
-                                        : 'Non débloqué'}
+                            {isUniversal && (
+                              <span className="takeover-universal-label">
+                                Universel
                               </span>
+                            )}
 
-                              <p>
-                                {
-                                  takeover.description_fr
-                                }
-                              </p>
+                            {takeover.default && (
+                              <span className="takeover-default-label">
+                                Par défaut
+                              </span>
+                            )}
 
-                              {state.missing.length >
-                                0 && (
-                                <div className="takeover-missing">
-                                  <span>
-                                    Attributs requis
-                                  </span>
+                            {takeover.native_rank_label && (
+                              <span className="takeover-rank-label">
+                                Rang {takeover.native_rank_label}
+                              </span>
+                            )}
 
-                                  {state.missing.map(
-                                    (
-                                      missing,
-                                      index
-                                    ) => (
-                                      <div
-                                        key={`${missing.attribute}-${index}`}
-                                        className={
-                                          missing.impossible
-                                            ? 'takeover-missing-impossible'
-                                            : ''
-                                        }
-                                      >
-                                        <strong>
-                                          {getAttributeName(
-                                            missing.attribute
-                                          )}
-                                        </strong>
+                            {isSelected && (
+                              <span className="takeover-selected-check">
+                                ✓
+                              </span>
+                            )}
 
-                                        <span>
-                                          {
-                                            missing.current
-                                          }
+                            {visualState === 'near' && (
+                              <span className="takeover-delta">
+                                +{state.totalDelta}
+                              </span>
+                            )}
+                          </div>
 
-                                          {' → '}
+                          <div className="takeover-tooltip" role="tooltip">
+                            <strong>{takeover.name_en}</strong>
 
-                                          {
-                                            missing.required
-                                          }
+                            <span className="takeover-tooltip-status">
+                              {isSelected
+                                ? 'Équipé'
+                                : state.status === 'unlocked'
+                                  ? 'Débloqué'
+                                  : state.status === 'impossible'
+                                    ? 'Impossible avec cette morphologie'
+                                    : nearUnlock
+                                      ? `Proche du déblocage : ${state.totalDelta} point${state.totalDelta > 1 ? 's' : ''} à ajouter`
+                                      : 'Non débloqué'}
+                            </span>
 
-                                          {!missing.impossible &&
-                                            missing.delta >
-                                              0 && (
-                                              <>
-                                                {' '}
-                                                (+
-                                                {
-                                                  missing.delta
-                                                }
-                                                )
-                                              </>
-                                            )}
-                                        </span>
-                                      </div>
-                                    )
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </button>
+                            <p>{takeover.description_fr}</p>
 
-                          {discipline.id ===
-                            'universal' &&
-                            unlocked && (
-                              <div className="universal-assignment">
-                                <span>
-                                  Équiper dans :
-                                </span>
+                            {isUniversal && (
+                              <small className="takeover-tooltip-universal">
+                                Peut être équipé dans n’importe quelle discipline de Takeover.
+                              </small>
+                            )}
 
-                                <div>
-                                  {playableTakeoverDisciplines.map(
-                                    (
-                                      targetDiscipline
-                                    ) => {
-                                      const assigned =
-                                        selectedTakeovers[
-                                          targetDiscipline.id
-                                        ] ===
-                                        takeover.id
+                            {state.missing.length > 0 && (
+                              <div className="takeover-missing">
+                                <span>Attributs requis</span>
 
-                                      return (
-                                        <button
-                                          type="button"
-                                          key={
-                                            targetDiscipline.id
-                                          }
-                                          className={
-                                            assigned
-                                              ? 'universal-assignment-active'
-                                              : ''
-                                          }
-                                          onClick={() =>
-                                            onSelectTakeover(
-                                              targetDiscipline.id,
-                                              takeover.id
-                                            )
-                                          }
-                                        >
-                                          {
-                                            targetDiscipline.label
-                                          }
-                                        </button>
-                                      )
+                                {state.missing.map((missing, index) => (
+                                  <div
+                                    key={`${missing.attribute}-${index}`}
+                                    className={
+                                      missing.impossible
+                                        ? 'takeover-missing-impossible'
+                                        : ''
                                     }
-                                  )}
-                                </div>
+                                  >
+                                    <strong>
+                                      {getAttributeName(missing.attribute)}
+                                    </strong>
+
+                                    <span>
+                                      {missing.current}
+                                      {' → '}
+                                      {missing.required}
+
+                                      {!missing.impossible &&
+                                        missing.delta > 0 && (
+                                          <>
+                                            {' '}(+{missing.delta})
+                                          </>
+                                        )}
+                                    </span>
+                                  </div>
+                                ))}
                               </div>
                             )}
-                        </div>
-                      )
-                    }
-                  )}
+                          </div>
+                        </button>
+                      </div>
+                    )
+                  })}
                 </div>
               </article>
             )
-          }
-        )}
-      </div>
+          })}
+        </div>
+      )}
     </section>
   )
 }
 
 function App() {
+  const [
+    activePage,
+    setActivePage,
+  ] = useState('builder')
+
   const [
     initialBuildState,
   ] = useState(
@@ -2297,6 +2556,16 @@ function App() {
     () =>
       importedBuild
         ?.selectedTakeovers ??
+      {}
+  )
+
+  const [
+    selectedCapBreakers,
+    setSelectedCapBreakers,
+  ] = useState(
+    () =>
+      importedBuild
+        ?.selectedCapBreakers ??
       {}
   )
 
@@ -2799,6 +3068,118 @@ function App() {
       ]
     )
 
+  const capBreakerAttributes =
+    useMemo(() => {
+      const projected = {
+        ...effectiveAttributes,
+      }
+
+      for (
+        const attribute
+        of attributesData.attributes
+      ) {
+        const projection =
+          capBreakerProjections[
+            attribute.id
+          ]
+
+        if (
+          !projection?.available
+        ) {
+          continue
+        }
+
+        const requestedCount =
+          Math.max(
+            0,
+            Math.min(
+              5,
+              Math.trunc(
+                Number(
+                  selectedCapBreakers[
+                    attribute.id
+                  ] ??
+                  0
+                )
+              )
+            )
+          )
+
+        const availableCount =
+          projection.boosts
+            .filter(
+              (boost) =>
+                boost > 0
+            )
+            .length
+
+        const appliedCount =
+          Math.min(
+            requestedCount,
+            availableCount
+          )
+
+        if (appliedCount > 0) {
+          projected[
+            attribute.id
+          ] =
+            projection
+              .cumulativeValues[
+                appliedCount - 1
+              ]
+        }
+      }
+
+      return projected
+    }, [
+      effectiveAttributes,
+      capBreakerProjections,
+      selectedCapBreakers,
+    ])
+
+  function selectCapBreakerCount(
+    attributeId,
+    count
+  ) {
+    const safeCount =
+      Math.max(
+        0,
+        Math.min(
+          5,
+          Math.trunc(
+            Number(count) || 0
+          )
+        )
+      )
+
+    setSelectedCapBreakers(
+      (current) => {
+        const updated = {
+          ...current,
+        }
+
+        if (safeCount <= 0) {
+          delete updated[
+            attributeId
+          ]
+        } else {
+          updated[
+            attributeId
+          ] =
+            safeCount
+        }
+
+        return updated
+      }
+    )
+  }
+
+  function resetCapBreakers() {
+    setSelectedCapBreakers(
+      {}
+    )
+  }
+
   /*
    * =====================================================
    * MINIMUM EXTERNE PAR ATTRIBUT
@@ -3291,6 +3672,10 @@ function App() {
       {}
     )
 
+    setSelectedCapBreakers(
+      {}
+    )
+
     setManualAttributes(
       initialManualAttributes
     )
@@ -3348,6 +3733,10 @@ function App() {
       build.selectedTakeovers
     )
 
+    setSelectedCapBreakers(
+      build.selectedCapBreakers
+    )
+
     setManualAttributes(
       build.manualAttributes
     )
@@ -3385,6 +3774,7 @@ function App() {
           manualAttributes,
           selectedBadges,
           selectedTakeovers,
+          selectedCapBreakers,
 
           attributes:
             attributesData.attributes,
@@ -3400,6 +3790,7 @@ function App() {
       manualAttributes,
       selectedBadges,
       selectedTakeovers,
+      selectedCapBreakers,
     ])
 
   useEffect(() => {
@@ -4714,19 +5105,49 @@ function App() {
   return (
     <main className="app">
       <header className="header">
-        <span>
-          NBA 2K27
-        </span>
+        <div className="header-brand-lockup">
+          <img
+            className="header-nba2k27-logo"
+            src={getBrandingAsset('NBA2k27_logo_white.png')}
+            alt="NBA 2K27"
+          />
+
+          <img
+            className="header-playerbuilder-mark"
+            src={getBrandingAsset('icon_playerbuilder_filled.png')}
+            alt=""
+            aria-hidden="true"
+          />
+        </div>
 
         <h1>
           Tonton-Z 2K Builder
         </h1>
 
         <p>
-          Construis ton joueur depuis sa morphologie,
-          ses badges ou ses attributs.
+          {activePage === 'builder'
+            ? 'Construis ton joueur depuis sa morphologie, ses badges ou ses attributs.'
+            : 'Réponds à quelques questions et compare les builds qui correspondent le mieux à ta façon de jouer.'}
         </p>
 
+        <nav className="app-mode-switch" aria-label="Navigation principale">
+          <button
+            type="button"
+            className={activePage === 'builder' ? 'is-active' : ''}
+            onClick={() => setActivePage('builder')}
+          >
+            Builder
+          </button>
+          <button
+            type="button"
+            className={activePage === 'finder' ? 'is-active' : ''}
+            onClick={() => setActivePage('finder')}
+          >
+            Trouver mon build
+          </button>
+        </nav>
+
+        {activePage === 'builder' && (
         <div className="build-share-toolbar">
           <div className="build-save-state">
             <span className="build-save-dot" />
@@ -4784,8 +5205,16 @@ function App() {
             </span>
           )}
         </div>
+        )}
       </header>
 
+      {activePage === 'finder' ? (
+        <FindMyBuild
+          onLoadBuild={loadNamedBuild}
+          onSwitchToBuilder={() => setActivePage('builder')}
+        />
+      ) : (
+        <>
       <section className="morphology-section">
         <div className="morphology-section-heading">
           <h2>
@@ -5027,6 +5456,7 @@ function App() {
             </span>
           )}
         </div>
+
       </section>
 
       <section className="builder-section">
@@ -5250,6 +5680,24 @@ function App() {
               projections={
                 capBreakerProjections
               }
+              baseAttributes={
+                effectiveAttributes
+              }
+              projectedAttributes={
+                capBreakerAttributes
+              }
+              selectedCapBreakers={
+                selectedCapBreakers
+              }
+              onSelectCount={
+                selectCapBreakerCount
+              }
+              onReset={
+                resetCapBreakers
+              }
+              isTierAvailable={
+                isTierAvailable
+              }
             />
 
             <TakeoverPanel
@@ -5266,6 +5714,8 @@ function App() {
           </div>
         </div>
       </section>
+        </>
+      )}
     </main>
   )
 }

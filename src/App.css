@@ -2259,6 +2259,8 @@ input[type='range']::-moz-range-thumb {
 }
 
 .takeovers-heading {
+  position: relative;
+
   display: flex;
 
   align-items:
@@ -2270,6 +2272,11 @@ input[type='range']::-moz-range-thumb {
   gap: 16px;
 
   margin-bottom: 10px;
+  padding-right: 46px;
+}
+
+.takeovers-section.is-collapsed .takeovers-heading {
+  margin-bottom: 0;
 }
 
 .takeovers-title-line {
@@ -3398,6 +3405,45 @@ input[type='range']::-moz-range-thumb {
   font-weight: 700;
 }
 
+
+/* Panneaux repliables : Cap Breakers / Takeovers */
+.panel-collapse-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #c9d1dc;
+  font: inherit;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.panel-collapse-button:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.105);
+  color: #ffffff;
+}
+
+.panel-collapse-button:focus-visible {
+  outline: 2px solid rgba(227, 152, 126, 0.8);
+  outline-offset: 2px;
+}
+
+.panel-collapse-button span {
+  display: block;
+  font-size: 15px;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
 /* =========================================================
    CAP BREAKERS — données natives NBA 2K27
    ========================================================= */
@@ -3410,8 +3456,18 @@ input[type='range']::-moz-range-thumb {
 }
 
 .cap-breaker-heading {
-  padding: 18px 20px 14px;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 58px 14px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cap-breaker-panel.is-collapsed .cap-breaker-heading {
+  padding-bottom: 18px;
+  border-bottom: 0;
 }
 
 .cap-breaker-title-line {
@@ -3634,5 +3690,1328 @@ input[type='range']::-moz-range-thumb {
 
   .build-archetype-display {
     min-width: 0;
+  }
+}
+
+/* ==========================================
+ * APK VISUAL ASSETS V12 — BADGES / TAKEOVERS
+ * ========================================== */
+
+.badge-chip-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.badge-chip-icon {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+
+.badge-chip-impossible .badge-chip-icon {
+  opacity: 0.6;
+}
+
+.badge-details-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.badge-details-icon {
+  flex: 0 0 auto;
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+.takeover-discipline-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.takeover-discipline-icon {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  object-fit: contain;
+}
+
+.takeover-chip-icon {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.takeover-state-impossible .takeover-chip-icon,
+.takeover-state-locked .takeover-chip-icon {
+  opacity: 0.72;
+}
+
+@media (max-width: 760px) {
+  .badge-chip-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .badge-details-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .takeover-chip-icon {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+
+/* Correctif orientation des assets Unity affichés dans le builder. */
+.header-nba2k27-logo,
+.header-playerbuilder-mark,
+.badge-category-icon,
+.attribute-panel-header-art,
+.attribute-category-icon,
+.badge-chip-icon,
+.badge-details-icon,
+.takeover-discipline-icon,
+.takeover-chip-icon {
+  transform: rotate(180deg);
+}
+
+/* ================================================
+ * APK VISUAL ASSETS V13 — ATTRIBUTS / MORPHOLOGIES
+ * ================================================ */
+
+.header-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 34px;
+}
+
+.header-nba2k27-logo {
+  display: block;
+  width: min(188px, 48vw);
+  height: auto;
+  object-fit: contain;
+}
+
+.header-playerbuilder-mark {
+  width: 27px;
+  height: 30px;
+  object-fit: contain;
+  opacity: 0.72;
+}
+
+.badge-category-header {
+  gap: 7px;
+}
+
+.badge-category-icon {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 5px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.32));
+}
+
+.attribute-panel-header {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.attribute-panel-header-art {
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 0 auto;
+  width: min(72%, 331px);
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+  opacity: 0.065;
+  pointer-events: none;
+}
+
+.attribute-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.attribute-category-icon {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 6px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.34));
+}
+
+@media (max-width: 760px) {
+  .header-nba2k27-logo {
+    width: 156px;
+  }
+
+  .header-playerbuilder-mark {
+    width: 23px;
+    height: 26px;
+  }
+
+  .attribute-category-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .badge-category-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+}
+
+
+/* ================================================
+ * APK BUILDER UI V15 — CAP BREAKERS / SLIDERS
+ * ================================================ */
+
+.attribute-step-button {
+  position: relative;
+  overflow: hidden;
+  border-color: transparent;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 28px 28px;
+  color: transparent;
+  font-size: 0;
+}
+
+.attribute-step-button-minus {
+  background-image:
+    url('/assets/nba2k27/builder-ui/controls/attribute-minus.png');
+}
+
+.attribute-step-button-plus {
+  background-image:
+    url('/assets/nba2k27/builder-ui/controls/attribute-plus.png');
+}
+
+.attribute-step-button:hover:not(:disabled) {
+  border-color: transparent;
+  background-color: rgba(255, 255, 255, 0.055);
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+}
+
+.attribute-step-button:disabled {
+  border-color: transparent;
+  background-color: transparent;
+  opacity: 0.24;
+  filter: none;
+}
+
+.slider-visual::after {
+  background-image:
+    url('/assets/nba2k27/builder-ui/controls/t_locked_slider_pattern.png');
+  background-repeat: repeat;
+  background-size: 24px 24px;
+  opacity: 0.42;
+}
+
+.attribute-slider input[type='range']::-webkit-slider-thumb {
+  width: 13px;
+  height: 25px;
+  margin-top: -8px;
+  border: 0;
+  background:
+    transparent
+    url('/assets/nba2k27/builder-ui/controls/t_myPlayer_slider_handle.png')
+    center / contain no-repeat;
+  filter:
+    drop-shadow(0 0 3px rgba(255, 255, 255, 0.35));
+}
+
+.attribute-slider input[type='range']::-moz-range-thumb {
+  width: 13px;
+  height: 25px;
+  border: 0;
+  border-radius: 0;
+  background:
+    transparent
+    url('/assets/nba2k27/builder-ui/controls/t_myPlayer_slider_handle.png')
+    center / contain no-repeat;
+  filter:
+    drop-shadow(0 0 3px rgba(255, 255, 255, 0.35));
+}
+
+.cap-breaker-table-wrap {
+  position: relative;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.025),
+      transparent 68%
+    );
+}
+
+.cap-breaker-table-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  background:
+    url('/assets/nba2k27/builder-ui/cap-breakers/t_cap_breaker_bg_row_dots.png')
+    center top / min(1000px, 100%) 90px repeat-y;
+}
+
+.cap-breaker-table {
+  position: relative;
+  z-index: 1;
+}
+
+.cap-breaker-row {
+  background-image: var(--cap-breaker-row-art);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+}
+
+.cap-breaker-row td {
+  height: 54px;
+  border-bottom-color: rgba(255, 255, 255, 0.045);
+}
+
+.cap-breaker-attribute-cell {
+  padding-left: 18px !important;
+}
+
+.cap-breaker-box-cell,
+.cap-breaker-total-cell {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size:
+    calc(100% - 8px)
+    calc(100% - 8px);
+}
+
+.cap-breaker-box-cell {
+  background-image:
+    url('/assets/nba2k27/builder-ui/cap-breakers/t_cap_breaker_attribute_box_border.png'),
+    url('/assets/nba2k27/builder-ui/cap-breakers/t_cap_breaker_attribute_box_bg.png');
+}
+
+.cap-breaker-total-cell {
+  background-image:
+    url('/assets/nba2k27/builder-ui/cap-breakers/t_cap_breaker_total_box_border.png');
+}
+
+.cap-breaker-cap-cell {
+  font-weight: 800;
+  color: #e8edf4;
+}
+
+.cap-breaker-boost,
+.cap-breaker-total {
+  text-shadow:
+    0 0 7px rgba(255, 255, 255, 0.18);
+}
+
+.cap-breaker-title-line::after,
+.takeovers-title-line::after {
+  content: '';
+  display: inline-block;
+  width: 69px;
+  height: 12px;
+  margin-left: 4px;
+  opacity: 0.42;
+  background:
+    url('/assets/nba2k27/builder-ui/decoration/t_deco_wave.png')
+    center / contain no-repeat;
+}
+
+@media (max-width: 820px) {
+  .cap-breaker-row td {
+    height: 48px;
+  }
+
+  .cap-breaker-title-line::after,
+  .takeovers-title-line::after {
+    display: none;
+  }
+}
+
+/* ================================================
+ * V16 — CAP BREAKER SIMULATION / UNIVERSAL TAKEOVER
+ * ================================================ */
+
+/* Le fichier branding est déjà dans le bon sens : ne pas lui appliquer
+ * la correction 180° utilisée par d'autres textures Unity. */
+.header-nba2k27-logo {
+  transform: none;
+}
+
+.panel-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.cap-breaker-reset-button {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #e8edf4;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.cap-breaker-reset-button:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cap-breaker-reset-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.cap-breaker-simulation-summary {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 0.85fr) minmax(0, 1.3fr);
+  gap: 10px;
+  margin: 0 0 12px;
+}
+
+.cap-breaker-summary-column {
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 9px;
+  background: rgba(5, 8, 13, 0.72);
+}
+
+.cap-breaker-summary-column p {
+  margin: 7px 0 0;
+  color: #8f9aa9;
+  font-size: 0.77rem;
+  line-height: 1.35;
+}
+
+.cap-breaker-summary-label {
+  display: block;
+  margin-bottom: 7px;
+  color: #aeb8c6;
+  font-size: 0.69rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cap-breaker-summary-after {
+  border-color: rgba(84, 214, 142, 0.18);
+}
+
+.cap-breaker-summary-badges {
+  border-color: rgba(235, 189, 70, 0.18);
+}
+
+.cap-breaker-summary-list {
+  display: grid;
+  gap: 5px;
+}
+
+.cap-breaker-summary-list > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  color: #c9d1dc;
+  font-size: 0.76rem;
+}
+
+.cap-breaker-summary-list strong {
+  color: #fff;
+  font-size: 0.88rem;
+}
+
+.cap-breaker-summary-list strong small {
+  margin-left: 4px;
+  color: #65d994;
+  font-size: 0.68rem;
+}
+
+.cap-breaker-summary-total {
+  display: block;
+  margin-top: 8px;
+  color: #65d994;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.cap-breaker-badge-gains {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  max-height: 155px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.cap-breaker-badge-gain {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 5px 6px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.cap-breaker-badge-gain img {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  object-fit: contain;
+  transform: rotate(180deg);
+}
+
+.cap-breaker-badge-gain > span {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.cap-breaker-badge-gain strong {
+  overflow: hidden;
+  color: #f0f3f7;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cap-breaker-badge-gain small {
+  color: #9ca7b5;
+  font-size: 0.64rem;
+}
+
+.cap-breaker-stage-button,
+.cap-breaker-total-button {
+  width: 100%;
+  min-height: 38px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.cap-breaker-stage-button {
+  display: grid;
+  place-content: center;
+  gap: 1px;
+}
+
+.cap-breaker-stage-button > span {
+  color: #f5f7fa;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.cap-breaker-stage-button small {
+  color: #8f9aa8;
+  font-size: 0.62rem;
+}
+
+.cap-breaker-box-cell:has(.cap-breaker-stage-button) {
+  padding: 2px 4px;
+}
+
+.cap-breaker-box-cell.cap-breaker-box-selected {
+  box-shadow:
+    inset 0 0 0 1px rgba(81, 221, 143, 0.55),
+    inset 0 0 16px rgba(54, 203, 121, 0.13);
+}
+
+.cap-breaker-box-selected .cap-breaker-stage-button > span,
+.cap-breaker-box-selected .cap-breaker-stage-button small {
+  color: #69e49b;
+}
+
+.cap-breaker-box-selected .cap-breaker-stage-button::after {
+  content: '✓';
+  position: absolute;
+  margin: -16px 0 0 30px;
+  color: #69e49b;
+  font-size: 0.62rem;
+  font-weight: 900;
+}
+
+.cap-breaker-stage-button {
+  position: relative;
+}
+
+.cap-breaker-total-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.cap-breaker-total-button strong {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.cap-breaker-total-button small {
+  color: #65d994;
+  font-size: 0.66rem;
+  font-weight: 900;
+}
+
+.cap-breaker-total-button:disabled {
+  cursor: default;
+}
+
+.cap-breaker-total-selected {
+  box-shadow: inset 0 0 18px rgba(54, 203, 121, 0.1);
+}
+
+.takeover-universal-choice {
+  border-style: dashed;
+}
+
+.takeover-universal-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 17px;
+  padding: 0 6px;
+  border: 1px solid rgba(157, 119, 255, 0.38);
+  border-radius: 999px;
+  background: rgba(132, 91, 231, 0.12);
+  color: #cbb9ff;
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.takeover-tooltip-universal {
+  display: block;
+  margin-top: 7px;
+  color: #bfaeff;
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .cap-breaker-simulation-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cap-breaker-summary-badges {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 620px) {
+  .panel-heading-actions {
+    gap: 5px;
+  }
+
+  .cap-breaker-reset-button {
+    padding: 0 8px;
+    font-size: 0.68rem;
+  }
+
+  .cap-breaker-simulation-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .cap-breaker-summary-badges {
+    grid-column: auto;
+  }
+
+  .cap-breaker-badge-gains {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+ * TROUVER MON BUILD
+ * ========================================================= */
+
+.app-mode-switch {
+  display: inline-flex;
+  gap: 4px;
+  margin-top: 18px;
+  padding: 4px;
+  border: 1px solid var(--panel-border);
+  border-radius: 9px;
+  background: #10141a;
+}
+
+.app-mode-switch button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #8994a2;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.app-mode-switch button:hover,
+.app-mode-switch button.is-active {
+  background: #242b35;
+  color: #fff;
+}
+
+.app-mode-switch button.is-active {
+  box-shadow: inset 0 0 0 1px #404b59;
+}
+
+.finder-page {
+  margin-top: 28px;
+}
+
+.finder-intro,
+.finder-results-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+}
+
+.finder-intro h2,
+.finder-results-heading h2 {
+  margin: 5px 0 8px;
+  font-size: clamp(27px, 3.5vw, 40px);
+}
+
+.finder-intro p {
+  max-width: 760px;
+  margin: 0;
+  color: #9aa5b2;
+  line-height: 1.55;
+}
+
+.finder-eyebrow,
+.finder-result-kicker,
+.finder-panel-heading span,
+.finder-meta-heading span {
+  color: #7e8b9a;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.finder-version-card,
+.finder-profile-summary {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 3px;
+  max-width: 320px;
+  padding: 12px 14px;
+  border: 1px solid #2a3440;
+  border-radius: 8px;
+  background: #121820;
+}
+
+.finder-version-card strong,
+.finder-profile-summary strong {
+  font-size: 11px;
+}
+
+.finder-version-card span,
+.finder-profile-summary span {
+  color: #8793a1;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.finder-questionnaire {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.finder-question {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 14px;
+  margin: 0;
+  padding: 18px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: var(--panel-bg);
+}
+
+.finder-question-number {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #3b4654;
+  border-radius: 7px;
+  background: #1c232c;
+  color: #d9e0e8;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.finder-question h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.finder-question p {
+  margin: 4px 0 12px;
+  color: #7f8a97;
+  font-size: 11px;
+}
+
+.finder-choice-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.finder-choice {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid #303a47;
+  border-radius: 7px;
+  background: #10151b;
+  color: #a7b0bb;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.finder-choice:hover:not(:disabled) {
+  border-color: #536172;
+  color: #fff;
+}
+
+.finder-choice.is-selected {
+  border-color: #d3dbe5;
+  background: #e8edf3;
+  color: #11151a;
+}
+
+.finder-choice:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.finder-submit-bar {
+  position: sticky;
+  bottom: 10px;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid #394452;
+  border-radius: 10px;
+  background: rgba(15, 20, 26, 0.96);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(12px);
+}
+
+.finder-submit-bar > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.finder-submit-bar strong {
+  font-size: 12px;
+}
+
+.finder-submit-bar span {
+  color: #7f8a97;
+  font-size: 10px;
+}
+
+.finder-submit-bar button,
+.finder-primary-action {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid #e2e7ed;
+  border-radius: 7px;
+  background: #f1f4f7;
+  color: #101317;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.finder-submit-bar button:disabled {
+  border-color: #2d3641;
+  background: #20262e;
+  color: #687482;
+  cursor: not-allowed;
+}
+
+.finder-results {
+  display: grid;
+  gap: 18px;
+  margin-top: 38px;
+}
+
+.finder-results-heading {
+  margin-bottom: 2px;
+}
+
+.finder-result-card {
+  overflow: hidden;
+  border: 1px solid #2e3743;
+  border-radius: 12px;
+  background: #11161d;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.finder-result-card.result-ideal {
+  border-color: #536479;
+  box-shadow: 0 0 0 1px rgba(123, 146, 172, 0.12), 0 16px 36px rgba(0, 0, 0, 0.22);
+}
+
+.finder-result-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 20px 14px;
+}
+
+.finder-result-heading h3 {
+  margin: 5px 0 3px;
+  font-size: 21px;
+}
+
+.finder-result-heading p {
+  margin: 0;
+  color: #8d98a5;
+  font-size: 11px;
+}
+
+.finder-affinity {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.finder-affinity strong {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.finder-affinity span {
+  margin-top: 4px;
+  color: #7f8b98;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.finder-morphology-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-top: 1px solid #242d37;
+  border-bottom: 1px solid #242d37;
+  background: #0e1319;
+}
+
+.finder-morphology-strip > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 14px;
+  border-right: 1px solid #242d37;
+}
+
+.finder-morphology-strip > div:last-child {
+  border-right: 0;
+}
+
+.finder-morphology-strip span {
+  color: #6f7b89;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.finder-morphology-strip strong {
+  font-size: 13px;
+}
+
+.finder-result-actions {
+  display: flex;
+  gap: 8px;
+  padding: 14px 20px 4px;
+}
+
+.finder-secondary-action {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid #343f4c;
+  border-radius: 7px;
+  background: #181f27;
+  color: #c0c8d2;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.finder-attribute-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 14px 20px;
+}
+
+.finder-attribute-group {
+  overflow: hidden;
+  border: 1px solid #28313c;
+  border-radius: 8px;
+  background: #0f141a;
+}
+
+.finder-attribute-group h5 {
+  margin: 0;
+  padding: 8px 10px;
+  border-bottom: 1px solid #28313c;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.finder-attribute-group.category-finishing h5 { color: var(--finishing); }
+.finder-attribute-group.category-shooting h5 { color: var(--shooting); }
+.finder-attribute-group.category-playmaking h5 { color: var(--playmaking); }
+.finder-attribute-group.category-defense h5 { color: var(--defense); }
+.finder-attribute-group.category-rebounding h5 { color: var(--rebounding); }
+.finder-attribute-group.category-physicals h5 { color: var(--physicals); }
+
+.finder-attribute-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 30px;
+  padding: 0 10px;
+  border-top: 1px solid #1e2630;
+}
+
+.finder-attribute-row:first-of-type {
+  border-top: 0;
+}
+
+.finder-attribute-row span {
+  color: #909aa6;
+  font-size: 9px;
+}
+
+.finder-attribute-row strong {
+  font-size: 12px;
+}
+
+.finder-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 10px 20px 16px;
+}
+
+.finder-detail-panel {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid #28313c;
+  border-radius: 8px;
+  background: #0f141a;
+}
+
+.finder-panel-heading,
+.finder-meta-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.finder-panel-heading h4 {
+  margin: 3px 0 0;
+  font-size: 14px;
+}
+
+.finder-cb-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.finder-cb-tabs button {
+  min-width: 36px;
+  height: 28px;
+  border: 1px solid #303a46;
+  border-radius: 5px;
+  background: #171d24;
+  color: #84909d;
+  font-size: 9px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.finder-cb-tabs button.is-selected {
+  border-color: #cfd7df;
+  background: #dfe5eb;
+  color: #15191e;
+}
+
+.finder-cb-lines,
+.finder-synergy-list {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.finder-cb-line,
+.finder-synergy-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid #242d36;
+  border-radius: 6px;
+  background: #131920;
+}
+
+.finder-cb-line > div,
+.finder-synergy-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.finder-cb-line strong,
+.finder-synergy-item strong {
+  font-size: 10px;
+}
+
+.finder-cb-line span,
+.finder-synergy-item span {
+  color: #7f8a96;
+  font-size: 9px;
+}
+
+.finder-cb-line b,
+.finder-synergy-item b {
+  font-size: 12px;
+}
+
+.finder-tier.tier-bronze { color: var(--bronze); }
+.finder-tier.tier-silver { color: var(--silver); }
+.finder-tier.tier-gold { color: var(--gold); }
+.finder-tier.tier-hof { color: var(--hof); }
+
+.finder-muted {
+  display: block;
+  margin: 10px 0 0;
+  color: #6f7a87;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.finder-meta-compare {
+  margin: 0 20px 20px;
+  padding: 14px;
+  border: 1px solid #303946;
+  border-radius: 8px;
+  background: #0e1319;
+}
+
+.finder-meta-heading > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.finder-meta-heading strong {
+  font-size: 11px;
+}
+
+.finder-meta-heading em {
+  color: #8aa4bf;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.finder-morphology-compare {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 10px;
+  color: #84909c;
+  font-size: 9px;
+}
+
+.finder-difference-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.finder-difference {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  border: 1px solid #28313c;
+  border-radius: 6px;
+  background: #121820;
+}
+
+.finder-difference span {
+  color: #7f8b97;
+  font-size: 8px;
+}
+
+.finder-difference strong {
+  font-size: 14px;
+}
+
+.finder-difference small {
+  font-size: 8px;
+}
+
+.finder-difference.is-positive small { color: #6fbd84; }
+.finder-difference.is-negative small { color: #c77b80; }
+
+@media (max-width: 900px) {
+  .finder-intro,
+  .finder-results-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .finder-version-card,
+  .finder-profile-summary {
+    max-width: none;
+  }
+
+  .finder-attribute-groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .finder-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .finder-difference-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .app-mode-switch {
+    display: flex;
+  }
+
+  .app-mode-switch button {
+    flex: 1;
+  }
+
+  .finder-question {
+    grid-template-columns: 1fr;
+  }
+
+  .finder-question-number {
+    width: 28px;
+    height: 28px;
+  }
+
+  .finder-submit-bar {
+    position: static;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .finder-submit-bar button {
+    width: 100%;
+  }
+
+  .finder-result-heading {
+    flex-direction: column;
+  }
+
+  .finder-affinity {
+    align-items: flex-start;
+  }
+
+  .finder-morphology-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .finder-morphology-strip > div {
+    border-bottom: 1px solid #242d37;
+  }
+
+  .finder-result-actions {
+    flex-direction: column;
+  }
+
+  .finder-attribute-groups,
+  .finder-difference-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .finder-attribute-groups,
+  .finder-detail-grid,
+  .finder-result-heading,
+  .finder-result-actions {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .finder-meta-compare {
+    margin-left: 14px;
+    margin-right: 14px;
   }
 }

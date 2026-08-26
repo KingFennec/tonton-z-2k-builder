@@ -8,14 +8,19 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "verify:apk": "node scripts/verifyApkIntegration.mjs && node scripts/verifyBadgeApkData.mjs && node scripts/verifyTakeoverApkData.mjs && node scripts/verifyTakeoverProgressionApkData.mjs && node scripts/verifyCapBreakerApkData.mjs && node scripts/verifyOverallBudgetApkData.mjs && npm run verify:legend && npm run verify:buildnames",
+    "verify:apk": "node scripts/verifyApkIntegration.mjs && node scripts/verifyBadgeApkData.mjs && node scripts/verifyTakeoverApkData.mjs && node scripts/verifyTakeoverProgressionApkData.mjs && node scripts/verifyCapBreakerApkData.mjs && node scripts/verifyOverallBudgetApkData.mjs && npm run verify:legend && npm run verify:buildnames && npm run verify:animations && npm run verify:assets",
     "verify:badges": "node scripts/verifyBadgeApkData.mjs",
     "verify:takeovers": "node scripts/verifyTakeoverApkData.mjs",
     "verify:progression": "node scripts/verifyTakeoverProgressionApkData.mjs",
     "verify:capbreakers": "node scripts/verifyCapBreakerApkData.mjs",
     "verify:legend": "node scripts/verifyBadgeLegendApkData.mjs",
     "verify:buildnames": "node scripts/verifyBuildDescriptions.mjs",
-    "verify:overall-budget": "node scripts/verifyOverallBudgetApkData.mjs"
+    "verify:overall-budget": "node scripts/verifyOverallBudgetApkData.mjs",
+    "import:animations": "node scripts/importAnimationGlossary.mjs",
+    "verify:animations": "node scripts/verifyAnimationApkData.mjs",
+    "verify:assets": "node scripts/verifyVisualAssets.mjs",
+    "verify:v16": "node scripts/verifyV16Interactions.mjs",
+    "verify:finder": "node scripts/verifyPlaystyleFinder.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",

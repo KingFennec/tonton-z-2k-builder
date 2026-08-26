@@ -135,3 +135,36 @@ Le nom personnalisé de sauvegarde reste séparé de l'archétype 2K27.
 Le contrôle natif de `CareerBuilder_AttributeManager` a été reproduit. Avant une hausse, 2K vérifie le GNR entier actuel, simule le nouvel état avec les dépendances, puis refuse l'achat lorsque le GNR détaillé non plafonné dépasse `99.000f`.
 
 La V10.2 teste les sliders point par point et s'arrête au dernier point légal. Voir `OVERALL_BUDGET_APK_V10_2.md` et `npm run verify:overall-budget`.
+
+## V11 — Animation Library / Glossaire CloudContent
+
+Le moteur des exigences d'animations est maintenant reproduit à partir du glossaire CloudContent NBA 2K HQ et de la fonction native `DoesHeightMeetRequirement`.
+
+- 2 914 animations uniques ;
+- 3 onglets / 56 groupes ;
+- 6 règles morphologiques (`ANY`, Small, Swing, Big et combinaisons) ;
+- seuils natifs exacts 195 / 208, mappés dans le Builder à `<= 6'4"`, `6'5"..6'9"`, `>= 6'10"` ;
+- 12 types d'attributs mappés aux IDs du Builder ;
+- opérateurs `AND` / `OR`, 0 à 3 exigences ;
+- 30 animations saisonnières, aucune animation `Is Prized` dans le glossaire 1.1.3.
+
+Moteur :
+
+```text
+src/engine/animationEngine.js
+```
+
+Métadonnées de validation :
+
+```text
+src/data/nba2k27/apk/animation_glossary_metadata.json
+```
+
+Import du dataset complet déjà extrait localement :
+
+```bash
+npm run import:animations
+npm run verify:animations
+```
+
+Voir `ANIMATION_APK_V11.md` pour les détails.

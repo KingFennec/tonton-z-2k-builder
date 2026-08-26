@@ -85,3 +85,25 @@ Validation automatisée Windows :
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\test-local-windows.ps1
 ```
+
+## V13 — Assets visuels officiels
+
+- Icônes de catégories intégrées aux badges et attributs.
+- Headers APK utilisés en filigrane.
+- 11 Body Types affichés comme références visuelles uniquement.
+- Branding NBA 2K27 / Player Builder intégré au header.
+- `npm run verify:assets` contrôle désormais l’ensemble de ces assets.
+
+## V17 — Trouver mon build
+
+Une page distincte du Builder principal permet désormais de décrire son style de jeu via un questionnaire puis de recevoir trois propositions du même poste : build idéal, variante et référence Meta REC provisoire.
+
+Chaque proposition affiche la morphologie, les 21 attributs BASE 99, un plan +5 / +10 / +15 Cap Breakers, des Synergies conseillées et une comparaison directe avec la référence Meta REC du poste. Le build choisi peut être chargé directement dans le Builder principal.
+
+Vérification dédiée :
+
+```bash
+npm run verify:finder
+```
+
+Voir `PLAYSTYLE_FINDER_V17.md`.

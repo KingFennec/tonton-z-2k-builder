@@ -302,6 +302,7 @@ export function createBuildPayload({
   manualAttributes,
   selectedBadges,
   selectedTakeovers,
+  selectedCapBreakers,
   attributes,
 }) {
   const storedAttributes =
@@ -356,6 +357,17 @@ export function createBuildPayload({
         {}
     )
 
+  const storedCapBreakers =
+    Object.entries(
+      selectedCapBreakers ??
+        {}
+    )
+      .map(([attributeId, count]) => [
+        attributeId,
+        Math.max(0, Math.min(5, Math.trunc(Number(count) || 0))),
+      ])
+      .filter(([, count]) => count > 0)
+
   return {
     v:
       BUILD_VERSION,
@@ -391,6 +403,9 @@ export function createBuildPayload({
 
     t:
       storedTakeovers,
+
+    c:
+      storedCapBreakers,
   }
 }
 
@@ -581,6 +596,55 @@ export function decodeBuildPayload(
       }
     }
 
+    const selectedCapBreakers =
+      {}
+
+    if (
+      Array.isArray(
+        payload.c
+      )
+    ) {
+      for (
+        const entry
+        of payload.c
+      ) {
+        if (
+          !Array.isArray(
+            entry
+          ) ||
+          entry.length < 2
+        ) {
+          continue
+        }
+
+        const [
+          attributeId,
+          rawCount,
+        ] = entry
+
+        const count =
+          Math.trunc(
+            Number(rawCount)
+          )
+
+        if (
+          typeof attributeId !==
+            'string' ||
+          !Number.isFinite(
+            count
+          ) ||
+          count <= 0
+        ) {
+          continue
+        }
+
+        selectedCapBreakers[
+          attributeId
+        ] =
+          Math.min(5, count)
+      }
+    }
+
     return {
       morphology: {
         position:
@@ -607,6 +671,8 @@ export function decodeBuildPayload(
       selectedBadges,
 
       selectedTakeovers,
+
+      selectedCapBreakers,
     }
   } catch {
     return null
