@@ -14,6 +14,7 @@ const scenarios = [
     teamContext: 'rec_solo',
     morphologyPreference: 'balanced',
     capBreakerStrategy: 'thresholds',
+    expectedIdeal: 'PG-1',
   },
   {
     position: 'SG',
@@ -25,6 +26,7 @@ const scenarios = [
     teamContext: 'organized_rec',
     morphologyPreference: 'balanced',
     capBreakerStrategy: 'thresholds',
+    expectedIdeal: 'SG-4',
   },
   {
     position: 'SF',
@@ -36,6 +38,7 @@ const scenarios = [
     teamContext: 'friends',
     morphologyPreference: 'big_physical',
     capBreakerStrategy: 'balanced',
+    expectedIdeal: 'SF-2',
   },
   {
     position: 'PF',
@@ -47,6 +50,7 @@ const scenarios = [
     teamContext: 'organized_rec',
     morphologyPreference: 'big_physical',
     capBreakerStrategy: 'thresholds',
+    expectedIdeal: 'PF-4',
   },
   {
     position: 'C',
@@ -58,6 +62,19 @@ const scenarios = [
     teamContext: 'organized_rec',
     morphologyPreference: 'big_physical',
     capBreakerStrategy: 'thresholds',
+    expectedIdeal: 'C-2',
+  },
+  {
+    position: 'PG',
+    offensePrimary: 'closeout',
+    offenseSecondary: 'cuts',
+    defensePrimary: 'on_ball_defense',
+    priorities: ['dunk', 'shooting', 'dribbling'],
+    sacrifices: ['rebounding'],
+    teamContext: 'rec_solo',
+    morphologyPreference: 'balanced',
+    capBreakerStrategy: 'thresholds',
+    expectedIdeal: 'PG-4',
   },
 ]
 
@@ -66,6 +83,24 @@ for (const scenario of scenarios) {
 
   if (analysis.results.length !== 3) {
     throw new Error(`${scenario.position}: 3 résultats attendus, ${analysis.results.length} reçus.`)
+  }
+
+  if (analysis.results[0]?.id !== scenario.expectedIdeal) {
+    throw new Error(
+      `${scenario.position}: build idéal attendu ${scenario.expectedIdeal}, reçu ${analysis.results[0]?.id ?? 'aucun'}.`
+    )
+  }
+
+  const metaId = analysis.metaCandidate?.id
+
+  if (
+    metaId &&
+    analysis.results[0].id !== metaId &&
+    analysis.results[2]?.id !== metaId
+  ) {
+    throw new Error(
+      `${scenario.position}: la référence Meta ${metaId} doit rester visible en 3e proposition quand elle n'est pas idéale.`
+    )
   }
 
   for (const result of analysis.results) {

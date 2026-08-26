@@ -401,12 +401,12 @@ export default function FindMyBuild({ onLoadBuild, onSwitchToBuilder }) {
           <span className="finder-eyebrow">Trouver mon build</span>
           <h2>Décris ta façon de jouer.</h2>
           <p>
-            Le moteur compare ton profil aux constructions REC que nous avons validées dans le Builder. Il propose un build idéal, une variante et une référence Meta du même poste.
+            Le moteur compare ton profil aux constructions REC actuellement référencées dans le Builder. Il propose un build idéal, une vraie variante de compromis et une référence Meta provisoire du même poste.
           </p>
         </div>
         <div className="finder-version-card">
-          <strong>V1 · Profil joueur</strong>
-          <span>BASE 99 exacte · +5/+10/+15 CB · Synergies · comparaison Meta</span>
+          <strong>V18 · Profil joueur</strong>
+          <span>Scoring sémantique · seuils badges · variantes différenciées · comparaison Meta</span>
         </div>
       </div>
 

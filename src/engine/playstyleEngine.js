@@ -192,6 +192,53 @@ const teamContextWeights = {
   },
 }
 
+
+const STYLE_TAG_AFFINITY = {
+  primary_creator: { primary_creator: 1, secondary_creator: 0.25, scoring: 0.3, shooting: 0.15, playmaking_big: 0.15 },
+  secondary_creator: { secondary_creator: 1, primary_creator: 0.45, scoring: 0.35, balanced: 0.25, playmaking_big: 0.3 },
+  spot_up: { spot_up: 1, shooting: 0.62, scoring: 0.18 },
+  closeout: { closeout: 1, slashing: 0.95, scoring: 0.4, secondary_creator: 0.15 },
+  cuts: { cuts: 1, slashing: 1, pick_roll: 0.35, offensive_rebound: 0.2 },
+  post_play: { post_play: 1, physical: 0.35 },
+  pick_roll: { pick_roll: 1, slashing: 0.4, physical: 0.3, playmaking_big: 0.2 },
+  offensive_rebound: { offensive_rebound: 1, rebounding: 0.78, physical: 0.3 },
+  on_ball_defense: { on_ball_defense: 1, wing_defense: 0.6, physical: 0.2 },
+  wing_defense: { wing_defense: 1, on_ball_defense: 0.55, interceptions: 0.4, switch_defense: 0.35 },
+  interceptions: { interceptions: 1, wing_defense: 0.45, on_ball_defense: 0.2 },
+  screen_defense: { screen_defense: 1, on_ball_defense: 0.75, physical: 0.5, wing_defense: 0.25 },
+  switch_defense: { switch_defense: 1, wing_defense: 0.45, rim_protection: 0.4, physical: 0.3 },
+  rim_protection: { rim_protection: 1, rebounding: 0.25, physical: 0.25 },
+  interior_defense: { interior_defense: 1, rim_protection: 0.72, physical: 0.5, rebounding: 0.2 },
+  rebounding: { rebounding: 1, offensive_rebound: 0.5, rim_protection: 0.22, physical: 0.2 },
+  physical_defense: { physical: 1, on_ball_defense: 0.4, switch_defense: 0.4, rim_protection: 0.25 },
+}
+
+const BADGE_TIER_SCORE = {
+  bronze: 0.12,
+  silver: 0.34,
+  gold: 0.66,
+  hof: 1,
+}
+
+const DIVERSITY_ATTRIBUTE_IDS = [
+  'drivingDunk',
+  'threePointShot',
+  'passAccuracy',
+  'ballHandle',
+  'speedWithBall',
+  'interiorDefense',
+  'perimeterDefense',
+  'steal',
+  'block',
+  'offensiveRebound',
+  'defensiveRebound',
+  'speed',
+  'agility',
+  'strength',
+  'vertical',
+]
+
+
 function addWeights(target, source, multiplier = 1) {
   if (!source) {
     return
@@ -246,22 +293,35 @@ export function buildPlaystyleProfile(answers = {}) {
   }
 }
 
-function getTagBonus(candidate, answers) {
-  const desiredTags = new Set([
-    answers.offensePrimary,
-    answers.offenseSecondary,
-    answers.defensePrimary,
-  ].filter(Boolean))
-
-  let bonus = 0
-
-  for (const tag of candidate.tags ?? []) {
-    if (desiredTags.has(tag)) {
-      bonus += 0.035
-    }
+function getStyleAffinity(candidate, styleId) {
+  if (!styleId) {
+    return 0
   }
 
-  return bonus
+  const affinities = STYLE_TAG_AFFINITY[styleId] ?? {
+    [styleId]: 1,
+  }
+
+  let best = 0
+
+  for (const tag of candidate.tags ?? []) {
+    best = Math.max(best, affinities[tag] ?? 0)
+  }
+
+  return best
+}
+
+function getTagBonus(candidate, answers) {
+  const primaryAffinity = getStyleAffinity(candidate, answers.offensePrimary)
+  const secondaryAffinity = getStyleAffinity(candidate, answers.offenseSecondary)
+  const defenseAffinity = getStyleAffinity(candidate, answers.defensePrimary)
+
+  const weightedAffinity =
+    primaryAffinity * 1 +
+    secondaryAffinity * 0.55 +
+    defenseAffinity * 1.05
+
+  return Math.min(0.11, weightedAffinity * 0.042)
 }
 
 function getMorphologyBonus(candidate, preference) {
@@ -287,6 +347,90 @@ function getMorphologyBonus(candidate, preference) {
   return 0
 }
 
+function getPriorityFocusBonus(candidate, profile) {
+  const priorities = profile.answers.priorities ?? []
+
+  if (priorities.length === 0) {
+    return 0
+  }
+
+  let categoryScore = 0
+  let categoryCount = 0
+
+  for (const priority of priorities) {
+    const attributeWeights = priorityWeights[priority]
+
+    if (!attributeWeights) {
+      continue
+    }
+
+    let weightedValue = 0
+    let weightTotal = 0
+
+    for (const [attributeId, weight] of Object.entries(attributeWeights)) {
+      const value = candidate.attributes[attributeId] ?? 25
+      const normalized = Math.max(0, Math.min(1, (value - 25) / 74))
+
+      weightedValue += Math.pow(normalized, 1.65) * weight
+      weightTotal += weight
+    }
+
+    if (weightTotal > 0) {
+      categoryScore += weightedValue / weightTotal
+      categoryCount += 1
+    }
+  }
+
+  if (categoryCount === 0) {
+    return 0
+  }
+
+  return Math.min(
+    0.075,
+    (categoryScore / categoryCount) * 0.075
+  )
+}
+
+function getBadgeThresholdBonus(candidate, profile) {
+  let weightedScore = 0
+  let relevanceTotal = 0
+
+  for (const badge of badgesData.badges) {
+    if (!isBadgeHeightCompatible(badge, candidate.morphology.height)) {
+      continue
+    }
+
+    const tier = getHighestUnlockedTier(badge, candidate.attributes)
+
+    if (!tier) {
+      continue
+    }
+
+    const requirementAttributes = getAttributeRequirements(badge)
+    const relevance = requirementAttributes.reduce(
+      (highest, attributeId) => Math.max(highest, profile.weights[attributeId] ?? 0),
+      0
+    )
+
+    if (relevance < 0.9) {
+      continue
+    }
+
+    const tierScore = BADGE_TIER_SCORE[tier] ?? 0
+
+    weightedScore += tierScore * relevance
+    relevanceTotal += relevance
+  }
+
+  if (relevanceTotal <= 0) {
+    return 0
+  }
+
+  const normalized = weightedScore / relevanceTotal
+
+  return Math.min(0.04, normalized * 0.04)
+}
+
 function scoreCandidate(candidate, profile) {
   const weights = profile.weights
   let weightedScore = 0
@@ -308,7 +452,27 @@ function scoreCandidate(candidate, profile) {
     profile.answers.morphologyPreference
   )
 
-  return Math.max(0, Math.min(1, baseScore + tagBonus + morphologyBonus))
+  const priorityFocusBonus = getPriorityFocusBonus(
+    candidate,
+    profile
+  )
+
+  const badgeThresholdBonus = getBadgeThresholdBonus(
+    candidate,
+    profile
+  )
+
+  const blendedScore =
+    baseScore * 0.9 +
+    tagBonus * 0.55 +
+    morphologyBonus * 0.55 +
+    priorityFocusBonus * 0.55 +
+    badgeThresholdBonus * 0.55
+
+  return Math.max(
+    0,
+    Math.min(0.99, blendedScore)
+  )
 }
 
 function getAttributeRequirements(badge) {
@@ -477,6 +641,85 @@ function allocateCapBreakers(candidate, profile, targetCount) {
   }
 }
 
+function getCandidateDiversity(candidate, referenceCandidate) {
+  if (!referenceCandidate) {
+    return 1
+  }
+
+  let attributeDistance = 0
+
+  for (const attributeId of DIVERSITY_ATTRIBUTE_IDS) {
+    const left = candidate.attributes[attributeId] ?? 25
+    const right = referenceCandidate.attributes[attributeId] ?? 25
+
+    attributeDistance += Math.abs(left - right) / 74
+  }
+
+  attributeDistance /= DIVERSITY_ATTRIBUTE_IDS.length
+
+  const morphologyDistance = Math.min(
+    1,
+    (
+      Math.abs(candidate.morphology.height - referenceCandidate.morphology.height) / 8 +
+      Math.abs(candidate.morphology.wingspan - referenceCandidate.morphology.wingspan) / 10 +
+      Math.abs(candidate.morphology.weight - referenceCandidate.morphology.weight) / 80
+    ) / 3
+  )
+
+  const leftTags = new Set(candidate.tags ?? [])
+  const rightTags = new Set(referenceCandidate.tags ?? [])
+  const union = new Set([...leftTags, ...rightTags])
+
+  let shared = 0
+
+  for (const tag of leftTags) {
+    if (rightTags.has(tag)) {
+      shared += 1
+    }
+  }
+
+  const tagDistance = union.size > 0 ? 1 - shared / union.size : 0
+
+  return Math.max(
+    0,
+    Math.min(
+      1,
+      attributeDistance * 0.55 +
+        morphologyDistance * 0.2 +
+        tagDistance * 0.25
+    )
+  )
+}
+
+function chooseVariant(ranked, selected, primaryCandidate, excludedId = null) {
+  const remaining = ranked.filter(
+    (entry) =>
+      entry.candidate.id !== excludedId &&
+      !selected.some(
+        (selectedEntry) => selectedEntry.candidate.id === entry.candidate.id
+      )
+  )
+
+  if (remaining.length === 0) {
+    return null
+  }
+
+  return remaining
+    .map((entry) => {
+      const diversity = getCandidateDiversity(
+        entry.candidate,
+        primaryCandidate
+      )
+
+      return {
+        ...entry,
+        diversity,
+        variantScore: entry.affinity * 0.72 + diversity * 0.28,
+      }
+    })
+    .sort((left, right) => right.variantScore - left.variantScore)[0]
+}
+
 function getMetaComparison(candidate, metaCandidate) {
   if (!metaCandidate) {
     return null
@@ -549,29 +792,44 @@ export function recommendPersonalBuilds(answers = {}) {
     selected.push(ranked[0])
   }
 
-  const second = ranked.find(
-    (entry) => !selected.some((selectedEntry) => selectedEntry.candidate.id === entry.candidate.id)
+  const rankedMeta = ranked.find(
+    (entry) => entry.candidate.id === metaId
+  )
+
+  const idealIsMeta =
+    ranked[0]?.candidate.id === metaId
+
+  const second = chooseVariant(
+    ranked,
+    selected,
+    ranked[0]?.candidate,
+    idealIsMeta ? null : metaId
   )
 
   if (second) {
     selected.push(second)
   }
 
-  const rankedMeta = ranked.find((entry) => entry.candidate.id === metaId)
-
   if (
+    !idealIsMeta &&
     rankedMeta &&
     !selected.some((entry) => entry.candidate.id === rankedMeta.candidate.id)
   ) {
     selected.push(rankedMeta)
   }
 
-  const third = ranked.find(
-    (entry) => !selected.some((selectedEntry) => selectedEntry.candidate.id === entry.candidate.id)
-  )
+  while (selected.length < 3) {
+    const fallback = chooseVariant(
+      ranked,
+      selected,
+      ranked[0]?.candidate
+    )
 
-  if (selected.length < 3 && third) {
-    selected.push(third)
+    if (!fallback) {
+      break
+    }
+
+    selected.push(fallback)
   }
 
   const results = selected.slice(0, 3).map((entry, index) => {
