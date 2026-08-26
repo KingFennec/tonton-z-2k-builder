@@ -256,6 +256,75 @@ function MetaComparison({ result, attributeNameById }) {
   )
 }
 
+
+function OptimizationSummary({ result, attributeNameById }) {
+  if (!result.generated || !result.optimization) return null
+
+  const changes = result.optimization.changes ?? []
+  const morphology = result.optimization.morphology
+  const morphologyChanged = Boolean(morphology?.changed)
+  const optimized = morphologyChanged || changes.length > 0
+
+  return (
+    <div className="finder-meta-compare">
+      <div className="finder-meta-heading">
+        <div>
+          <span>Optimisation V20</span>
+          <strong>
+            {optimized
+              ? `Morphologie / allocation personnalisée depuis ${result.sourceCandidateName}`
+              : `Architecture conservée : ${result.sourceCandidateName}`}
+          </strong>
+        </div>
+        <em>
+          {optimized
+            ? [
+                morphologyChanged ? 'Morphologie optimisée' : null,
+                changes.length > 0
+                  ? `${changes.length} attribut${changes.length > 1 ? 's' : ''} ajusté${changes.length > 1 ? 's' : ''}`
+                  : null,
+              ].filter(Boolean).join(' · ')
+            : 'Aucune variante plus efficace trouvée'}
+        </em>
+      </div>
+
+      {morphologyChanged && (
+        <div className="finder-morphology-compare">
+          <span>
+            Base : {formatHeight(morphology.before.height)} / {morphology.before.weight} lbs / {formatHeight(morphology.before.wingspan)}
+          </span>
+          <span>
+            Optimisée : {formatHeight(morphology.after.height)} / {morphology.after.weight} lbs / {formatHeight(morphology.after.wingspan)}
+          </span>
+        </div>
+      )}
+
+      {changes.length > 0 ? (
+        <div className="finder-difference-grid">
+          {changes.slice(0, 8).map((change) => (
+            <div
+              key={change.attributeId}
+              className={`finder-difference ${change.delta > 0 ? 'is-positive' : 'is-negative'}`}
+            >
+              <span>{attributeNameById[change.attributeId] ?? change.attributeId}</span>
+              <strong>{change.before} → {change.after}</strong>
+              <small>{change.delta > 0 ? '+' : ''}{change.delta}</small>
+            </div>
+          ))}
+        </div>
+      ) : optimized ? (
+        <p className="finder-muted">
+          La morphologie change les caps et la marge de progression sans nécessiter de déplacer les 21 notes du BASE 99 de départ.
+        </p>
+      ) : (
+        <p className="finder-muted">
+          Le moteur a parcouru les morphologies retenues et testé une réallocation du budget GNR, mais la base validée reste la plus cohérente pour ce profil.
+        </p>
+      )}
+    </div>
+  )
+}
+
 function ResultCard({ result, index, onLoadBuild, onSwitchToBuilder }) {
   const [capTab, setCapTab] = useState(10)
   const [showAttributes, setShowAttributes] = useState(index === 0)
@@ -299,6 +368,8 @@ function ResultCard({ result, index, onLoadBuild, onSwitchToBuilder }) {
         <div><span>Envergure</span><strong>{formatHeight(result.morphology.wingspan)}</strong></div>
         <div><span>GNR</span><strong>{result.gnr?.displayed ?? 99}</strong></div>
       </div>
+
+      <OptimizationSummary result={result} attributeNameById={attributeNameById} />
 
       <div className="finder-result-actions">
         <button type="button" className="finder-primary-action" onClick={loadBuild}>
@@ -354,7 +425,7 @@ function ResultCard({ result, index, onLoadBuild, onSwitchToBuilder }) {
               </div>
             ))}
           </div>
-          <small className="finder-muted">Recommandation V1 : priorité calculée selon ton style et le niveau naturel du badge. Le gain terrain réel sera affiné avec les tests REC.</small>
+          <small className="finder-muted">Recommandation V20 : priorité calculée selon ton style, le niveau naturel du badge et la BASE 99 personnalisée. Le gain terrain réel sera affiné avec les tests REC.</small>
         </section>
       </div>
 
@@ -401,12 +472,12 @@ export default function FindMyBuild({ onLoadBuild, onSwitchToBuilder }) {
           <span className="finder-eyebrow">Trouver mon build</span>
           <h2>Décris ta façon de jouer.</h2>
           <p>
-            Le moteur compare ton profil aux constructions REC actuellement référencées dans le Builder. Il propose un build idéal, une vraie variante de compromis et une référence Meta provisoire du même poste.
+            Le moteur part des architectures REC validées, explore automatiquement les tailles, poids et envergures possibles, reconstruit un BASE 99 exact selon ton profil puis le compare à une référence Meta indépendante du même poste.
           </p>
         </div>
         <div className="finder-version-card">
-          <strong>V18 · Profil joueur</strong>
-          <span>Scoring sémantique · seuils badges · variantes différenciées · comparaison Meta</span>
+          <strong>V20 · Recherche morphologique</strong>
+          <span>Taille + poids + envergure · BASE 99 exact · dépendances APK · Meta indépendante</span>
         </div>
       </div>
 
@@ -504,6 +575,7 @@ export default function FindMyBuild({ onLoadBuild, onSwitchToBuilder }) {
             <div>
               <span className="finder-eyebrow">Résultats</span>
               <h2>3 constructions à comparer</h2>
+              <p className="finder-muted">Les deux premières propositions peuvent être réallouées automatiquement. La référence Meta reste inchangée.</p>
             </div>
             <div className="finder-profile-summary">
               <strong>Priorités détectées</strong>

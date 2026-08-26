@@ -2,9 +2,21 @@ import {
   createPersonalBuildPayload,
   recommendPersonalBuilds,
 } from '../src/engine/playstyleEngine.js'
+import {
+  getExactBodyBounds,
+  getExactBodyCaps,
+  getExactDependencyRules,
+} from '../src/engine/apkBuilderEngine.js'
+import { solveAttributeDependencies } from '../src/engine/attributeDependencyEngine.js'
+import positionsData from '../src/data/nba2k27/positions.json' with { type: 'json' }
+
+const positionById = new Map(
+  positionsData.positions.map((position) => [position.id, position])
+)
 
 const scenarios = [
   {
+    name: 'PG créateur',
     position: 'PG',
     offensePrimary: 'primary_creator',
     offenseSecondary: 'closeout',
@@ -14,9 +26,10 @@ const scenarios = [
     teamContext: 'rec_solo',
     morphologyPreference: 'balanced',
     capBreakerStrategy: 'thresholds',
-    expectedIdeal: 'PG-1',
+    expectedIdealSource: 'PG-1',
   },
   {
+    name: 'SG lock / spot-up',
     position: 'SG',
     offensePrimary: 'spot_up',
     offenseSecondary: 'closeout',
@@ -26,9 +39,10 @@ const scenarios = [
     teamContext: 'organized_rec',
     morphologyPreference: 'balanced',
     capBreakerStrategy: 'thresholds',
-    expectedIdeal: 'SG-4',
+    expectedIdealSource: 'SG-2',
   },
   {
+    name: 'SF polyvalent / switch',
     position: 'SF',
     offensePrimary: 'secondary_creator',
     offenseSecondary: 'spot_up',
@@ -38,9 +52,10 @@ const scenarios = [
     teamContext: 'friends',
     morphologyPreference: 'big_physical',
     capBreakerStrategy: 'balanced',
-    expectedIdeal: 'SF-2',
+    expectedIdealSource: 'SF-2',
   },
   {
+    name: 'PF backend',
     position: 'PF',
     offensePrimary: 'spot_up',
     offenseSecondary: 'cuts',
@@ -50,9 +65,10 @@ const scenarios = [
     teamContext: 'organized_rec',
     morphologyPreference: 'big_physical',
     capBreakerStrategy: 'thresholds',
-    expectedIdeal: 'PF-4',
+    expectedIdealSource: 'PF-4',
   },
   {
+    name: 'C pass-first',
     position: 'C',
     offensePrimary: 'pick_roll',
     offenseSecondary: 'spot_up',
@@ -62,9 +78,10 @@ const scenarios = [
     teamContext: 'organized_rec',
     morphologyPreference: 'big_physical',
     capBreakerStrategy: 'thresholds',
-    expectedIdeal: 'C-2',
+    expectedIdealSource: 'C-2',
   },
   {
+    name: 'PG slasher / closeout',
     position: 'PG',
     offensePrimary: 'closeout',
     offenseSecondary: 'cuts',
@@ -74,38 +91,135 @@ const scenarios = [
     teamContext: 'rec_solo',
     morphologyPreference: 'balanced',
     capBreakerStrategy: 'thresholds',
-    expectedIdeal: 'PG-4',
+    expectedIdealSource: 'PG-4',
   },
 ]
+
+function resultSignature(result) {
+  return JSON.stringify({
+    morphology: result.morphology,
+    attributes: result.attributes,
+  })
+}
+
+let scenariosWithMorphologyChange = 0
 
 for (const scenario of scenarios) {
   const analysis = recommendPersonalBuilds(scenario)
 
   if (analysis.results.length !== 3) {
-    throw new Error(`${scenario.position}: 3 résultats attendus, ${analysis.results.length} reçus.`)
+    throw new Error(`${scenario.name}: 3 résultats attendus, ${analysis.results.length} reçus.`)
   }
 
-  if (analysis.results[0]?.id !== scenario.expectedIdeal) {
+  if (analysis.generation?.version !== 'V20') {
+    throw new Error(`${scenario.name}: moteur V20 attendu.`)
+  }
+
+  if (
+    (analysis.generation.screenedMorphologies ?? 0) <= analysis.generation.seedCount ||
+    (analysis.generation.evaluatedMorphologies ?? 0) < analysis.generation.seedCount
+  ) {
+    throw new Error(`${scenario.name}: recherche morphologique V20 non exécutée.`)
+  }
+
+  const ideal = analysis.results[0]
+  const idealSource = ideal.sourceCandidateId ?? ideal.id
+
+  if (idealSource !== scenario.expectedIdealSource) {
     throw new Error(
-      `${scenario.position}: build idéal attendu ${scenario.expectedIdeal}, reçu ${analysis.results[0]?.id ?? 'aucun'}.`
+      `${scenario.name}: architecture idéale attendue ${scenario.expectedIdealSource}, reçue ${idealSource}.`
     )
   }
 
+  if (!ideal.generated) {
+    throw new Error(`${scenario.name}: le build idéal doit passer par l'optimiseur V20.`)
+  }
+
+  if (ideal.optimization?.morphology?.changed) {
+    scenariosWithMorphologyChange += 1
+  }
+
+  const signatures = analysis.results.map(resultSignature)
+
+  if (new Set(signatures).size !== signatures.length) {
+    throw new Error(`${scenario.name}: deux propositions sont strictement identiques.`)
+  }
+
   const metaId = analysis.metaCandidate?.id
+  const idealIsExactMeta =
+    ideal.sourceCandidateId === metaId &&
+    (ideal.optimization?.changes?.length ?? 0) === 0 &&
+    !ideal.optimization?.morphology?.changed
 
   if (
     metaId &&
-    analysis.results[0].id !== metaId &&
+    !idealIsExactMeta &&
     analysis.results[2]?.id !== metaId
   ) {
     throw new Error(
-      `${scenario.position}: la référence Meta ${metaId} doit rester visible en 3e proposition quand elle n'est pas idéale.`
+      `${scenario.name}: la référence Meta ${metaId} doit rester inchangée en 3e proposition.`
     )
   }
 
   for (const result of analysis.results) {
-    if (result.gnr.displayed !== 99) {
-      throw new Error(`${result.id}: GNR 99 attendu, ${result.gnr.displayed} reçu.`)
+    if (result.gnr.displayed !== 99 || result.gnr.detailed > 99.00001) {
+      throw new Error(
+        `${result.id}: BASE 99 exacte attendue, GNR détaillé ${result.gnr.detailed}.`
+      )
+    }
+
+    const position = positionById.get(result.position)
+
+    if (
+      !position ||
+      result.morphology.height < position.height.min ||
+      result.morphology.height > position.height.max
+    ) {
+      throw new Error(`${result.id}: taille hors plage du poste.`)
+    }
+
+    const bodyBounds = getExactBodyBounds(
+      result.morphology.height,
+      result.position
+    )
+
+    if (
+      result.morphology.weight < bodyBounds.weight.min ||
+      result.morphology.weight > bodyBounds.weight.max ||
+      result.morphology.wingspan < bodyBounds.wingspan.min ||
+      result.morphology.wingspan > bodyBounds.wingspan.max
+    ) {
+      throw new Error(`${result.id}: morphologie hors bornes APK.`)
+    }
+
+    const bodyCaps = getExactBodyCaps(result.morphology)
+
+    for (const [attributeId, value] of Object.entries(result.attributes)) {
+      if (value > bodyCaps.caps[attributeId]) {
+        throw new Error(
+          `${result.id}: ${attributeId}=${value} dépasse le cap ${bodyCaps.caps[attributeId]}.`
+        )
+      }
+    }
+
+    const dependencyCheck = solveAttributeDependencies({
+      requestedAttributes: result.attributes,
+      baseValues: {},
+      caps: bodyCaps.caps,
+      rules: getExactDependencyRules(result.morphology.height),
+      includeProvisional: false,
+    })
+
+    if (dependencyCheck.capConflicts.length > 0) {
+      throw new Error(`${result.id}: conflit de dépendance APK.`)
+    }
+
+    for (const [attributeId, value] of Object.entries(result.attributes)) {
+      if (dependencyCheck.values[attributeId] !== value) {
+        throw new Error(
+          `${result.id}: dépendance non résolue sur ${attributeId} (${value} -> ${dependencyCheck.values[attributeId]}).`
+        )
+      }
     }
 
     for (const target of [5, 10, 15]) {
@@ -129,8 +243,14 @@ for (const scenario of scenarios) {
   }
 
   console.log(
-    `PASS ${scenario.position}: ${analysis.results.map((result) => `${result.id} (${result.affinity}%)`).join(' · ')}`
+    `PASS ${scenario.name}: ${analysis.results.map((result) => `${result.id} (${result.affinity}%)`).join(' · ')} | morphologies ${analysis.generation.evaluatedMorphologies}/${analysis.generation.screenedMorphologies}`
   )
 }
 
-console.log('Playstyle Finder verification passed.')
+if (scenariosWithMorphologyChange < 3) {
+  throw new Error(
+    `V20: recherche morphologique trop passive (${scenariosWithMorphologyChange} scénarios modifiés).`
+  )
+}
+
+console.log('Playstyle Finder V20 verification passed.')

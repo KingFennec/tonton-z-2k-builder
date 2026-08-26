@@ -1,5 +1,6 @@
 import attributesData from '../data/nba2k27/attributes.json' with { type: 'json' }
 import badgesData from '../data/nba2k27/badges.json' with { type: 'json' }
+import positionsData from '../data/nba2k27/positions.json' with { type: 'json' }
 import {
   playstyleCandidates,
   provisionalMetaBuildByPosition,
@@ -9,8 +10,12 @@ import { getHighestUnlockedTier } from './badgeEngine.js'
 import {
   calculateExactGnr,
   getAllCapBreakerProjections,
+  getExactBodyBounds,
   getExactBodyCaps,
+  getExactDependencyRules,
+  testExactOverallIncrement,
 } from './apkBuilderEngine.js'
+import { solveAttributeDependencies } from './attributeDependencyEngine.js'
 
 const ATTRIBUTE_IDS = attributesData.attributes.map((attribute) => attribute.id)
 
@@ -219,6 +224,36 @@ const BADGE_TIER_SCORE = {
   gold: 0.66,
   hof: 1,
 }
+
+const PERSONALIZER_VERSION = 'V20'
+
+const BUILDER_MILESTONES = [
+  60, 65, 70, 75, 80, 85, 87, 89, 90, 92, 93, 95, 97, 99,
+]
+
+const PRIORITY_CORE_ATTRIBUTES = {
+  shooting: ['threePointShot', 'midRangeShot'],
+  dunk: ['drivingDunk', 'vertical'],
+  passing: ['passAccuracy'],
+  dribbling: ['ballHandle', 'speedWithBall'],
+  perimeterDefense: ['perimeterDefense', 'agility'],
+  steal: ['steal'],
+  block: ['block', 'interiorDefense'],
+  rebounding: ['defensiveRebound', 'offensiveRebound'],
+  strength: ['strength'],
+  speed: ['speed', 'agility'],
+}
+
+
+
+const MORPHOLOGY_COARSE_WEIGHT_STEP = 1
+const MORPHOLOGY_SCREEN_PER_SEED = 5
+const MORPHOLOGY_LOCAL_WEIGHT_RADIUS = 4
+const MORPHOLOGY_HEIGHT_DIVERSITY_LIMIT = 2
+
+const positionById = new Map(
+  positionsData.positions.map((position) => [position.id, position])
+)
 
 const DIVERSITY_ATTRIBUTE_IDS = [
   'drivingDunk',
@@ -641,6 +676,981 @@ function allocateCapBreakers(candidate, profile, targetCount) {
   }
 }
 
+function clamp01(value) {
+  return Math.max(0, Math.min(1, value))
+}
+
+function getCategoryAttributeSet(categories = []) {
+  const result = new Set()
+
+  for (const category of categories) {
+    for (const attributeId of Object.keys(priorityWeights[category] ?? {})) {
+      result.add(attributeId)
+    }
+  }
+
+  return result
+}
+
+function getPriorityCoreAttributeSet(categories = []) {
+  const result = new Set()
+
+  for (const category of categories) {
+    for (const attributeId of PRIORITY_CORE_ATTRIBUTES[category] ?? []) {
+      result.add(attributeId)
+    }
+  }
+
+  return result
+}
+
+function getProfileImportance(profile, attributeId) {
+  const values = Object.values(profile.weights)
+  const maximum = Math.max(...values, 0.35)
+  const minimum = Math.min(...values, 0.08)
+  const value = profile.weights[attributeId] ?? 0.35
+
+  if (maximum <= minimum) {
+    return 0.5
+  }
+
+  return clamp01((value - minimum) / (maximum - minimum))
+}
+
+function solvePersonalizedRequest(requested, morphology, caps, rules) {
+  return solveAttributeDependencies({
+    requestedAttributes: requested,
+    baseValues: {},
+    caps,
+    rules,
+    includeProvisional: false,
+  })
+}
+
+function getAllocationUtility(attributes, profile) {
+  let weighted = 0
+  let total = 0
+
+  for (const attributeId of ATTRIBUTE_IDS) {
+    const weight = profile.weights[attributeId] ?? 0.35
+    const value = attributes[attributeId] ?? 25
+    const normalized = clamp01((value - 25) / 74)
+
+    // Rendement décroissant pour privilégier les seuils utiles plutôt que
+    // de pousser mécaniquement une seule note à 99.
+    weighted += Math.pow(normalized, 0.82) * weight
+    total += weight
+  }
+
+  return total > 0 ? weighted / total : 0
+}
+
+function getMilestoneGain(beforeValues, afterValues, profile, attributeId) {
+  const before = beforeValues[attributeId] ?? 25
+  const after = afterValues[attributeId] ?? before
+
+  if (after <= before) {
+    return 0
+  }
+
+  let crossed = 0
+
+  for (const milestone of BUILDER_MILESTONES) {
+    if (before < milestone && after >= milestone) {
+      crossed += 1
+    }
+  }
+
+  return crossed * (profile.weights[attributeId] ?? 0.35) * 0.018
+}
+
+function getMaxPersonalizedDrop(seedCandidate, profile, attributeId) {
+  const priorityAttributes = getPriorityCoreAttributeSet(profile.answers.priorities)
+  const sacrificeAttributes = getCategoryAttributeSet(profile.answers.sacrifices)
+  const importance = getProfileImportance(profile, attributeId)
+
+  if (priorityAttributes.has(attributeId) || importance >= 0.62) {
+    return 0
+  }
+
+  if (sacrificeAttributes.has(attributeId)) {
+    return 12
+  }
+
+  if (importance < 0.18) {
+    return 8
+  }
+
+  if (importance < 0.32) {
+    return 5
+  }
+
+  if (importance < 0.46) {
+    return 3
+  }
+
+  return 0
+}
+
+function getMaxPersonalizedGain(seedCandidate, profile, attributeId, cap) {
+  const priorityAttributes = getPriorityCoreAttributeSet(profile.answers.priorities)
+  const sacrificeAttributes = getCategoryAttributeSet(profile.answers.sacrifices)
+  const importance = getProfileImportance(profile, attributeId)
+  const seedValue = seedCandidate.attributes[attributeId] ?? 25
+
+  if (sacrificeAttributes.has(attributeId)) {
+    return seedValue
+  }
+
+  if (priorityAttributes.has(attributeId)) {
+    return cap
+  }
+
+  if (importance >= 0.78) {
+    return Math.min(cap, seedValue + 7)
+  }
+
+  if (importance >= 0.58) {
+    return Math.min(cap, seedValue + 5)
+  }
+
+  if (importance >= 0.42) {
+    return Math.min(cap, seedValue + 3)
+  }
+
+  return seedValue
+}
+
+
+function clampInteger(value, min, max) {
+  return Math.max(min, Math.min(max, Math.round(Number(value))))
+}
+
+function morphologyKey(morphology) {
+  return [
+    morphology.position,
+    morphology.height,
+    morphology.weight,
+    morphology.wingspan,
+  ].join('|')
+}
+
+function getMorphologyPreferenceScreenScore(morphology, caps, profile, seedCandidate) {
+  const preference = profile.answers.morphologyPreference
+  const position = positionById.get(profile.position)
+
+  if (!position) {
+    return 0.5
+  }
+
+  const heightSpan = Math.max(1, position.height.max - position.height.min)
+  const heightNorm = clamp01(
+    (morphology.height - position.height.min) / heightSpan
+  )
+  const wingspanExtension = clamp01(
+    (morphology.wingspan - morphology.height + 2) / 10
+  )
+  const speedCap = ((caps.speed ?? 25) + (caps.agility ?? 25)) / 198
+  const strengthCap = (caps.strength ?? 25) / 99
+
+  if (preference === 'small_fast') {
+    return clamp01(
+      speedCap * 0.58 +
+      (1 - heightNorm) * 0.32 +
+      (1 - wingspanExtension) * 0.1
+    )
+  }
+
+  if (preference === 'big_physical') {
+    return clamp01(
+      strengthCap * 0.42 +
+      heightNorm * 0.3 +
+      wingspanExtension * 0.28
+    )
+  }
+
+  if (preference === 'balanced') {
+    const seedHeightDistance = Math.abs(
+      morphology.height - seedCandidate.morphology.height
+    )
+    const sizeStability = 1 - Math.min(1, seedHeightDistance / 5)
+
+    return clamp01(
+      0.45 + sizeStability * 0.25 + speedCap * 0.15 + strengthCap * 0.15
+    )
+  }
+
+  return 0.5
+}
+
+function scoreMorphologyPotential(seedCandidate, profile, morphology) {
+  const bodyCaps = getExactBodyCaps(morphology)
+
+  if (!bodyCaps.available) {
+    return null
+  }
+
+  const caps = bodyCaps.caps
+  let capPotential = 0
+  let retention = 0
+  let runway = 0
+  let weightTotal = 0
+  const priorityAttributes = getPriorityCoreAttributeSet(profile.answers.priorities)
+
+  for (const attributeId of ATTRIBUTE_IDS) {
+    const weight = profile.weights[attributeId] ?? 0.35
+    const cap = caps[attributeId] ?? 25
+    const seedValue = seedCandidate.attributes[attributeId] ?? 25
+    const capNorm = clamp01((cap - 25) / 74)
+    const seedNorm = clamp01((seedValue - 25) / 74)
+    const retainedValue = Math.min(seedValue, cap)
+    const retainedNorm = seedNorm > 0
+      ? clamp01((retainedValue - 25) / Math.max(1, seedValue - 25))
+      : 1
+
+    capPotential += Math.pow(capNorm, 0.9) * weight
+    retention += retainedNorm * weight
+
+    if (priorityAttributes.has(attributeId)) {
+      runway += clamp01((cap - retainedValue) / 12) * weight
+    }
+
+    weightTotal += weight
+  }
+
+  if (weightTotal <= 0) {
+    return null
+  }
+
+  const preferenceScore = getMorphologyPreferenceScreenScore(
+    morphology,
+    caps,
+    profile,
+    seedCandidate
+  )
+
+  return {
+    morphology,
+    caps,
+    score:
+      (capPotential / weightTotal) * 0.46 +
+      (retention / weightTotal) * 0.39 +
+      clamp01(runway / Math.max(1, weightTotal * 0.28)) * 0.08 +
+      preferenceScore * 0.07,
+  }
+}
+
+function getCoarseWeightValues(min, max, seedWeight) {
+  const values = new Set([min, max, clampInteger(seedWeight, min, max)])
+
+  for (
+    let weight = min;
+    weight <= max;
+    weight += MORPHOLOGY_COARSE_WEIGHT_STEP
+  ) {
+    values.add(weight)
+  }
+
+  return [...values].sort((left, right) => left - right)
+}
+
+function selectMorphologyScreensWithDiversity(entries, limit) {
+  const selected = []
+  const heightCounts = new Map()
+
+  for (const entry of entries) {
+    const height = entry.morphology.height
+    const count = heightCounts.get(height) ?? 0
+
+    if (count >= MORPHOLOGY_HEIGHT_DIVERSITY_LIMIT) {
+      continue
+    }
+
+    selected.push(entry)
+    heightCounts.set(height, count + 1)
+
+    if (selected.length >= limit) {
+      break
+    }
+  }
+
+  return selected
+}
+
+function getMorphologySearchScreens(seedCandidate, profile) {
+  const position = positionById.get(seedCandidate.position)
+
+  if (!position) {
+    const fallback = scoreMorphologyPotential(
+      seedCandidate,
+      profile,
+      seedCandidate.morphology
+    )
+
+    return fallback ? [fallback] : []
+  }
+
+  const coarse = []
+  let screenedCount = 0
+
+  for (
+    let height = position.height.min;
+    height <= position.height.max;
+    height += 1
+  ) {
+    const bounds = getExactBodyBounds(height, seedCandidate.position)
+
+    if (!bounds) {
+      continue
+    }
+
+    const weights = getCoarseWeightValues(
+      bounds.weight.min,
+      bounds.weight.max,
+      seedCandidate.morphology.weight
+    )
+
+    for (const weight of weights) {
+      for (
+        let wingspan = bounds.wingspan.min;
+        wingspan <= bounds.wingspan.max;
+        wingspan += 1
+      ) {
+        const morphology = {
+          position: seedCandidate.position,
+          height,
+          weight,
+          wingspan,
+        }
+        const screen = scoreMorphologyPotential(
+          seedCandidate,
+          profile,
+          morphology
+        )
+
+        screenedCount += 1
+
+        if (screen) {
+          coarse.push(screen)
+        }
+      }
+    }
+  }
+
+  coarse.sort((left, right) => right.score - left.score)
+
+  const refinementSeeds = selectMorphologyScreensWithDiversity(
+    coarse,
+    Math.max(12, MORPHOLOGY_SCREEN_PER_SEED * 3)
+  )
+  const refinedByKey = new Map()
+
+  function addScreen(screen) {
+    if (!screen) {
+      return
+    }
+
+    const key = morphologyKey(screen.morphology)
+    const existing = refinedByKey.get(key)
+
+    if (!existing || screen.score > existing.score) {
+      refinedByKey.set(key, screen)
+    }
+  }
+
+  for (const entry of refinementSeeds) {
+    const morphology = entry.morphology
+    const bounds = getExactBodyBounds(
+      morphology.height,
+      seedCandidate.position
+    )
+
+    for (
+      let delta = -MORPHOLOGY_LOCAL_WEIGHT_RADIUS;
+      delta <= MORPHOLOGY_LOCAL_WEIGHT_RADIUS;
+      delta += 1
+    ) {
+      const weight = clampInteger(
+        morphology.weight + delta,
+        bounds.weight.min,
+        bounds.weight.max
+      )
+
+      addScreen(
+        scoreMorphologyPotential(
+          seedCandidate,
+          profile,
+          {
+            ...morphology,
+            weight,
+          }
+        )
+      )
+    }
+  }
+
+  // L'architecture d'origine reste toujours dans le pool de validation.
+  addScreen(
+    scoreMorphologyPotential(
+      seedCandidate,
+      profile,
+      seedCandidate.morphology
+    )
+  )
+
+  const refined = [...refinedByKey.values()]
+    .sort((left, right) => right.score - left.score)
+
+  const selected = selectMorphologyScreensWithDiversity(
+    refined,
+    MORPHOLOGY_SCREEN_PER_SEED
+  )
+
+  const originalKey = morphologyKey(seedCandidate.morphology)
+
+  if (!selected.some((entry) => morphologyKey(entry.morphology) === originalKey)) {
+    const original = refinedByKey.get(originalKey)
+
+    if (original) {
+      if (selected.length >= MORPHOLOGY_SCREEN_PER_SEED) {
+        selected[selected.length - 1] = original
+      } else {
+        selected.push(original)
+      }
+    }
+  }
+
+  return selected.map((entry) => ({
+    ...entry,
+    screenedCount,
+  }))
+}
+
+function adaptSeedToMorphology(seedCandidate, morphology) {
+  const bodyCaps = getExactBodyCaps(morphology)
+
+  if (!bodyCaps.available) {
+    return null
+  }
+
+  const caps = bodyCaps.caps
+  const rules = getExactDependencyRules(morphology.height)
+  const requested = Object.fromEntries(
+    ATTRIBUTE_IDS.map((attributeId) => [
+      attributeId,
+      Math.min(
+        seedCandidate.attributes[attributeId] ?? 25,
+        caps[attributeId] ?? 99
+      ),
+    ])
+  )
+  const solved = solvePersonalizedRequest(
+    requested,
+    morphology,
+    caps,
+    rules
+  )
+
+  if (solved.capConflicts.length > 0) {
+    return null
+  }
+
+  return {
+    ...seedCandidate,
+    id: `${seedCandidate.id}-morph-${morphology.height}-${morphology.weight}-${morphology.wingspan}`,
+    morphology: { ...morphology },
+    attributes: { ...solved.values },
+  }
+}
+
+function isExactBase99Candidate(candidate) {
+  const bodyCaps = getExactBodyCaps(candidate.morphology)
+
+  if (!bodyCaps.available) {
+    return false
+  }
+
+  for (const attributeId of ATTRIBUTE_IDS) {
+    if (
+      (candidate.attributes[attributeId] ?? 25) >
+      (bodyCaps.caps[attributeId] ?? 99)
+    ) {
+      return false
+    }
+  }
+
+  const gnr = calculateExactGnr(
+    candidate.attributes,
+    candidate.morphology.height,
+    { caps: bodyCaps.caps }
+  )
+
+  return Boolean(gnr.available && gnr.displayed === 99 && gnr.detailed <= 99.00001)
+}
+
+function wrapOptimizedCandidate(
+  seedCandidate,
+  values,
+  iterations,
+  context = {}
+) {
+  const sourceCandidate = context.sourceCandidate ?? seedCandidate
+  const changes = ATTRIBUTE_IDS
+    .map((attributeId) => ({
+      attributeId,
+      before: sourceCandidate.attributes[attributeId] ?? 25,
+      after: values[attributeId] ?? 25,
+      delta:
+        (values[attributeId] ?? 25) -
+        (sourceCandidate.attributes[attributeId] ?? 25),
+    }))
+    .filter((change) => change.delta !== 0)
+    .sort((left, right) => Math.abs(right.delta) - Math.abs(left.delta))
+
+  const morphologyBefore = { ...sourceCandidate.morphology }
+  const morphologyAfter = { ...seedCandidate.morphology }
+  const morphologyChanged =
+    morphologyKey(morphologyBefore) !== morphologyKey(morphologyAfter)
+  const allocationChanged = changes.length > 0
+  const suffix = [
+    morphologyAfter.height,
+    morphologyAfter.weight,
+    morphologyAfter.wingspan,
+  ].join('-')
+
+  return {
+    ...seedCandidate,
+    id: `${PERSONALIZER_VERSION}-${sourceCandidate.id}-${suffix}`,
+    name: `${sourceCandidate.name} · personnalisé`,
+    role:
+      morphologyChanged || allocationChanged
+        ? `${sourceCandidate.role} — morphologie et allocation adaptées à ton profil`
+        : `${sourceCandidate.role} — architecture déjà adaptée à ton profil`,
+    attributes: { ...values },
+    generated: true,
+    sourceCandidateId: sourceCandidate.id,
+    sourceCandidateName: sourceCandidate.name,
+    optimization: {
+      version: PERSONALIZER_VERSION,
+      iterations,
+      applied: morphologyChanged || allocationChanged,
+      changes,
+      morphology: {
+        before: morphologyBefore,
+        after: morphologyAfter,
+        changed: morphologyChanged,
+      },
+      morphologyScreenScore: context.morphologyScreenScore ?? null,
+      morphologyRank: context.morphologyRank ?? null,
+      screenedMorphologies: context.screenedMorphologies ?? null,
+    },
+  }
+}
+
+function optimizeCandidateForProfile(seedCandidate, profile, context = {}) {
+  const bodyCaps = getExactBodyCaps(seedCandidate.morphology)
+
+  if (!bodyCaps.available) {
+    return wrapOptimizedCandidate(seedCandidate, seedCandidate.attributes, 0, context)
+  }
+
+  const caps = bodyCaps.caps
+  const rules = getExactDependencyRules(seedCandidate.morphology.height)
+  const sacrificeAttributes = getCategoryAttributeSet(profile.answers.sacrifices)
+  const priorityAttributes = getPriorityCoreAttributeSet(profile.answers.priorities)
+  let requested = { ...seedCandidate.attributes }
+  let solved = solvePersonalizedRequest(
+    requested,
+    seedCandidate.morphology,
+    caps,
+    rules
+  )
+
+  if (solved.capConflicts.length > 0) {
+    return wrapOptimizedCandidate(seedCandidate, seedCandidate.attributes, 0, context)
+  }
+
+  let values = solved.values
+  let utility = getAllocationUtility(values, profile)
+  let iterations = 0
+  const maxIterations = 500
+  const totalDrops = Object.fromEntries(ATTRIBUTE_IDS.map((id) => [id, 0]))
+
+  // 1) Libérer une petite réserve de budget sur les attributs les moins
+  // importants pour ce profil. On vise ~98 GNR : assez pour effectuer de
+  // vrais arbitrages, sans dénaturer l'architecture validée du seed.
+  while (iterations < maxIterations) {
+    iterations += 1
+    const currentGnr = calculateExactGnr(
+      values,
+      seedCandidate.morphology.height,
+      { caps }
+    )
+
+    if (!currentGnr.available || currentGnr.detailed <= 98.05) {
+      break
+    }
+
+    let bestDrop = null
+
+    for (const attributeId of ATTRIBUTE_IDS) {
+      const maxDrop = getMaxPersonalizedDrop(
+        seedCandidate,
+        profile,
+        attributeId
+      )
+
+      if (maxDrop <= 0 || totalDrops[attributeId] >= maxDrop) {
+        continue
+      }
+
+      const currentValue = values[attributeId] ?? 25
+      const seedValue = seedCandidate.attributes[attributeId] ?? 25
+      const minimum = Math.max(25, seedValue - maxDrop)
+
+      if (currentValue <= minimum) {
+        continue
+      }
+
+      const nextRequested = {
+        ...requested,
+        [attributeId]: Math.max(25, (requested[attributeId] ?? currentValue) - 1),
+      }
+
+      const nextSolved = solvePersonalizedRequest(
+        nextRequested,
+        seedCandidate.morphology,
+        caps,
+        rules
+      )
+
+      if (nextSolved.capConflicts.length > 0) {
+        continue
+      }
+
+      const nextValues = nextSolved.values
+
+      if ((nextValues[attributeId] ?? currentValue) >= currentValue) {
+        continue
+      }
+
+      const nextGnr = calculateExactGnr(
+        nextValues,
+        seedCandidate.morphology.height,
+        { caps }
+      )
+
+      const freed = Math.max(
+        0,
+        currentGnr.detailed - (nextGnr.detailed ?? currentGnr.detailed)
+      )
+
+      if (freed <= 0) {
+        continue
+      }
+
+      const nextUtility = getAllocationUtility(nextValues, profile)
+      const utilityLoss = Math.max(0.00001, utility - nextUtility)
+      let score = utilityLoss / freed
+
+      if (sacrificeAttributes.has(attributeId)) {
+        score *= 0.48
+      }
+
+      if (!bestDrop || score < bestDrop.score) {
+        bestDrop = {
+          attributeId,
+          score,
+          requested: nextRequested,
+          solved: nextSolved,
+          utility: nextUtility,
+        }
+      }
+    }
+
+    if (!bestDrop) {
+      break
+    }
+
+    requested = bestDrop.requested
+    solved = bestDrop.solved
+    values = solved.values
+    utility = bestDrop.utility
+    totalDrops[bestDrop.attributeId] += 1
+  }
+
+  // 2) Réinvestir ce budget en priorité sur les attributs explicitement
+  // demandés puis sur les notes les plus importantes du profil.
+  while (iterations < maxIterations) {
+    iterations += 1
+    const currentGnr = calculateExactGnr(
+      values,
+      seedCandidate.morphology.height,
+      { caps }
+    )
+
+    if (!currentGnr.available || currentGnr.displayed >= 99) {
+      break
+    }
+
+    let bestGain = null
+
+    for (const attributeId of ATTRIBUTE_IDS) {
+      const cap = caps[attributeId] ?? 99
+      const ceiling = getMaxPersonalizedGain(
+        seedCandidate,
+        profile,
+        attributeId,
+        cap
+      )
+      const currentValue = values[attributeId] ?? 25
+
+      if (currentValue >= ceiling || currentValue >= cap) {
+        continue
+      }
+
+      const nextRequested = {
+        ...requested,
+        [attributeId]: Math.min(
+          cap,
+          Math.max(requested[attributeId] ?? 25, currentValue) + 1
+        ),
+      }
+
+      const nextSolved = solvePersonalizedRequest(
+        nextRequested,
+        seedCandidate.morphology,
+        caps,
+        rules
+      )
+
+      if (nextSolved.capConflicts.length > 0) {
+        continue
+      }
+
+      const gate = testExactOverallIncrement(
+        values,
+        nextSolved.values,
+        seedCandidate.morphology.height,
+        { caps }
+      )
+
+      if (!gate.allowed) {
+        continue
+      }
+
+      const nextUtility = getAllocationUtility(nextSolved.values, profile)
+      const utilityGain = Math.max(0.00001, nextUtility - utility)
+      const cost = Math.max(
+        0.002,
+        (gate.candidate.detailed ?? 0) - (gate.current.detailed ?? 0)
+      )
+      const milestone = getMilestoneGain(
+        values,
+        nextSolved.values,
+        profile,
+        attributeId
+      )
+
+      let score = (utilityGain + milestone) / cost
+
+      if (priorityAttributes.has(attributeId)) {
+        score *= 1.18
+      }
+
+      if (!bestGain || score > bestGain.score) {
+        bestGain = {
+          attributeId,
+          score,
+          requested: nextRequested,
+          solved: nextSolved,
+          utility: nextUtility,
+        }
+      }
+    }
+
+    if (!bestGain) {
+      break
+    }
+
+    requested = bestGain.requested
+    solved = bestGain.solved
+    values = solved.values
+    utility = bestGain.utility
+  }
+
+  // 3) Si un petit reliquat subsiste, restaurer les points retranchés du
+  // seed plutôt que de créer des notes de remplissage incohérentes.
+  while (iterations < maxIterations) {
+    iterations += 1
+    const currentGnr = calculateExactGnr(
+      values,
+      seedCandidate.morphology.height,
+      { caps }
+    )
+
+    if (!currentGnr.available || currentGnr.displayed >= 99) {
+      break
+    }
+
+    let bestRestore = null
+
+    for (const attributeId of ATTRIBUTE_IDS) {
+      const seedValue = seedCandidate.attributes[attributeId] ?? 25
+      const currentValue = values[attributeId] ?? 25
+
+      if (currentValue >= seedValue) {
+        continue
+      }
+
+      const nextRequested = {
+        ...requested,
+        [attributeId]: Math.min(
+          seedValue,
+          Math.max(requested[attributeId] ?? 25, currentValue) + 1
+        ),
+      }
+
+      const nextSolved = solvePersonalizedRequest(
+        nextRequested,
+        seedCandidate.morphology,
+        caps,
+        rules
+      )
+
+      const gate = testExactOverallIncrement(
+        values,
+        nextSolved.values,
+        seedCandidate.morphology.height,
+        { caps }
+      )
+
+      if (!gate.allowed) {
+        continue
+      }
+
+      const nextUtility = getAllocationUtility(nextSolved.values, profile)
+      const cost = Math.max(
+        0.002,
+        (gate.candidate.detailed ?? 0) - (gate.current.detailed ?? 0)
+      )
+      let score = Math.max(0.00001, nextUtility - utility) / cost
+
+      if (sacrificeAttributes.has(attributeId)) {
+        score *= 0.35
+      }
+
+      if (!bestRestore || score > bestRestore.score) {
+        bestRestore = {
+          attributeId,
+          score,
+          requested: nextRequested,
+          solved: nextSolved,
+          utility: nextUtility,
+        }
+      }
+    }
+
+    if (!bestRestore) {
+      break
+    }
+
+    requested = bestRestore.requested
+    solved = bestRestore.solved
+    values = solved.values
+    utility = bestRestore.utility
+  }
+
+  const finalGnr = calculateExactGnr(
+    values,
+    seedCandidate.morphology.height,
+    { caps }
+  )
+
+  if (!finalGnr.available || finalGnr.displayed !== 99) {
+    return wrapOptimizedCandidate(seedCandidate, seedCandidate.attributes, iterations, context)
+  }
+
+  return wrapOptimizedCandidate(seedCandidate, values, iterations, context)
+}
+
+
+function optimizeSeedAcrossMorphologies(seedCandidate, profile) {
+  const screens = getMorphologySearchScreens(seedCandidate, profile)
+  const evaluated = []
+
+  for (let index = 0; index < screens.length; index += 1) {
+    const screen = screens[index]
+    const adaptedSeed = adaptSeedToMorphology(
+      seedCandidate,
+      screen.morphology
+    )
+
+    if (!adaptedSeed) {
+      continue
+    }
+
+    const optimized = optimizeCandidateForProfile(
+      adaptedSeed,
+      profile,
+      {
+        sourceCandidate: seedCandidate,
+        morphologyScreenScore: screen.score,
+        morphologyRank: index + 1,
+        screenedMorphologies: screen.screenedCount,
+      }
+    )
+
+    if (!isExactBase99Candidate(optimized)) {
+      continue
+    }
+
+    evaluated.push({
+      candidate: optimized,
+      affinity: scoreCandidate(optimized, profile),
+      screenScore: screen.score,
+    })
+  }
+
+  // Garde-fou : si la recherche morphologique n'aboutit pas, on conserve
+  // l'optimiseur V19 sur la morphologie validée d'origine.
+  if (evaluated.length === 0) {
+    const fallback = optimizeCandidateForProfile(
+      seedCandidate,
+      profile,
+      {
+        sourceCandidate: seedCandidate,
+        morphologyScreenScore: null,
+        morphologyRank: null,
+        screenedMorphologies: screens[0]?.screenedCount ?? 0,
+      }
+    )
+
+    return {
+      candidate: fallback,
+      affinity: scoreCandidate(fallback, profile),
+      searchedCount: screens[0]?.screenedCount ?? 0,
+      evaluatedCount: 1,
+      validCount: isExactBase99Candidate(fallback) ? 1 : 0,
+    }
+  }
+
+  evaluated.sort((left, right) => {
+    if (right.affinity !== left.affinity) {
+      return right.affinity - left.affinity
+    }
+
+    return right.screenScore - left.screenScore
+  })
+
+  return {
+    ...evaluated[0],
+    searchedCount: screens[0]?.screenedCount ?? 0,
+    evaluatedCount: screens.length,
+    validCount: evaluated.length,
+  }
+}
+
 function getCandidateDiversity(candidate, referenceCandidate) {
   if (!referenceCandidate) {
     return 1
@@ -772,57 +1782,89 @@ export function recommendPersonalBuilds(answers = {}) {
   }
 
   const profile = buildPlaystyleProfile(answers)
-  const positionCandidates = playstyleCandidates.filter(
+  const positionSeeds = playstyleCandidates.filter(
     (candidate) => candidate.position === answers.position
   )
 
-  const ranked = positionCandidates
-    .map((candidate) => ({
-      candidate,
-      affinity: scoreCandidate(candidate, profile),
+  const metaId = provisionalMetaBuildByPosition[answers.position]
+  const metaCandidate = positionSeeds.find(
+    (candidate) => candidate.id === metaId
+  ) ?? null
+
+  const morphologySearchResults = positionSeeds.map(
+    (seedCandidate) => optimizeSeedAcrossMorphologies(seedCandidate, profile)
+  )
+
+  const generatedCandidates = morphologySearchResults.map(
+    (result) => result.candidate
+  )
+
+  const ranked = morphologySearchResults
+    .map((result) => ({
+      candidate: result.candidate,
+      affinity: result.affinity,
+      morphologySearch: {
+        searchedCount: result.searchedCount,
+        evaluatedCount: result.evaluatedCount,
+        validCount: result.validCount,
+      },
     }))
     .sort((left, right) => right.affinity - left.affinity)
 
-  const metaId = provisionalMetaBuildByPosition[answers.position]
-  const metaCandidate = positionCandidates.find((candidate) => candidate.id === metaId) ?? null
-
   const selected = []
+  const ideal = ranked[0] ?? null
 
-  if (ranked[0]) {
-    selected.push(ranked[0])
+  if (ideal) {
+    selected.push(ideal)
   }
 
-  const rankedMeta = ranked.find(
-    (entry) => entry.candidate.id === metaId
+  const idealUsesMetaArchitecture =
+    ideal?.candidate.sourceCandidateId === metaId
+
+  const idealChanges =
+    ideal?.candidate.optimization?.changes?.length ?? 0
+
+  const idealMorphologyChanged = Boolean(
+    ideal?.candidate.optimization?.morphology?.changed
   )
 
-  const idealIsMeta =
-    ranked[0]?.candidate.id === metaId
+  const idealEqualsMetaReference =
+    idealUsesMetaArchitecture &&
+    idealChanges === 0 &&
+    !idealMorphologyChanged
+
+  // Si la Meta fixe doit apparaître en 3e position, on évite de choisir
+  // sa copie générée comme variante n°2.
+  const variantPool =
+    metaCandidate && !idealEqualsMetaReference
+      ? ranked.filter(
+          (entry) => entry.candidate.sourceCandidateId !== metaId
+        )
+      : ranked
 
   const second = chooseVariant(
-    ranked,
+    variantPool,
     selected,
-    ranked[0]?.candidate,
-    idealIsMeta ? null : metaId
+    ideal?.candidate
   )
 
   if (second) {
     selected.push(second)
   }
 
-  if (
-    !idealIsMeta &&
-    rankedMeta &&
-    !selected.some((entry) => entry.candidate.id === rankedMeta.candidate.id)
-  ) {
-    selected.push(rankedMeta)
+  if (metaCandidate && !idealEqualsMetaReference) {
+    selected.push({
+      candidate: metaCandidate,
+      affinity: scoreCandidate(metaCandidate, profile),
+      fixedMetaReference: true,
+    })
   }
 
   while (selected.length < 3) {
     const fallback = chooseVariant(
       ranked,
       selected,
-      ranked[0]?.candidate
+      ideal?.candidate
     )
 
     if (!fallback) {
@@ -838,11 +1880,14 @@ export function recommendPersonalBuilds(answers = {}) {
     return {
       ...enriched,
       recommendationType:
-        index === 0
-          ? 'ideal'
-          : entry.candidate.id === metaId
-            ? 'meta'
+        entry.fixedMetaReference
+          ? 'meta'
+          : index === 0
+            ? 'ideal'
             : 'variant',
+      isMetaArchitecture:
+        entry.candidate.sourceCandidateId === metaId ||
+        entry.candidate.id === metaId,
       metaComparison: getMetaComparison(enriched, metaCandidate),
     }
   })
@@ -851,6 +1896,29 @@ export function recommendPersonalBuilds(answers = {}) {
     profile,
     results,
     metaCandidate,
+    generation: {
+      version: PERSONALIZER_VERSION,
+      generatedCount: generatedCandidates.length,
+      optimizedCount: generatedCandidates.filter(
+        (candidate) => candidate.optimization?.applied
+      ).length,
+      morphologyChangedCount: generatedCandidates.filter(
+        (candidate) => candidate.optimization?.morphology?.changed
+      ).length,
+      seedCount: positionSeeds.length,
+      screenedMorphologies: morphologySearchResults.reduce(
+        (total, result) => total + (result.searchedCount ?? 0),
+        0
+      ),
+      evaluatedMorphologies: morphologySearchResults.reduce(
+        (total, result) => total + (result.evaluatedCount ?? 0),
+        0
+      ),
+      validMorphologies: morphologySearchResults.reduce(
+        (total, result) => total + (result.validCount ?? 0),
+        0
+      ),
+    },
   }
 }
 
