@@ -206,6 +206,139 @@ const teamContextWeights = {
   },
 }
 
+const shootingProfileWeights = {
+  flexible: {},
+  secondary: {
+    threePointShot: 0.22,
+    midRangeShot: 0.08,
+  },
+  open_spacer: {
+    threePointShot: 0.62,
+    midRangeShot: 0.12,
+  },
+  reliable_spotup: {
+    threePointShot: 0.95,
+    midRangeShot: 0.22,
+  },
+  shot_creator: {
+    threePointShot: 0.82,
+    midRangeShot: 0.92,
+    ballHandle: 0.42,
+    speedWithBall: 0.32,
+  },
+  elite_range: {
+    threePointShot: 1.35,
+    midRangeShot: 0.32,
+  },
+}
+
+const finishingProfileWeights = {
+  flexible: {},
+  simple: {
+    drivingLayup: 0.35,
+    drivingDunk: 0.38,
+  },
+  cuts: {
+    drivingDunk: 0.82,
+    drivingLayup: 0.36,
+    vertical: 0.42,
+    speed: 0.24,
+  },
+  contacts: {
+    drivingDunk: 1.22,
+    vertical: 0.78,
+    strength: 0.28,
+  },
+  layups: {
+    drivingLayup: 1.05,
+    speedWithBall: 0.24,
+    ballHandle: 0.18,
+  },
+  inside_big: {
+    standingDunk: 1.15,
+    closeShot: 0.68,
+    strength: 0.5,
+    offensiveRebound: 0.22,
+  },
+}
+
+const matchupProfileWeights = {
+  natural: {},
+  guards: {
+    perimeterDefense: 0.72,
+    agility: 0.72,
+    speed: 0.48,
+    steal: 0.28,
+  },
+  wings: {
+    perimeterDefense: 0.62,
+    strength: 0.52,
+    steal: 0.34,
+    agility: 0.3,
+  },
+  forwards_bigs: {
+    interiorDefense: 0.62,
+    strength: 0.68,
+    block: 0.48,
+    defensiveRebound: 0.36,
+  },
+  switch_all: {
+    perimeterDefense: 0.52,
+    interiorDefense: 0.48,
+    strength: 0.52,
+    agility: 0.44,
+    block: 0.28,
+  },
+}
+
+const shootingProfileTargets = {
+  secondary: {
+    threePointShot: { min: 72, ideal: 78, ceiling: 82, budgetSensitive: true },
+  },
+  open_spacer: {
+    threePointShot: { min: 78, ideal: 82, ceiling: 84, budgetSensitive: true },
+  },
+  reliable_spotup: {
+    threePointShot: { min: 84, ideal: 87, ceiling: 90, budgetSensitive: true },
+  },
+  shot_creator: {
+    threePointShot: { min: 84, ideal: 89, ceiling: 94 },
+    midRangeShot: { min: 80, ideal: 87, ceiling: 94 },
+  },
+  elite_range: {
+    threePointShot: { min: 92, ideal: 95, ceiling: 99 },
+  },
+}
+
+const finishingProfileTargets = {
+  simple: {
+    drivingLayup: { min: 65, ideal: 75, ceiling: 82, budgetSensitive: true },
+    drivingDunk: { min: 60, ideal: 73, ceiling: 80, budgetSensitive: true },
+  },
+  cuts: {
+    drivingDunk: { min: 73, ideal: 80, ceiling: 87 },
+    vertical: { min: 65, ideal: 75, ceiling: 82 },
+  },
+  contacts: {
+    drivingDunk: { min: 87, ideal: 93, ceiling: 99 },
+    vertical: { min: 75, ideal: 82, ceiling: 90 },
+  },
+  layups: {
+    drivingLayup: { min: 80, ideal: 88, ceiling: 96 },
+  },
+  inside_big: {
+    standingDunk: { min: 81, ideal: 90, ceiling: 99 },
+    closeShot: { min: 70, ideal: 82, ceiling: 94 },
+  },
+}
+
+function buildPreferenceTargets(answers = {}) {
+  return {
+    ...(shootingProfileTargets[answers.shootingProfile] ?? {}),
+    ...(finishingProfileTargets[answers.finishingProfile] ?? {}),
+  }
+}
+
 
 const STYLE_TAG_AFFINITY = {
   primary_creator: { primary_creator: 1, secondary_creator: 0.25, scoring: 0.3, shooting: 0.15, playmaking_big: 0.15 },
@@ -234,7 +367,7 @@ const BADGE_TIER_SCORE = {
   hof: 1,
 }
 
-const PERSONALIZER_VERSION = 'V21'
+const PERSONALIZER_VERSION = 'V22'
 
 const BUILDER_MILESTONES = [
   60, 65, 70, 75, 80, 85, 87, 89, 90, 92, 93, 95, 97, 99,
@@ -255,7 +388,7 @@ const PRIORITY_CORE_ATTRIBUTES = {
 
 
 
-const MORPHOLOGY_COARSE_WEIGHT_STEP = 1
+const MORPHOLOGY_COARSE_WEIGHT_STEP = 5
 const MORPHOLOGY_SCREEN_PER_SEED = 5
 const MORPHOLOGY_LOCAL_WEIGHT_RADIUS = 4
 const MORPHOLOGY_HEIGHT_DIVERSITY_LIMIT = 2
@@ -310,6 +443,9 @@ export function buildPlaystyleProfile(answers = {}) {
   addWeights(weights, offenseWeights[answers.offenseSecondary], 0.55)
   addWeights(weights, defenseWeights[answers.defensePrimary], 1)
   addWeights(weights, teamContextWeights[answers.teamContext], 1)
+  addWeights(weights, shootingProfileWeights[answers.shootingProfile], 1)
+  addWeights(weights, finishingProfileWeights[answers.finishingProfile], 1)
+  addWeights(weights, matchupProfileWeights[answers.matchupProfile], 1)
 
   for (const priority of answers.priorities ?? []) {
     addWeights(weights, priorityWeights[priority], 1)
@@ -333,6 +469,7 @@ export function buildPlaystyleProfile(answers = {}) {
     position: answers.position,
     answers,
     weights,
+    targets: buildPreferenceTargets(answers),
     sortedPriorities,
   }
 }
@@ -475,6 +612,40 @@ function getBadgeThresholdBonus(candidate, profile) {
   return Math.min(0.04, normalized * 0.04)
 }
 
+function getPreferenceTargetAdjustment(candidate, profile) {
+  const targets = profile.targets ?? {}
+  let adjustment = 0
+  let count = 0
+
+  for (const [attributeId, target] of Object.entries(targets)) {
+    const value = Number(candidate.attributes?.[attributeId] ?? 25)
+    const minimum = Number(target.min ?? 25)
+    const ideal = Number(target.ideal ?? minimum)
+    const ceiling = Number(target.ceiling ?? 99)
+    const importance = Math.max(0.55, getProfileImportance(profile, attributeId))
+
+    count += 1
+
+    if (value < minimum) {
+      adjustment -= Math.min(0.055, ((minimum - value) / 18) * 0.055) * importance
+      continue
+    }
+
+    const idealDistance = Math.abs(value - ideal)
+    adjustment += Math.max(0, 0.018 - idealDistance * 0.0015) * importance
+
+    if (target.budgetSensitive && value > ceiling) {
+      adjustment -= Math.min(0.025, ((value - ceiling) / 15) * 0.025)
+    }
+  }
+
+  if (count === 0) {
+    return 0
+  }
+
+  return Math.max(-0.08, Math.min(0.04, adjustment / Math.sqrt(count)))
+}
+
 function scoreCandidate(candidate, profile) {
   const weights = profile.weights
   let weightedScore = 0
@@ -506,6 +677,11 @@ function scoreCandidate(candidate, profile) {
     profile
   )
 
+  const preferenceTargetAdjustment = getPreferenceTargetAdjustment(
+    candidate,
+    profile
+  )
+
   const animationCaps = getExactBodyCaps(candidate.morphology)
   const animationBuildScore = getAnimationBuildScore(
     profile,
@@ -521,6 +697,7 @@ function scoreCandidate(candidate, profile) {
     morphologyBonus * 0.55 +
     priorityFocusBonus * 0.55 +
     badgeThresholdBonus * 0.55 +
+    preferenceTargetAdjustment +
     (animationEnabled ? animationBuildScore * 0.06 : 0)
 
   return Math.max(
@@ -818,6 +995,17 @@ function getMaxPersonalizedDrop(seedCandidate, profile, attributeId) {
   const priorityAttributes = getPriorityCoreAttributeSet(profile.answers.priorities)
   const sacrificeAttributes = getCategoryAttributeSet(profile.answers.sacrifices)
   const importance = getProfileImportance(profile, attributeId)
+  const target = profile.targets?.[attributeId]
+  const seedValue = Number(seedCandidate.attributes?.[attributeId] ?? 25)
+
+  if (
+    target?.budgetSensitive &&
+    Number.isFinite(Number(target.ceiling)) &&
+    seedValue > Number(target.ceiling) &&
+    !priorityAttributes.has(attributeId)
+  ) {
+    return Math.min(12, Math.max(1, seedValue - Number(target.ceiling)))
+  }
 
   if (priorityAttributes.has(attributeId) || importance >= 0.62) {
     return 0
@@ -892,6 +1080,21 @@ function getMaxPersonalizedGain(
     )
   }
 
+  const target = profile.targets?.[attributeId]
+
+  if (target) {
+    const ideal = Math.min(cap, Number(target.ideal ?? ceiling))
+    const targetCeiling = Math.min(cap, Number(target.ceiling ?? cap))
+
+    if (Number.isFinite(ideal)) {
+      ceiling = Math.max(ceiling, ideal)
+    }
+
+    if (Number.isFinite(targetCeiling)) {
+      ceiling = Math.min(ceiling, targetCeiling)
+    }
+  }
+
   return ceiling
 }
 
@@ -957,8 +1160,22 @@ function getMorphologyPreferenceScreenScore(morphology, caps, profile, seedCandi
   return 0.5
 }
 
-function scoreMorphologyPotential(seedCandidate, profile, morphology) {
-  const bodyCaps = getExactBodyCaps(morphology)
+function createMorphologySearchCache() {
+  return {
+    bodyCaps: new Map(),
+    animationPotential: new Map(),
+  }
+}
+
+function scoreMorphologyPotential(seedCandidate, profile, morphology, searchCache = null) {
+
+  const cacheKey = morphologyKey(morphology)
+  let bodyCaps = searchCache?.bodyCaps?.get(cacheKey)
+
+  if (!bodyCaps) {
+    bodyCaps = getExactBodyCaps(morphology)
+    searchCache?.bodyCaps?.set(cacheKey, bodyCaps)
+  }
 
   if (!bodyCaps.available) {
     return null
@@ -1002,11 +1219,16 @@ function scoreMorphologyPotential(seedCandidate, profile, morphology) {
     profile,
     seedCandidate
   )
-  const animationPotential = getAnimationPotentialScore(
-    profile,
-    morphology,
-    caps
-  )
+  let animationPotential = searchCache?.animationPotential?.get(cacheKey)
+
+  if (animationPotential === undefined) {
+    animationPotential = getAnimationPotentialScore(
+      profile,
+      morphology,
+      caps
+    )
+    searchCache?.animationPotential?.set(cacheKey, animationPotential)
+  }
 
   const score = animationPotential === null
     ? (
@@ -1068,14 +1290,15 @@ function selectMorphologyScreensWithDiversity(entries, limit) {
   return selected
 }
 
-function getMorphologySearchScreens(seedCandidate, profile) {
+function getMorphologySearchScreens(seedCandidate, profile, searchCache = null) {
   const position = positionById.get(seedCandidate.position)
 
   if (!position) {
     const fallback = scoreMorphologyPotential(
       seedCandidate,
       profile,
-      seedCandidate.morphology
+      seedCandidate.morphology,
+      searchCache
     )
 
     return fallback ? [fallback] : []
@@ -1116,7 +1339,8 @@ function getMorphologySearchScreens(seedCandidate, profile) {
         const screen = scoreMorphologyPotential(
           seedCandidate,
           profile,
-          morphology
+          morphology,
+          searchCache
         )
 
         screenedCount += 1
@@ -1174,7 +1398,8 @@ function getMorphologySearchScreens(seedCandidate, profile) {
           {
             ...morphology,
             weight,
-          }
+          },
+          searchCache
         )
       )
     }
@@ -1185,7 +1410,8 @@ function getMorphologySearchScreens(seedCandidate, profile) {
     scoreMorphologyPotential(
       seedCandidate,
       profile,
-      seedCandidate.morphology
+      seedCandidate.morphology,
+      searchCache
     )
   )
 
@@ -1699,8 +1925,8 @@ function optimizeCandidateForProfile(seedCandidate, profile, context = {}) {
 }
 
 
-function optimizeSeedAcrossMorphologies(seedCandidate, profile) {
-  const screens = getMorphologySearchScreens(seedCandidate, profile)
+function optimizeSeedAcrossMorphologies(seedCandidate, profile, searchCache = null) {
+  const screens = getMorphologySearchScreens(seedCandidate, profile, searchCache)
   const evaluated = []
 
   for (let index = 0; index < screens.length; index += 1) {
@@ -1927,8 +2153,14 @@ export function recommendPersonalBuilds(answers = {}) {
     (candidate) => candidate.id === metaId
   ) ?? null
 
+  const morphologySearchCache = createMorphologySearchCache()
+
   const morphologySearchResults = positionSeeds.map(
-    (seedCandidate) => optimizeSeedAcrossMorphologies(seedCandidate, profile)
+    (seedCandidate) => optimizeSeedAcrossMorphologies(
+      seedCandidate,
+      profile,
+      morphologySearchCache
+    )
   )
 
   const generatedCandidates = morphologySearchResults.map(
@@ -2058,6 +2290,46 @@ export function recommendPersonalBuilds(answers = {}) {
   }
 }
 
+function createRecommendationSnapshot(result) {
+  const capBreakerPlans = {}
+
+  for (const count of [5, 10, 15]) {
+    const plan = result.capBreakerPlans?.[count]
+
+    if (!plan) {
+      continue
+    }
+
+    capBreakerPlans[count] = {
+      requested: plan.requested,
+      applied: plan.applied,
+      lines: (plan.lines ?? []).map((line) => ({
+        attributeId: line.attributeId,
+        count: line.count,
+        before: line.before,
+        after: line.after,
+        gain: line.gain,
+      })),
+    }
+  }
+
+  return {
+    version: PERSONALIZER_VERSION,
+    name: result.name,
+    role: result.role,
+    affinity: result.affinity,
+    sourceCandidateName: result.sourceCandidateName ?? result.name,
+    capBreakerPlans,
+    synergies: (result.synergies ?? []).map((synergy) => ({
+      badgeId: synergy.badgeId,
+      name: synergy.name,
+      tier: synergy.tier,
+      tierLabel: synergy.tierLabel,
+      boost: synergy.boost,
+    })),
+  }
+}
+
 export function createPersonalBuildPayload(result) {
   return {
     morphology: result.morphology,
@@ -2065,6 +2337,7 @@ export function createPersonalBuildPayload(result) {
     selectedBadges: {},
     selectedTakeovers: {},
     selectedCapBreakers: {},
+    personalRecommendation: createRecommendationSnapshot(result),
   }
 }
 

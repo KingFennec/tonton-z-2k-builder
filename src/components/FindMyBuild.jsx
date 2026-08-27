@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import attributesData from '../data/nba2k27/attributes.json'
 import positionsData from '../data/nba2k27/positions.json'
@@ -28,6 +28,32 @@ const defenseChoices = [
   { id: 'interior_defense', label: 'Défendre les intérieurs' },
   { id: 'rebounding', label: 'Prendre les rebonds' },
   { id: 'physical_defense', label: 'Défendre très physique' },
+]
+
+const shootingProfileChoices = [
+  { id: 'flexible', label: 'Aucune exigence particulière' },
+  { id: 'secondary', label: 'Le tir peut rester secondaire' },
+  { id: 'open_spacer', label: 'Fiable ouvert / corner, je préfère investir ailleurs' },
+  { id: 'reliable_spotup', label: 'Catch-and-shoot très fiable' },
+  { id: 'shot_creator', label: 'Créer mon tir / pull-up / mi-distance' },
+  { id: 'elite_range', label: 'Très longue distance / tir élite' },
+]
+
+const finishingProfileChoices = [
+  { id: 'flexible', label: 'Aucune exigence particulière' },
+  { id: 'simple', label: 'Finir simplement quand le cercle est ouvert' },
+  { id: 'cuts', label: 'Cuts / dunks sûrs sans surinvestir' },
+  { id: 'contacts', label: 'Contacts dunks / finition explosive' },
+  { id: 'layups', label: 'Double-pas / finesse' },
+  { id: 'inside_big', label: 'Dunk sans élan / finition intérieure' },
+]
+
+const matchupProfileChoices = [
+  { id: 'natural', label: 'Mon matchup naturel du poste' },
+  { id: 'guards', label: 'Surtout les meneurs et arrières rapides' },
+  { id: 'wings', label: 'Surtout les ailes / scoreurs physiques' },
+  { id: 'forwards_bigs', label: 'Surtout les intérieurs / grands' },
+  { id: 'switch_all', label: 'Je veux pouvoir switcher sur presque tout' },
 ]
 
 const priorityChoices = [
@@ -85,6 +111,9 @@ const initialAnswers = {
   offensePrimary: '',
   offenseSecondary: '',
   defensePrimary: '',
+  shootingProfile: 'flexible',
+  finishingProfile: 'flexible',
+  matchupProfile: 'natural',
   priorities: [],
   sacrifices: [],
   teamContext: 'rec_solo',
@@ -542,10 +571,22 @@ function ResultCard({ result, index, onLoadBuild, onSwitchToBuilder }) {
 export default function FindMyBuild({ onLoadBuild, onSwitchToBuilder }) {
   const [answers, setAnswers] = useState(initialAnswers)
   const [analysis, setAnalysis] = useState(null)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [analysisError, setAnalysisError] = useState('')
+  const workerRef = useRef(null)
+  const requestIdRef = useRef(0)
+
+  const positionNames = {
+    PG: 'Meneur',
+    SG: 'Arrière',
+    SF: 'Ailier',
+    PF: 'Ailier fort',
+    C: 'Pivot',
+  }
 
   const positionChoices = positionsData.positions.map((position) => ({
     id: position.id,
-    label: `${position.abbr_fr} · ${position.name_en}`,
+    label: `${position.abbr_fr} · ${positionNames[position.id] ?? position.name_en}`,
   }))
 
   const attributeNameById = useMemo(
@@ -553,7 +594,19 @@ export default function FindMyBuild({ onLoadBuild, onSwitchToBuilder }) {
     []
   )
 
+  function stopWorker() {
+    if (workerRef.current) {
+      workerRef.current.terminate()
+      workerRef.current = null
+    }
+  }
+
+  useEffect(() => () => stopWorker(), [])
+
   function update(field, value) {
+    stopWorker()
+    setIsAnalyzing(false)
+    setAnalysisError('')
     setAnswers((current) => ({ ...current, [field]: value }))
     setAnalysis(null)
   }
@@ -566,8 +619,58 @@ export default function FindMyBuild({ onLoadBuild, onSwitchToBuilder }) {
   )
 
   function runAnalysis() {
-    if (!canAnalyze) return
-    setAnalysis(recommendPersonalBuilds(answers))
+    if (!canAnalyze || isAnalyzing) return
+
+    stopWorker()
+    setAnalysis(null)
+    setAnalysisError('')
+    setIsAnalyzing(true)
+
+    const requestId = requestIdRef.current + 1
+    requestIdRef.current = requestId
+
+    const finish = (nextAnalysis, error = '') => {
+      if (requestId !== requestIdRef.current) return
+      setAnalysis(nextAnalysis)
+      setAnalysisError(error)
+      setIsAnalyzing(false)
+      stopWorker()
+    }
+
+    if (typeof Worker !== 'undefined') {
+      try {
+        const worker = new Worker(
+          new URL('../workers/playstyleWorker.js', import.meta.url),
+          { type: 'module' }
+        )
+
+        workerRef.current = worker
+        worker.onmessage = (event) => {
+          const payload = event.data ?? {}
+          if (payload.requestId !== requestId) return
+          if (payload.error) {
+            finish(null, payload.error)
+            return
+          }
+          finish(payload.analysis ?? null)
+        }
+        worker.onerror = () => {
+          finish(null, 'Le moteur de recherche a rencontré une erreur. Relance l’analyse.')
+        }
+        worker.postMessage({ requestId, answers })
+        return
+      } catch {
+        // Fallback synchrone uniquement si le navigateur ne permet pas le Worker module.
+      }
+    }
+
+    setTimeout(() => {
+      try {
+        finish(recommendPersonalBuilds(answers))
+      } catch (error) {
+        finish(null, error instanceof Error ? error.message : String(error))
+      }
+    }, 0)
   }
 
   return (
@@ -581,8 +684,8 @@ export default function FindMyBuild({ onLoadBuild, onSwitchToBuilder }) {
           </p>
         </div>
         <div className="finder-version-card">
-          <strong>V21 · Seuils d’animations</strong>
-          <span>Morphologie · BASE 99 exact · seuils d’animations APK · dépendances · Meta indépendante</span>
+          <strong>V22 · Optimisation rapide et profil affiné</strong>
+          <span>Worker dédié · recherche morphologique accélérée · BASE 99 exact · animations APK · Meta indépendante</span>
         </div>
       </div>
 
@@ -616,31 +719,56 @@ export default function FindMyBuild({ onLoadBuild, onSwitchToBuilder }) {
         <section className="finder-question">
           <div className="finder-question-number">4</div>
           <div>
-            <h3>Que veux-tu surtout faire en défense ?</h3>
-            <ChoiceGrid choices={defenseChoices} value={answers.defensePrimary} onChange={(value) => update('defensePrimary', value)} />
+            <h3>Quel niveau de tir veux-tu réellement payer ?</h3>
+            <p>Cette réponse évite de surinvestir à 3 points si un simple spacing fiable te suffit.</p>
+            <ChoiceGrid choices={shootingProfileChoices} value={answers.shootingProfile} onChange={(value) => update('shootingProfile', value)} />
           </div>
         </section>
 
         <section className="finder-question">
           <div className="finder-question-number">5</div>
           <div>
-            <h3>Quels sont les éléments que tu refuses de sacrifier ?</h3>
-            <p>Choisis jusqu’à 3 priorités. Au moins une est nécessaire.</p>
-            <MultiChoiceGrid choices={priorityChoices} values={answers.priorities} onChange={(value) => update('priorities', value)} max={3} />
+            <h3>Quelle finition te correspond le mieux ?</h3>
+            <ChoiceGrid choices={finishingProfileChoices} value={answers.finishingProfile} onChange={(value) => update('finishingProfile', value)} />
           </div>
         </section>
 
         <section className="finder-question">
           <div className="finder-question-number">6</div>
           <div>
-            <h3>Qu’acceptes-tu de sacrifier ?</h3>
+            <h3>Que veux-tu surtout faire en défense ?</h3>
+            <ChoiceGrid choices={defenseChoices} value={answers.defensePrimary} onChange={(value) => update('defensePrimary', value)} />
+          </div>
+        </section>
+
+        <section className="finder-question">
+          <div className="finder-question-number">7</div>
+          <div>
+            <h3>Quel type de matchup veux-tu pouvoir défendre ?</h3>
+            <ChoiceGrid choices={matchupProfileChoices} value={answers.matchupProfile} onChange={(value) => update('matchupProfile', value)} />
+          </div>
+        </section>
+
+        <section className="finder-question">
+          <div className="finder-question-number">8</div>
+          <div>
+            <h3>Quelles sont tes 3 priorités absolues ?</h3>
+            <p>Choisis jusqu’à 3 priorités. Au moins une est nécessaire.</p>
+            <MultiChoiceGrid choices={priorityChoices} values={answers.priorities} onChange={(value) => update('priorities', value)} max={3} />
+          </div>
+        </section>
+
+        <section className="finder-question">
+          <div className="finder-question-number">9</div>
+          <div>
+            <h3>Qu’acceptes-tu réellement de sacrifier ?</h3>
             <p>Facultatif, jusqu’à 3 choix.</p>
             <MultiChoiceGrid choices={priorityChoices} values={answers.sacrifices} onChange={(value) => update('sacrifices', value)} max={3} />
           </div>
         </section>
 
         <section className="finder-question">
-          <div className="finder-question-number">7</div>
+          <div className="finder-question-number">10</div>
           <div>
             <h3>Avec quel type d’équipe joues-tu surtout ?</h3>
             <ChoiceGrid choices={teamChoices} value={answers.teamContext} onChange={(value) => update('teamContext', value)} />
@@ -648,7 +776,7 @@ export default function FindMyBuild({ onLoadBuild, onSwitchToBuilder }) {
         </section>
 
         <section className="finder-question">
-          <div className="finder-question-number">8</div>
+          <div className="finder-question-number">11</div>
           <div>
             <h3>Quel type de morphologie préfères-tu ?</h3>
             <ChoiceGrid choices={morphologyChoices} value={answers.morphologyPreference} onChange={(value) => update('morphologyPreference', value)} />
@@ -656,7 +784,7 @@ export default function FindMyBuild({ onLoadBuild, onSwitchToBuilder }) {
         </section>
 
         <section className="finder-question">
-          <div className="finder-question-number">9</div>
+          <div className="finder-question-number">12</div>
           <div>
             <h3>Comment veux-tu utiliser tes Cap Breakers ?</h3>
             <ChoiceGrid choices={capBreakerChoices} value={answers.capBreakerStrategy} onChange={(value) => update('capBreakerStrategy', value)} />
@@ -669,10 +797,24 @@ export default function FindMyBuild({ onLoadBuild, onSwitchToBuilder }) {
           <strong>{canAnalyze ? 'Profil prêt à analyser' : 'Complète les choix essentiels'}</strong>
           <span>Poste + rôle offensif + rôle défensif + au moins 1 priorité.</span>
         </div>
-        <button type="button" disabled={!canAnalyze} onClick={runAnalysis}>
-          Trouver mes builds
+        <button type="button" disabled={!canAnalyze || isAnalyzing} onClick={runAnalysis}>
+          {isAnalyzing ? 'Analyse en cours…' : 'Trouver mes builds'}
         </button>
       </div>
+
+      {isAnalyzing && (
+        <div className="finder-analysis-progress" role="status">
+          <span className="finder-analysis-spinner" aria-hidden="true" />
+          <div>
+            <strong>Recherche du meilleur BASE 99…</strong>
+            <span>Le calcul tourne dans un Worker séparé : la page reste utilisable pendant l’analyse.</span>
+          </div>
+        </div>
+      )}
+
+      {analysisError && (
+        <div className="finder-analysis-error">{analysisError}</div>
+      )}
 
       {analysis && (
         <div className="finder-results">

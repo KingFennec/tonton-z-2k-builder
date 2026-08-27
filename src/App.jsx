@@ -72,6 +72,10 @@ import {
 } from './engine/buildDescriptionEngine'
 
 import {
+  getPlayerSummary,
+} from './engine/playerSummaryEngine'
+
+import {
   clearBuildFromUrl,
   clearCurrentBuild,
   createBuildPayload,
@@ -84,6 +88,8 @@ import {
 
 import BuildLibrary from './components/BuildLibrary'
 import FindMyBuild from './components/FindMyBuild'
+import BuildProfileSummary from './components/BuildProfileSummary'
+import PersonalRecommendationPanel from './components/PersonalRecommendationPanel'
 
 import './App.css'
 
@@ -242,6 +248,83 @@ const validAttributeIds =
         attribute.id
     )
   )
+
+function sanitizePersonalRecommendation(recommendation) {
+  if (!recommendation || typeof recommendation !== 'object') {
+    return null
+  }
+
+  const capBreakerPlans = {}
+
+  for (const count of [5, 10, 15]) {
+    const rawPlan = recommendation.capBreakerPlans?.[count]
+
+    if (!rawPlan || typeof rawPlan !== 'object') {
+      continue
+    }
+
+    const lines = Array.isArray(rawPlan.lines)
+      ? rawPlan.lines
+          .map((line) => {
+            const attributeId = line?.attributeId
+            const cbCount = Math.max(0, Math.min(5, Math.trunc(Number(line?.count) || 0)))
+            const before = Number(line?.before)
+            const after = Number(line?.after)
+
+            if (
+              !validAttributeIds.has(attributeId) ||
+              cbCount <= 0 ||
+              !Number.isFinite(before) ||
+              !Number.isFinite(after)
+            ) {
+              return null
+            }
+
+            return {
+              attributeId,
+              count: cbCount,
+              before,
+              after,
+              gain: Number.isFinite(Number(line?.gain))
+                ? Number(line.gain)
+                : after - before,
+            }
+          })
+          .filter(Boolean)
+      : []
+
+    capBreakerPlans[count] = {
+      requested: Math.max(0, Math.trunc(Number(rawPlan.requested) || count)),
+      applied: Math.max(0, Math.trunc(Number(rawPlan.applied) || 0)),
+      lines,
+    }
+  }
+
+  const synergies = Array.isArray(recommendation.synergies)
+    ? recommendation.synergies
+        .filter((item) => item && typeof item.badgeId === 'string')
+        .slice(0, 6)
+        .map((item) => ({
+          badgeId: item.badgeId,
+          name: String(item.name ?? item.badgeId),
+          tier: String(item.tier ?? ''),
+          tierLabel: String(item.tierLabel ?? ''),
+          boost: Math.max(1, Math.min(2, Math.trunc(Number(item.boost) || 1))),
+        }))
+    : []
+
+  return {
+    version: String(recommendation.version ?? 'V22'),
+    name: String(recommendation.name ?? 'Build personnalisé').slice(0, 100),
+    role: String(recommendation.role ?? '').slice(0, 220),
+    affinity: Number.isFinite(Number(recommendation.affinity))
+      ? Math.max(0, Math.min(100, Math.round(Number(recommendation.affinity))))
+      : null,
+    sourceCandidateName: String(recommendation.sourceCandidateName ?? '').slice(0, 100),
+    capBreakerPlans,
+    synergies,
+  }
+}
 
 function sanitizeImportedBuild(
   importedBuild
@@ -419,6 +502,11 @@ function sanitizeImportedBuild(
     selectedTakeovers,
 
     selectedCapBreakers,
+
+    personalRecommendation:
+      sanitizePersonalRecommendation(
+        importedBuild.personalRecommendation
+      ),
   }
 }
 
@@ -2569,6 +2657,17 @@ function App() {
       {}
   )
 
+
+  const [
+    personalRecommendation,
+    setPersonalRecommendation,
+  ] = useState(
+    () =>
+      importedBuild
+        ?.personalRecommendation ??
+      null
+  )
+
   /*
    * IMPORTANT :
    *
@@ -3055,6 +3154,21 @@ function App() {
       ]
     )
 
+  const playerSummary =
+    useMemo(
+      () =>
+        morphology.position
+          ? getPlayerSummary(
+              effectiveAttributes,
+              morphology.position
+            )
+          : null,
+      [
+        effectiveAttributes,
+        morphology.position,
+      ]
+    )
+
   const capBreakerProjections =
     useMemo(
       () =>
@@ -3177,6 +3291,36 @@ function App() {
   function resetCapBreakers() {
     setSelectedCapBreakers(
       {}
+    )
+  }
+
+
+  function applyRecommendedCapBreakerPlan(plan) {
+    if (!plan?.lines?.length) {
+      return
+    }
+
+    const next = {}
+
+    for (const line of plan.lines) {
+      const projection = capBreakerProjections?.[line.attributeId]
+      const availableCount = projection?.available
+        ? projection.boosts.filter((boost) => boost > 0).length
+        : 0
+      const count = Math.min(
+        5,
+        availableCount,
+        Math.max(0, Math.trunc(Number(line.count) || 0))
+      )
+
+      if (count > 0) {
+        next[line.attributeId] = count
+      }
+    }
+
+    setSelectedCapBreakers(next)
+    setShareStatus(
+      `Plan +${plan.requested ?? Object.values(next).reduce((sum, value) => sum + value, 0)} Cap Breakers appliqué`
     )
   }
 
@@ -3676,6 +3820,10 @@ function App() {
       {}
     )
 
+    setPersonalRecommendation(
+      null
+    )
+
     setManualAttributes(
       initialManualAttributes
     )
@@ -3737,6 +3885,10 @@ function App() {
       build.selectedCapBreakers
     )
 
+    setPersonalRecommendation(
+      build.personalRecommendation
+    )
+
     setManualAttributes(
       build.manualAttributes
     )
@@ -3775,6 +3927,7 @@ function App() {
           selectedBadges,
           selectedTakeovers,
           selectedCapBreakers,
+          personalRecommendation,
 
           attributes:
             attributesData.attributes,
@@ -3791,6 +3944,7 @@ function App() {
       selectedBadges,
       selectedTakeovers,
       selectedCapBreakers,
+      personalRecommendation,
     ])
 
   useEffect(() => {
@@ -5588,6 +5742,16 @@ function App() {
               </p>
             </div>
 
+            <BuildProfileSummary
+              archetype={
+                buildDescriptionResult.available
+                  ? (buildDescriptionResult.name_fr || buildDescriptionResult.name_en)
+                  : null
+              }
+              summary={playerSummary}
+              personalRecommendation={personalRecommendation}
+            />
+
             <div className="attributes-builder">
               <div className="attribute-column">
                 {leftCategories.map(
@@ -5675,6 +5839,12 @@ function App() {
                 )}
               </div>
             </div>
+
+            <PersonalRecommendationPanel
+              recommendation={personalRecommendation}
+              onApplyPlan={applyRecommendedCapBreakerPlan}
+              onClear={() => setPersonalRecommendation(null)}
+            />
 
             <CapBreakerPanel
               projections={

@@ -22,6 +22,9 @@ const scenarios = [
     offensePrimary: 'primary_creator',
     offenseSecondary: 'closeout',
     defensePrimary: 'on_ball_defense',
+    shootingProfile: 'elite_range',
+    finishingProfile: 'simple',
+    matchupProfile: 'guards',
     priorities: ['dribbling', 'passing', 'shooting'],
     sacrifices: ['rebounding'],
     teamContext: 'rec_solo',
@@ -35,6 +38,9 @@ const scenarios = [
     offensePrimary: 'spot_up',
     offenseSecondary: 'closeout',
     defensePrimary: 'on_ball_defense',
+    shootingProfile: 'open_spacer',
+    finishingProfile: 'simple',
+    matchupProfile: 'guards',
     priorities: ['perimeterDefense', 'steal', 'strength'],
     sacrifices: ['rebounding'],
     teamContext: 'organized_rec',
@@ -48,6 +54,9 @@ const scenarios = [
     offensePrimary: 'secondary_creator',
     offenseSecondary: 'spot_up',
     defensePrimary: 'switch_defense',
+    shootingProfile: 'reliable_spotup',
+    finishingProfile: 'simple',
+    matchupProfile: 'switch_all',
     priorities: ['perimeterDefense', 'shooting', 'strength'],
     sacrifices: ['rebounding'],
     teamContext: 'friends',
@@ -61,6 +70,9 @@ const scenarios = [
     offensePrimary: 'spot_up',
     offenseSecondary: 'cuts',
     defensePrimary: 'interceptions',
+    shootingProfile: 'open_spacer',
+    finishingProfile: 'cuts',
+    matchupProfile: 'switch_all',
     priorities: ['steal', 'block', 'strength'],
     sacrifices: ['dribbling'],
     teamContext: 'organized_rec',
@@ -74,6 +86,9 @@ const scenarios = [
     offensePrimary: 'pick_roll',
     offenseSecondary: 'spot_up',
     defensePrimary: 'rim_protection',
+    shootingProfile: 'reliable_spotup',
+    finishingProfile: 'inside_big',
+    matchupProfile: 'forwards_bigs',
     priorities: ['rebounding', 'block', 'passing'],
     sacrifices: ['dribbling'],
     teamContext: 'organized_rec',
@@ -87,6 +102,9 @@ const scenarios = [
     offensePrimary: 'closeout',
     offenseSecondary: 'cuts',
     defensePrimary: 'on_ball_defense',
+    shootingProfile: 'open_spacer',
+    finishingProfile: 'contacts',
+    matchupProfile: 'guards',
     priorities: ['dunk', 'shooting', 'dribbling'],
     sacrifices: ['rebounding'],
     teamContext: 'rec_solo',
@@ -115,31 +133,25 @@ for (const scenario of scenarios) {
     throw new Error(`${scenario.name}: 3 résultats attendus, ${analysis.results.length} reçus.`)
   }
 
-  if (analysis.generation?.version !== 'V21') {
-    throw new Error(`${scenario.name}: moteur V21 attendu.`)
+  if (analysis.generation?.version !== 'V22') {
+    throw new Error(`${scenario.name}: moteur V22 attendu.`)
   }
 
   if (
     (analysis.generation.screenedMorphologies ?? 0) <= analysis.generation.seedCount ||
     (analysis.generation.evaluatedMorphologies ?? 0) < analysis.generation.seedCount
   ) {
-    throw new Error(`${scenario.name}: recherche morphologique V21 non exécutée.`)
+    throw new Error(`${scenario.name}: recherche morphologique V22 non exécutée.`)
   }
 
   const ideal = analysis.results[0]
   const idealSource = ideal.sourceCandidateId ?? ideal.id
 
-  // Sans index réel, V21 doit conserver exactement le comportement de V20.
-  // Avec les 2914 animations importées, le classement peut légitimement changer
-  // si une autre architecture/morphologie ouvre de meilleurs seuils utiles.
-  if (!animationStatus.enabled && idealSource !== scenario.expectedIdealSource) {
-    throw new Error(
-      `${scenario.name}: architecture idéale attendue ${scenario.expectedIdealSource}, reçue ${idealSource}.`
-    )
-  }
+  // V22 ajoute des préférences de tir, finition et matchups :
+  // l'architecture gagnante peut donc évoluer même sans index d'animations réel.
 
   if (!ideal.generated) {
-    throw new Error(`${scenario.name}: le build idéal doit passer par l'optimiseur V21.`)
+    throw new Error(`${scenario.name}: le build idéal doit passer par l'optimiseur V22.`)
   }
 
   if (ideal.optimization?.morphology?.changed) {
@@ -231,11 +243,11 @@ for (const scenario of scenarios) {
 
     if (animationStatus.enabled) {
       if (!result.animationAnalysis?.enabled) {
-        throw new Error(`${result.id}: analyse animations V21 inactive malgré l'index APK.`)
+        throw new Error(`${result.id}: analyse animations V22 inactive malgré l'index APK.`)
       }
 
       if (!Number.isFinite(result.animationAnalysis.score)) {
-        throw new Error(`${result.id}: score animations V21 invalide.`)
+        throw new Error(`${result.id}: score animations V22 invalide.`)
       }
 
       resultsWithAnimationAnalysis += 1
@@ -265,9 +277,11 @@ for (const scenario of scenarios) {
 
     if (
       payload.morphology.position !== scenario.position ||
-      Object.keys(payload.manualAttributes).length !== 21
+      Object.keys(payload.manualAttributes).length !== 21 ||
+      !payload.personalRecommendation ||
+      !payload.personalRecommendation.capBreakerPlans?.[10]
     ) {
-      throw new Error(`${result.id}: payload Builder invalide.`)
+      throw new Error(`${result.id}: payload Builder / plan personnalisé invalide.`)
     }
   }
 
@@ -283,18 +297,18 @@ for (const scenario of scenarios) {
 
 if (plansWithAnimationUnlockField !== scenarios.length * 3 * 3) {
   throw new Error(
-    `V21: champs animationUnlocks incomplets (${plansWithAnimationUnlockField}).`
+    `V22: champs animationUnlocks incomplets (${plansWithAnimationUnlockField}).`
   )
 }
 
 if (animationStatus.enabled && resultsWithAnimationAnalysis !== scenarios.length * 3) {
   throw new Error(
-    `V21: analyses animations incomplètes (${resultsWithAnimationAnalysis}).`
+    `V22: analyses animations incomplètes (${resultsWithAnimationAnalysis}).`
   )
 }
 
-console.log('Playstyle Finder V21 verification passed.')
+console.log('Playstyle Finder V22 verification passed.')
 console.log(`- animation optimizer: ${animationStatus.enabled ? 'APK 2914 actif' : 'index placeholder / fallback V20'}`)
 console.log('- BASE 99 exact, morphologie, Cap Breakers et Synergies vérifiés')
 console.log(`- morphologies réellement modifiées: ${scenariosWithMorphologyChange}/${scenarios.length}`)
-console.log("- champs d'animations V21 vérifiés sur tous les résultats")
+console.log("- champs d'animations V22 vérifiés sur tous les résultats")

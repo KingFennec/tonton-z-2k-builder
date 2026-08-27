@@ -20,7 +20,8 @@
     "verify:animations": "node scripts/verifyAnimationApkData.mjs && node scripts/verifyAnimationOptimizer.mjs",
     "verify:assets": "node scripts/verifyVisualAssets.mjs",
     "verify:v16": "node scripts/verifyV16Interactions.mjs",
-    "verify:finder": "node scripts/verifyPlaystyleFinder.mjs"
+    "verify:finder": "node scripts/verifyPlaystyleFinder.mjs",
+    "verify:v22": "node scripts/verifyV22Experience.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",

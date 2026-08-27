@@ -5116,3 +5116,378 @@ input[type='range']::-moz-range-thumb {
     margin-right: 14px;
   }
 }
+
+/*
+ * =========================================================
+ * V22 · PROFIL DU JOUEUR / PLAN PERSONNALISÉ / ANALYSE ASYNC
+ * =========================================================
+ */
+
+.build-profile-summary {
+  position: relative;
+  overflow: hidden;
+  margin: 0 0 18px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(159, 31, 31, 0.25), transparent 38%),
+    linear-gradient(135deg, rgba(18, 17, 20, 0.98), rgba(9, 11, 15, 0.98));
+}
+
+.build-profile-summary::after {
+  content: '';
+  position: absolute;
+  inset: auto -60px -90px auto;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(155, 30, 30, 0.2), transparent 65%);
+  pointer-events: none;
+}
+
+.build-profile-summary-heading {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.build-profile-summary-heading > div:first-child > span,
+.personal-recommendation-heading > div:first-child > span {
+  color: #aeb6c4;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.build-profile-summary h3 {
+  margin: 5px 0 6px;
+  font-size: clamp(20px, 2.4vw, 29px);
+  text-transform: uppercase;
+}
+
+.build-profile-summary-heading p {
+  max-width: 720px;
+  margin: 0;
+  color: #c8ced8;
+  line-height: 1.5;
+}
+
+.build-profile-recommendation-tag {
+  flex: 0 0 auto;
+  display: grid;
+  gap: 3px;
+  min-width: 140px;
+  padding: 10px 12px;
+  border: 1px solid rgba(68, 198, 115, 0.35);
+  border-radius: 12px;
+  background: rgba(39, 125, 72, 0.12);
+  text-align: right;
+}
+
+.build-profile-recommendation-tag strong {
+  font-size: 12px;
+}
+
+.build-profile-recommendation-tag span {
+  color: #7fe29f;
+  font-size: 11px;
+}
+
+.build-profile-summary-columns {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(250px, 0.8fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.build-profile-points {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.build-profile-points h4 {
+  margin: 0 0 2px;
+  font-size: 15px;
+}
+
+.build-profile-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.build-profile-point > b {
+  flex: 0 0 auto;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.build-profile-point.positive > b {
+  color: #62d783;
+}
+
+.build-profile-point.negative > b {
+  color: #ff5a65;
+}
+
+.build-profile-point > div {
+  display: grid;
+  gap: 2px;
+}
+
+.build-profile-point strong {
+  font-size: 13px;
+}
+
+.build-profile-point span {
+  color: #c2c8d2;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.personal-recommendation-panel {
+  margin-top: 18px;
+  border: 1px solid rgba(72, 189, 111, 0.3);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(24, 51, 35, 0.75), rgba(15, 21, 19, 0.96));
+}
+
+.personal-recommendation-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+}
+
+.personal-recommendation-heading h2 {
+  margin: 4px 0 5px;
+  font-size: 20px;
+}
+
+.personal-recommendation-heading p {
+  max-width: 760px;
+  margin: 0;
+  color: #b8c5bc;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.personal-recommendation-clear,
+.personal-recommendation-apply {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  color: #f5f7fb;
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+}
+
+.personal-recommendation-clear {
+  padding: 8px 10px;
+  font-size: 11px;
+}
+
+.personal-recommendation-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0 18px 12px;
+}
+
+.personal-recommendation-meta > div {
+  display: grid;
+  gap: 3px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.personal-recommendation-meta span,
+.personal-recommendation-synergies > span {
+  color: #9facaa;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.personal-recommendation-meta strong {
+  font-size: 12px;
+}
+
+.personal-recommendation-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 0 18px 12px;
+}
+
+.personal-recommendation-tabs button {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9px;
+  color: #d8ded9;
+  background: rgba(255, 255, 255, 0.045);
+  cursor: pointer;
+}
+
+.personal-recommendation-tabs button.is-selected {
+  border-color: rgba(99, 222, 139, 0.6);
+  color: #ecfff1;
+  background: rgba(57, 160, 89, 0.2);
+}
+
+.personal-recommendation-plan {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 14px;
+  padding: 0 18px 14px;
+}
+
+.personal-recommendation-lines {
+  display: grid;
+  gap: 7px;
+}
+
+.personal-recommendation-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 11px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.personal-recommendation-line > div {
+  display: grid;
+  gap: 2px;
+}
+
+.personal-recommendation-line strong,
+.personal-recommendation-line b {
+  font-size: 13px;
+}
+
+.personal-recommendation-line span {
+  color: #aab5ad;
+  font-size: 10px;
+}
+
+.personal-recommendation-apply {
+  min-width: 160px;
+  padding: 10px 13px;
+  border-color: rgba(87, 213, 126, 0.45);
+  background: rgba(48, 145, 79, 0.22);
+  font-weight: 800;
+}
+
+.personal-recommendation-synergies {
+  display: grid;
+  gap: 7px;
+  padding: 0 18px 12px;
+}
+
+.personal-recommendation-synergies > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.personal-recommendation-synergies strong {
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 11px;
+}
+
+.personal-recommendation-panel > small,
+.personal-recommendation-empty {
+  display: block;
+  margin: 0;
+  padding: 0 18px 16px;
+  color: #96a39a;
+  font-size: 10px;
+}
+
+.finder-analysis-progress,
+.finder-analysis-error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+}
+
+.finder-analysis-progress {
+  border: 1px solid rgba(94, 137, 226, 0.28);
+  background: rgba(56, 79, 132, 0.14);
+}
+
+.finder-analysis-progress > div {
+  display: grid;
+  gap: 3px;
+}
+
+.finder-analysis-progress span {
+  color: #aab4c5;
+  font-size: 11px;
+}
+
+.finder-analysis-spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #f4f7ff;
+  border-radius: 50%;
+  animation: finder-spin 0.8s linear infinite;
+}
+
+.finder-analysis-error {
+  border: 1px solid rgba(255, 80, 93, 0.35);
+  color: #ffc5ca;
+  background: rgba(138, 32, 42, 0.16);
+}
+
+@keyframes finder-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 760px) {
+  .build-profile-summary-heading,
+  .personal-recommendation-heading {
+    flex-direction: column;
+  }
+
+  .build-profile-recommendation-tag {
+    width: 100%;
+    text-align: left;
+  }
+
+  .build-profile-summary-columns,
+  .personal-recommendation-plan {
+    grid-template-columns: 1fr;
+  }
+
+  .personal-recommendation-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .personal-recommendation-apply {
+    width: 100%;
+  }
+}

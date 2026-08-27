@@ -303,6 +303,7 @@ export function createBuildPayload({
   selectedBadges,
   selectedTakeovers,
   selectedCapBreakers,
+  personalRecommendation = null,
   attributes,
 }) {
   const storedAttributes =
@@ -406,6 +407,11 @@ export function createBuildPayload({
 
     c:
       storedCapBreakers,
+
+    r:
+      personalRecommendation && typeof personalRecommendation === 'object'
+        ? personalRecommendation
+        : null,
   }
 }
 
@@ -673,6 +679,11 @@ export function decodeBuildPayload(
       selectedTakeovers,
 
       selectedCapBreakers,
+
+      personalRecommendation:
+        payload.r && typeof payload.r === 'object'
+          ? payload.r
+          : null,
     }
   } catch {
     return null
