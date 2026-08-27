@@ -15,6 +15,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = (p) => JSON.parse(fs.readFileSync(path.join(root, p), 'utf8'))
 const metadata = read('src/data/nba2k27/apk/animation_glossary_metadata.json')
 const dataPath = path.join(root, 'src/data/nba2k27/apk/animations.json')
+const optimizerPath = path.join(root, 'src/data/nba2k27/apk/animation_optimizer_index.json')
 const errors = []
 
 const fail = (message) => errors.push(message)
@@ -132,6 +133,51 @@ if (fs.existsSync(dataPath)) {
 
   expect(seasonSpecific === 30, `season specific=${seasonSpecific}`)
   expect(prized === 0, `prized=${prized}`)
+
+  if (fs.existsSync(optimizerPath)) {
+    const optimizer = JSON.parse(fs.readFileSync(optimizerPath, 'utf8'))
+    const recExcludedTypes = new Set(['BT_DUNKS', 'BT_ALLEYOOP', 'BT_PASS'])
+    const eligible = animations.filter(
+      (animation) =>
+        !animation.seasonSpecific &&
+        !recExcludedTypes.has(animation.group?.type)
+    )
+    const signatureTotal = (optimizer.signatures ?? []).reduce(
+      (sum, signature) => sum + Number(signature.count ?? 0),
+      0
+    )
+
+    expect(optimizer.schemaVersion === 1, `optimizer schema=${optimizer.schemaVersion}`)
+    expect(optimizer.sourceAnimations === 2914, `optimizer source=${optimizer.sourceAnimations}`)
+    expect(optimizer.eligibleAnimations === eligible.length, `optimizer eligible expected ${eligible.length}, got ${optimizer.eligibleAnimations}`)
+    expect(signatureTotal === eligible.length, `optimizer signature total expected ${eligible.length}, got ${signatureTotal}`)
+    expect((optimizer.signatures ?? []).length > 0, 'optimizer has no signatures')
+
+    for (const signature of optimizer.signatures ?? []) {
+      expect(!recExcludedTypes.has(signature.groupType), `optimizer should exclude REC-irrelevant ${signature.groupType}`)
+      expect(ANIMATION_ALLOWED_SIZES.includes(signature.allowedSizes), `optimizer ${signature.key}: invalid size`)
+      expect(ANIMATION_REQUIREMENT_OPERATORS.includes(signature.operator), `optimizer ${signature.key}: invalid operator`)
+
+      for (const requirement of signature.requirements ?? []) {
+        expect(
+          Object.values(ANIMATION_ATTRIBUTE_TO_BUILDER).includes(requirement.attribute),
+          `optimizer ${signature.key}: invalid Builder attribute ${requirement.attribute}`
+        )
+      }
+    }
+
+    const optimizerHasAaron = (optimizer.signatures ?? []).some(
+      (signature) =>
+        signature.allowedSizes === 'SWINGS_ONLY' &&
+        signature.operator === 'AND' &&
+        signature.requirements?.some((requirement) => requirement.attribute === 'standingDunk' && requirement.min === 55) &&
+        signature.requirements?.some((requirement) => requirement.attribute === 'drivingDunk' && requirement.min === 80) &&
+        signature.requirements?.some((requirement) => requirement.attribute === 'vertical' && requirement.min === 60)
+    )
+    expect(optimizerHasAaron, 'optimizer index missing Aaron Gordon 55/80/60 signature')
+  } else {
+    fail('animation optimizer index missing')
+  }
 } else {
   console.log('Animation full dataset not present yet; validating native engine + extracted metadata only.')
 }
@@ -147,4 +193,7 @@ console.log('- native height boundaries mapped: <=6\'4 SMALL, 6\'5..6\'9 SWING, 
 console.log('- 12/12 glossary attribute types mapped to Builder attributes')
 console.log('- AND / OR / empty requirement semantics verified')
 console.log('- 56 glossary groups sum to 2914 animations')
-if (fs.existsSync(dataPath)) console.log('- 2914/2914 normalized animation entries verified')
+if (fs.existsSync(dataPath)) {
+  console.log('- 2914/2914 normalized animation entries verified')
+  console.log('- REC/permanent animation optimizer index verified')
+}

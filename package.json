@@ -17,7 +17,7 @@
     "verify:buildnames": "node scripts/verifyBuildDescriptions.mjs",
     "verify:overall-budget": "node scripts/verifyOverallBudgetApkData.mjs",
     "import:animations": "node scripts/importAnimationGlossary.mjs",
-    "verify:animations": "node scripts/verifyAnimationApkData.mjs",
+    "verify:animations": "node scripts/verifyAnimationApkData.mjs && node scripts/verifyAnimationOptimizer.mjs",
     "verify:assets": "node scripts/verifyVisualAssets.mjs",
     "verify:v16": "node scripts/verifyV16Interactions.mjs",
     "verify:finder": "node scripts/verifyPlaystyleFinder.mjs"

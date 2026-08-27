@@ -193,6 +193,41 @@ function AttributeTable({ attributes }) {
   )
 }
 
+function formatAnimationRequirements(animation, attributeNameById) {
+  const requirements = animation?.requirements ?? []
+
+  if (!requirements.length) return 'Aucun seuil d’attribut'
+
+  const separator = animation.operator === 'OR' ? ' ou ' : ' + '
+
+  return requirements
+    .map((requirement) => `${attributeNameById[requirement.attribute] ?? requirement.attribute} ${requirement.min}`)
+    .join(separator)
+}
+
+function AnimationItems({ items, attributeNameById, emptyText = null }) {
+  if (!items?.length) {
+    return emptyText ? <p className="finder-muted">{emptyText}</p> : null
+  }
+
+  return (
+    <div className="finder-animation-list">
+      {items.map((animation) => (
+        <div key={animation.key} className="finder-animation-item">
+          <div>
+            <strong>{animation.name}</strong>
+            <span>{animation.groupFr}</span>
+          </div>
+          <div className="finder-animation-meta">
+            <b>{formatAnimationRequirements(animation, attributeNameById)}</b>
+            {animation.count > 1 && <small>{animation.count} animations avec ce seuil</small>}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function CapBreakerPlan({ plan, attributeNameById }) {
   if (!plan?.lines?.length) {
     return <p className="finder-muted">Aucune progression disponible avec les caps actuels.</p>
@@ -209,10 +244,75 @@ function CapBreakerPlan({ plan, attributeNameById }) {
           <b>{line.before} → {line.after}</b>
         </div>
       ))}
+      {plan.animationUnlocks?.length > 0 && (
+        <div className="finder-cb-animation-unlocks">
+          <span>Animations débloquées par ce plan</span>
+          <AnimationItems
+            items={plan.animationUnlocks}
+            attributeNameById={attributeNameById}
+          />
+        </div>
+      )}
       {plan.applied < plan.requested && (
         <small>{plan.applied}/{plan.requested} Cap Breakers exploitables avec cette morphologie.</small>
       )}
     </div>
+  )
+}
+
+function AnimationPanel({ analysis, attributeNameById }) {
+  if (!analysis?.enabled) {
+    return (
+      <section className="finder-detail-panel finder-animation-panel">
+        <div className="finder-panel-heading">
+          <div>
+            <span>Animations</span>
+            <h4>Index APK non chargé</h4>
+          </div>
+        </div>
+        <p className="finder-muted">
+          Relance l’import des animations pour activer les seuils exacts dans l’optimiseur.
+        </p>
+      </section>
+    )
+  }
+
+  return (
+    <section className="finder-detail-panel finder-animation-panel">
+      <div className="finder-panel-heading">
+        <div>
+          <span>Animations · APK</span>
+          <h4>Seuils utiles au profil</h4>
+        </div>
+        <div className="finder-animation-score">
+          <strong>{analysis.score}%</strong>
+          <span>couverture profil</span>
+        </div>
+      </div>
+
+      {analysis.gainedAnimations?.length > 0 && (
+        <div className="finder-animation-section">
+          <h5>Débloquées par l’optimisation BASE 99</h5>
+          <AnimationItems
+            items={analysis.gainedAnimations}
+            attributeNameById={attributeNameById}
+          />
+        </div>
+      )}
+
+      <div className="finder-animation-section">
+        <h5>Animations clés accessibles</h5>
+        <AnimationItems
+          items={analysis.keyAnimations}
+          attributeNameById={attributeNameById}
+          emptyText="Aucune animation prioritaire détectée pour ce profil."
+        />
+      </div>
+
+      <small className="finder-muted">
+        V21 valorise les seuils exacts AND/OR et les restrictions SMALL / SWING / BIG. Le classement d’une animation face à une autre reste à confirmer par les tests terrain REC.
+      </small>
+    </section>
   )
 }
 
@@ -269,7 +369,7 @@ function OptimizationSummary({ result, attributeNameById }) {
     <div className="finder-meta-compare">
       <div className="finder-meta-heading">
         <div>
-          <span>Optimisation V20</span>
+          <span>Optimisation V21</span>
           <strong>
             {optimized
               ? `Morphologie / allocation personnalisée depuis ${result.sourceCandidateName}`
@@ -425,8 +525,13 @@ function ResultCard({ result, index, onLoadBuild, onSwitchToBuilder }) {
               </div>
             ))}
           </div>
-          <small className="finder-muted">Recommandation V20 : priorité calculée selon ton style, le niveau naturel du badge et la BASE 99 personnalisée. Le gain terrain réel sera affiné avec les tests REC.</small>
+          <small className="finder-muted">Recommandation V21 : priorité calculée selon ton style, le niveau naturel du badge, la BASE 99 personnalisée et les seuils d’animations pertinents. Le gain terrain réel sera affiné avec les tests REC.</small>
         </section>
+
+        <AnimationPanel
+          analysis={result.animationAnalysis}
+          attributeNameById={attributeNameById}
+        />
       </div>
 
       <MetaComparison result={result} attributeNameById={attributeNameById} />
@@ -472,12 +577,12 @@ export default function FindMyBuild({ onLoadBuild, onSwitchToBuilder }) {
           <span className="finder-eyebrow">Trouver mon build</span>
           <h2>Décris ta façon de jouer.</h2>
           <p>
-            Le moteur part des architectures REC validées, explore automatiquement les tailles, poids et envergures possibles, reconstruit un BASE 99 exact selon ton profil puis le compare à une référence Meta indépendante du même poste.
+            Le moteur part des architectures REC validées, explore automatiquement les tailles, poids et envergures possibles, reconstruit un BASE 99 exact et valorise désormais les seuils d’animations réellement accessibles pour ton style avant de comparer le résultat à une référence Meta indépendante du même poste.
           </p>
         </div>
         <div className="finder-version-card">
-          <strong>V20 · Recherche morphologique</strong>
-          <span>Taille + poids + envergure · BASE 99 exact · dépendances APK · Meta indépendante</span>
+          <strong>V21 · Seuils d’animations</strong>
+          <span>Morphologie · BASE 99 exact · seuils d’animations APK · dépendances · Meta indépendante</span>
         </div>
       </div>
 

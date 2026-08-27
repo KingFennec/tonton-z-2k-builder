@@ -4844,6 +4844,97 @@ input[type='range']::-moz-range-thumb {
   font-size: 12px;
 }
 
+
+.finder-animation-panel {
+  grid-column: 1 / -1;
+}
+
+.finder-animation-list {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.finder-animation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px solid #242d36;
+  border-radius: 6px;
+  background: #131920;
+}
+
+.finder-animation-item > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.finder-animation-item strong {
+  font-size: 10px;
+}
+
+.finder-animation-item span,
+.finder-animation-item small {
+  color: #8793a0;
+  font-size: 9px;
+}
+
+.finder-animation-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+
+.finder-animation-meta b {
+  font-size: 9px;
+}
+
+.finder-animation-section {
+  margin-top: 12px;
+}
+
+.finder-animation-section h5 {
+  margin: 0 0 6px;
+  color: #aab5c0;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.finder-animation-score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.finder-animation-score strong {
+  font-size: 16px;
+}
+
+.finder-animation-score span {
+  color: #8793a0;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.finder-cb-animation-unlocks {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid #242d36;
+}
+
+.finder-cb-animation-unlocks > span {
+  color: #aab5c0;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
 .finder-tier.tier-bronze { color: var(--bronze); }
 .finder-tier.tier-silver { color: var(--silver); }
 .finder-tier.tier-gold { color: var(--gold); }
@@ -5008,6 +5099,16 @@ input[type='range']::-moz-range-thumb {
   .finder-result-actions {
     padding-left: 14px;
     padding-right: 14px;
+  }
+
+
+  .finder-animation-item {
+    flex-direction: column;
+  }
+
+  .finder-animation-meta {
+    align-items: flex-start;
+    text-align: left;
   }
 
   .finder-meta-compare {

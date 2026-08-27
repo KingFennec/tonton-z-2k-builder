@@ -16,6 +16,15 @@ import {
   testExactOverallIncrement,
 } from './apkBuilderEngine.js'
 import { solveAttributeDependencies } from './attributeDependencyEngine.js'
+import {
+  createAnimationOptimizationContext,
+  getAnimationAnalysis,
+  getAnimationBuildScore,
+  getAnimationPotentialScore,
+  getAnimationStepImpact,
+  getAnimationTargetCeiling,
+  getAnimationUnlocksBetween,
+} from './animationOptimizerEngine.js'
 
 const ATTRIBUTE_IDS = attributesData.attributes.map((attribute) => attribute.id)
 
@@ -225,7 +234,7 @@ const BADGE_TIER_SCORE = {
   hof: 1,
 }
 
-const PERSONALIZER_VERSION = 'V20'
+const PERSONALIZER_VERSION = 'V21'
 
 const BUILDER_MILESTONES = [
   60, 65, 70, 75, 80, 85, 87, 89, 90, 92, 93, 95, 97, 99,
@@ -497,12 +506,22 @@ function scoreCandidate(candidate, profile) {
     profile
   )
 
+  const animationCaps = getExactBodyCaps(candidate.morphology)
+  const animationBuildScore = getAnimationBuildScore(
+    profile,
+    animationCaps.available
+      ? { ...candidate, caps: animationCaps.caps }
+      : candidate
+  )
+  const animationEnabled = animationBuildScore !== null
+
   const blendedScore =
-    baseScore * 0.9 +
+    baseScore * (animationEnabled ? 0.84 : 0.9) +
     tagBonus * 0.55 +
     morphologyBonus * 0.55 +
     priorityFocusBonus * 0.55 +
-    badgeThresholdBonus * 0.55
+    badgeThresholdBonus * 0.55 +
+    (animationEnabled ? animationBuildScore * 0.06 : 0)
 
   return Math.max(
     0,
@@ -603,6 +622,12 @@ function allocateCapBreakers(candidate, profile, targetCount) {
   const selected = Object.fromEntries(ATTRIBUTE_IDS.map((attributeId) => [attributeId, 0]))
   const values = { ...candidate.attributes }
   const strategy = profile.answers.capBreakerStrategy ?? 'thresholds'
+  const candidateBodyCaps = getExactBodyCaps(candidate.morphology)
+  const animationContext = createAnimationOptimizationContext(
+    profile,
+    candidate.morphology,
+    candidateBodyCaps.available ? candidateBodyCaps.caps : null
+  )
   let applied = 0
 
   while (applied < targetCount) {
@@ -626,6 +651,17 @@ function allocateCapBreakers(candidate, profile, targetCount) {
       const relevance = profile.weights[attributeId] ?? 0.35
       let score = (relevance * relevance) * (1 + Math.sqrt(boost) * 0.28)
       score += thresholdBonus(values[attributeId], nextValue, strategy) * relevance
+
+      const animationImpact = getAnimationStepImpact(
+        animationContext,
+        values,
+        { ...values, [attributeId]: nextValue },
+        attributeId
+      )
+      score += (
+        animationImpact.unlockScore * 3.5 +
+        animationImpact.progressScore * 0.7
+      ) * Math.max(0.75, relevance)
 
       if (strategy === 'strengths' && (profile.weights[attributeId] ?? 0) >= 1.5) {
         score *= 1.18
@@ -668,11 +704,25 @@ function allocateCapBreakers(candidate, profile, targetCount) {
     }))
     .sort((left, right) => right.count - left.count)
 
+  const animationUnlocks = getAnimationUnlocksBetween(
+    profile,
+    {
+      morphology: candidate.morphology,
+      attributes: candidate.attributes,
+    },
+    {
+      morphology: candidate.morphology,
+      attributes: values,
+    },
+    { limit: 4 }
+  )
+
   return {
     requested: targetCount,
     applied,
     lines,
     projectedAttributes: values,
+    animationUnlocks,
   }
 }
 
@@ -792,7 +842,14 @@ function getMaxPersonalizedDrop(seedCandidate, profile, attributeId) {
   return 0
 }
 
-function getMaxPersonalizedGain(seedCandidate, profile, attributeId, cap) {
+function getMaxPersonalizedGain(
+  seedCandidate,
+  profile,
+  attributeId,
+  cap,
+  animationContext = null,
+  currentAttributes = null
+) {
   const priorityAttributes = getPriorityCoreAttributeSet(profile.answers.priorities)
   const sacrificeAttributes = getCategoryAttributeSet(profile.answers.sacrifices)
   const importance = getProfileImportance(profile, attributeId)
@@ -806,19 +863,36 @@ function getMaxPersonalizedGain(seedCandidate, profile, attributeId, cap) {
     return cap
   }
 
+  let ceiling = seedValue
+
   if (importance >= 0.78) {
-    return Math.min(cap, seedValue + 7)
+    ceiling = Math.min(cap, seedValue + 7)
+  } else if (importance >= 0.58) {
+    ceiling = Math.min(cap, seedValue + 5)
+  } else if (importance >= 0.42) {
+    ceiling = Math.min(cap, seedValue + 3)
   }
 
-  if (importance >= 0.58) {
-    return Math.min(cap, seedValue + 5)
+  const currentValue = Number(currentAttributes?.[attributeId] ?? seedValue)
+  const animationTarget = getAnimationTargetCeiling(
+    animationContext,
+    attributeId,
+    currentValue,
+    cap,
+    {
+      maxDistance: 9,
+      attributes: currentAttributes,
+    }
+  )
+
+  if (animationTarget && importance >= 0.24) {
+    ceiling = Math.max(
+      ceiling,
+      Math.min(cap, animationTarget.threshold)
+    )
   }
 
-  if (importance >= 0.42) {
-    return Math.min(cap, seedValue + 3)
-  }
-
-  return seedValue
+  return ceiling
 }
 
 
@@ -928,15 +1002,32 @@ function scoreMorphologyPotential(seedCandidate, profile, morphology) {
     profile,
     seedCandidate
   )
+  const animationPotential = getAnimationPotentialScore(
+    profile,
+    morphology,
+    caps
+  )
+
+  const score = animationPotential === null
+    ? (
+        (capPotential / weightTotal) * 0.46 +
+        (retention / weightTotal) * 0.39 +
+        clamp01(runway / Math.max(1, weightTotal * 0.28)) * 0.08 +
+        preferenceScore * 0.07
+      )
+    : (
+        (capPotential / weightTotal) * 0.43 +
+        (retention / weightTotal) * 0.36 +
+        clamp01(runway / Math.max(1, weightTotal * 0.28)) * 0.07 +
+        preferenceScore * 0.06 +
+        animationPotential * 0.08
+      )
 
   return {
     morphology,
     caps,
-    score:
-      (capPotential / weightTotal) * 0.46 +
-      (retention / weightTotal) * 0.39 +
-      clamp01(runway / Math.max(1, weightTotal * 0.28)) * 0.08 +
-      preferenceScore * 0.07,
+    animationPotential,
+    score,
   }
 }
 
@@ -1258,6 +1349,11 @@ function optimizeCandidateForProfile(seedCandidate, profile, context = {}) {
   const rules = getExactDependencyRules(seedCandidate.morphology.height)
   const sacrificeAttributes = getCategoryAttributeSet(profile.answers.sacrifices)
   const priorityAttributes = getPriorityCoreAttributeSet(profile.answers.priorities)
+  const animationContext = createAnimationOptimizationContext(
+    profile,
+    seedCandidate.morphology,
+    caps
+  )
   let requested = { ...seedCandidate.attributes }
   let solved = solvePersonalizedRequest(
     requested,
@@ -1351,7 +1447,14 @@ function optimizeCandidateForProfile(seedCandidate, profile, context = {}) {
 
       const nextUtility = getAllocationUtility(nextValues, profile)
       const utilityLoss = Math.max(0.00001, utility - nextUtility)
-      let score = utilityLoss / freed
+      const animationImpact = getAnimationStepImpact(
+        animationContext,
+        values,
+        nextValues,
+        attributeId
+      )
+      const animationLossPenalty = animationImpact.lossScore * 0.12
+      let score = (utilityLoss + animationLossPenalty) / freed
 
       if (sacrificeAttributes.has(attributeId)) {
         score *= 0.48
@@ -1401,7 +1504,9 @@ function optimizeCandidateForProfile(seedCandidate, profile, context = {}) {
         seedCandidate,
         profile,
         attributeId,
-        cap
+        cap,
+        animationContext,
+        values
       )
       const currentValue = values[attributeId] ?? 25
 
@@ -1451,8 +1556,17 @@ function optimizeCandidateForProfile(seedCandidate, profile, context = {}) {
         profile,
         attributeId
       )
+      const animationImpact = getAnimationStepImpact(
+        animationContext,
+        values,
+        nextSolved.values,
+        attributeId
+      )
+      const animationGain =
+        animationImpact.unlockScore * 0.14 +
+        animationImpact.progressScore * 0.035
 
-      let score = (utilityGain + milestone) / cost
+      let score = (utilityGain + milestone + animationGain) / cost
 
       if (priorityAttributes.has(attributeId)) {
         score *= 1.18
@@ -1534,7 +1648,17 @@ function optimizeCandidateForProfile(seedCandidate, profile, context = {}) {
         0.002,
         (gate.candidate.detailed ?? 0) - (gate.current.detailed ?? 0)
       )
-      let score = Math.max(0.00001, nextUtility - utility) / cost
+      const animationImpact = getAnimationStepImpact(
+        animationContext,
+        values,
+        nextSolved.values,
+        attributeId
+      )
+      let score = (
+        Math.max(0.00001, nextUtility - utility) +
+        animationImpact.unlockScore * 0.09 +
+        animationImpact.progressScore * 0.02
+      ) / cost
 
       if (sacrificeAttributes.has(attributeId)) {
         score *= 0.35
@@ -1758,11 +1882,23 @@ function enrichCandidate(candidate, profile, affinity) {
     candidate.morphology.height,
     { caps: bodyCaps.caps }
   )
+  const sourceCandidate = playstyleCandidates.find(
+    (entry) => entry.id === (candidate.sourceCandidateId ?? candidate.id)
+  ) ?? candidate
+  const animationAnalysis = getAnimationAnalysis(
+    profile,
+    {
+      ...candidate,
+      caps: bodyCaps.caps,
+    },
+    sourceCandidate
+  )
 
   return {
     ...candidate,
     affinity: Math.round(affinity * 100),
     gnr,
+    animationAnalysis,
     capBreakerPlans: {
       5: allocateCapBreakers(candidate, profile, 5),
       10: allocateCapBreakers(candidate, profile, 10),
