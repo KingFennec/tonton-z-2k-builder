@@ -90,6 +90,11 @@ import BuildLibrary from './components/BuildLibrary'
 import FindMyBuild from './components/FindMyBuild'
 import BuildProfileSummary from './components/BuildProfileSummary'
 import PersonalRecommendationPanel from './components/PersonalRecommendationPanel'
+import AnimationPanel from './components/AnimationPanel'
+
+import {
+  evaluateAnimationAvailability,
+} from './engine/animationEngine'
 
 import './App.css'
 
@@ -422,6 +427,30 @@ function sanitizeImportedBuild(
   const selectedCapBreakers =
     {}
 
+  const selectedAnimations =
+    {}
+
+  for (
+    const [groupType, animationId]
+    of Object.entries(
+      importedBuild
+        .selectedAnimations ??
+        {}
+    )
+  ) {
+    if (
+      typeof groupType !== 'string' ||
+      typeof animationId !== 'string' ||
+      !groupType ||
+      !animationId
+    ) {
+      continue
+    }
+
+    selectedAnimations[groupType] =
+      animationId
+  }
+
   for (
     const [
       attributeId,
@@ -502,6 +531,8 @@ function sanitizeImportedBuild(
     selectedTakeovers,
 
     selectedCapBreakers,
+
+    selectedAnimations,
 
     personalRecommendation:
       sanitizePersonalRecommendation(
@@ -2659,6 +2690,16 @@ function App() {
 
 
   const [
+    selectedAnimations,
+    setSelectedAnimations,
+  ] = useState(
+    () =>
+      importedBuild
+        ?.selectedAnimations ??
+      {}
+  )
+
+  const [
     personalRecommendation,
     setPersonalRecommendation,
   ] = useState(
@@ -3820,6 +3861,10 @@ function App() {
       {}
     )
 
+    setSelectedAnimations(
+      {}
+    )
+
     setPersonalRecommendation(
       null
     )
@@ -3885,6 +3930,10 @@ function App() {
       build.selectedCapBreakers
     )
 
+    setSelectedAnimations(
+      build.selectedAnimations
+    )
+
     setPersonalRecommendation(
       build.personalRecommendation
     )
@@ -3927,6 +3976,7 @@ function App() {
           selectedBadges,
           selectedTakeovers,
           selectedCapBreakers,
+          selectedAnimations,
           personalRecommendation,
 
           attributes:
@@ -3944,6 +3994,7 @@ function App() {
       selectedBadges,
       selectedTakeovers,
       selectedCapBreakers,
+      selectedAnimations,
       personalRecommendation,
     ])
 
@@ -4532,6 +4583,99 @@ function App() {
     )
   }, [
     takeoverProgress,
+  ])
+
+  function selectAnimation(
+    groupType,
+    animationId
+  ) {
+    setSelectedAnimations(
+      (current) => {
+        const updated = {
+          ...current,
+        }
+
+        if (!animationId) {
+          delete updated[groupType]
+        } else {
+          updated[groupType] = animationId
+        }
+
+        return updated
+      }
+    )
+  }
+
+  useEffect(() => {
+    if (Object.keys(selectedAnimations).length === 0) {
+      return
+    }
+
+    let cancelled = false
+
+    import('./data/nba2k27/apk/animations.json')
+      .then((module) => {
+        if (cancelled) {
+          return
+        }
+
+        const allAnimations =
+          Array.isArray(module.default)
+            ? module.default
+            : []
+
+        const byId =
+          new Map(
+            allAnimations.map(
+              (animation) => [
+                animation.id,
+                animation,
+              ]
+            )
+          )
+
+        setSelectedAnimations(
+          (current) => {
+            let changed = false
+            const updated = {
+              ...current,
+            }
+
+            for (const [groupType, animationId] of Object.entries(current)) {
+              const animation = byId.get(animationId)
+              const correctGroup = animation?.group?.type === groupType
+              const availability = animation
+                ? evaluateAnimationAvailability(
+                    animation,
+                    {
+                      morphology,
+                      attributes: effectiveAttributes,
+                    }
+                  )
+                : null
+
+              if (!animation || !correctGroup || !availability?.available) {
+                delete updated[groupType]
+                changed = true
+              }
+            }
+
+            return changed
+              ? updated
+              : current
+          }
+        )
+      })
+      .catch(() => {
+        // La bibliothèque reste optionnelle pour la construction du build.
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [
+    morphology,
+    effectiveAttributes,
   ])
 
   function selectTakeover(
@@ -5867,6 +6011,21 @@ function App() {
               }
               isTierAvailable={
                 isTierAvailable
+              }
+            />
+
+            <AnimationPanel
+              morphology={
+                morphology
+              }
+              attributes={
+                effectiveAttributes
+              }
+              selectedAnimations={
+                selectedAnimations
+              }
+              onSelectAnimation={
+                selectAnimation
               }
             />
 
