@@ -1,0 +1,229 @@
+.animation-panel {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(10, 12, 18, 0.86);
+}
+
+.animation-panel-heading,
+.animation-card-main,
+.animation-card-detail,
+.animation-toolbar,
+.animation-priority-roadmap {
+  display: flex;
+  gap: 12px;
+}
+
+.animation-panel-heading {
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.animation-panel-heading p {
+  max-width: 760px;
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.animation-panel-title-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.animation-panel-title-line h2 {
+  margin: 0;
+}
+
+.animation-panel-title-line span,
+.animation-priority-roadmap strong,
+.animation-priority-roadmap span,
+.animation-status,
+.animation-recommendation {
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: 0.76rem;
+}
+
+.animation-panel-title-line span {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.animation-priority-roadmap {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.animation-priority-roadmap strong {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.animation-priority-roadmap span {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.animation-group-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.animation-group-tabs button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: max-content;
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+}
+
+.animation-group-tabs button.is-active {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.animation-group-tabs small {
+  opacity: 0.62;
+}
+
+.animation-toolbar {
+  margin: 14px 0;
+  flex-wrap: wrap;
+}
+
+.animation-toolbar input,
+.animation-toolbar select {
+  min-height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.28);
+  color: inherit;
+  padding: 0 11px;
+}
+
+.animation-toolbar input {
+  flex: 1 1 260px;
+}
+
+.animation-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 10px;
+  max-height: 620px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.animation-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.animation-card.is-selected {
+  border-color: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.animation-card-main {
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.animation-card-title {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.animation-card-title small,
+.animation-card-detail small {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.animation-card-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.animation-status-eligible {
+  background: rgba(120, 220, 150, 0.16);
+}
+
+.animation-status-near {
+  background: rgba(240, 200, 90, 0.16);
+}
+
+.animation-status-locked {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.animation-recommendation {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.animation-card-detail {
+  flex-direction: column;
+  gap: 5px;
+  min-height: 58px;
+}
+
+.animation-card-detail > span {
+  font-size: 0.78rem;
+  opacity: 0.72;
+}
+
+.animation-missing-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 8px;
+}
+
+.animation-select-button {
+  margin-top: auto;
+  min-height: 38px;
+  border: 0;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.animation-select-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.animation-empty-state {
+  padding: 32px 16px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+@media (max-width: 760px) {
+  .animation-panel-heading {
+    flex-direction: column;
+  }
+
+  .animation-priority-roadmap {
+    justify-content: flex-start;
+  }
+
+  .animation-list {
+    grid-template-columns: 1fr;
+  }
+}

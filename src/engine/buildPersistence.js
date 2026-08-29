@@ -303,6 +303,7 @@ export function createBuildPayload({
   selectedBadges,
   selectedTakeovers,
   selectedCapBreakers,
+  selectedAnimations = {},
   personalRecommendation = null,
   attributes,
 }) {
@@ -369,6 +370,18 @@ export function createBuildPayload({
       ])
       .filter(([, count]) => count > 0)
 
+  const storedAnimations =
+    Object.entries(
+      selectedAnimations ??
+        {}
+    )
+      .filter(([groupType, animationId]) =>
+        typeof groupType === 'string' &&
+        typeof animationId === 'string' &&
+        groupType.length > 0 &&
+        animationId.length > 0
+      )
+
   return {
     v:
       BUILD_VERSION,
@@ -407,6 +420,9 @@ export function createBuildPayload({
 
     c:
       storedCapBreakers,
+
+    n:
+      storedAnimations,
 
     r:
       personalRecommendation && typeof personalRecommendation === 'object'
@@ -651,6 +667,34 @@ export function decodeBuildPayload(
       }
     }
 
+    const selectedAnimations =
+      {}
+
+    if (
+      Array.isArray(
+        payload.n
+      )
+    ) {
+      for (const entry of payload.n) {
+        if (!Array.isArray(entry) || entry.length < 2) {
+          continue
+        }
+
+        const [groupType, animationId] = entry
+
+        if (
+          typeof groupType !== 'string' ||
+          typeof animationId !== 'string' ||
+          !groupType ||
+          !animationId
+        ) {
+          continue
+        }
+
+        selectedAnimations[groupType] = animationId
+      }
+    }
+
     return {
       morphology: {
         position:
@@ -679,6 +723,8 @@ export function decodeBuildPayload(
       selectedTakeovers,
 
       selectedCapBreakers,
+
+      selectedAnimations,
 
       personalRecommendation:
         payload.r && typeof payload.r === 'object'
