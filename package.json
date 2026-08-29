@@ -21,7 +21,8 @@
     "verify:assets": "node scripts/verifyVisualAssets.mjs",
     "verify:v16": "node scripts/verifyV16Interactions.mjs",
     "verify:finder": "node scripts/verifyPlaystyleFinder.mjs",
-    "verify:v22": "node scripts/verifyV22Experience.mjs"
+    "verify:v22": "node scripts/verifyV22Experience.mjs",
+    "integrate:v23": "node scripts/applyV23AnimationsIntegration.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",
@@ -33,7 +34,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
     "eslint": "^10.8.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-hooks": "^6.0.4",
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.7.0",
     "vite": "^8.2.0",
