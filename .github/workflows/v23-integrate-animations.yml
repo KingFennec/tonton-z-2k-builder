@@ -1,0 +1,47 @@
+name: V23 animation integration
+
+on:
+  push:
+    branches:
+      - v23-animations-shooting
+    paths:
+      - 'scripts/applyV23AnimationsIntegration.mjs'
+      - 'src/components/AnimationPanel.jsx'
+      - 'src/components/AnimationPanel.css'
+      - 'src/engine/animationRecommendationEngine.js'
+      - 'src/data/nba2k27/animationCommunitySignals.js'
+      - '.github/workflows/v23-integrate-animations.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v23-animations-shooting
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: node scripts/applyV23AnimationsIntegration.mjs
+      - run: npm run verify:animations
+      - run: npm run build
+
+      - name: Commit integrated V23 files
+        run: |
+          if git diff --quiet; then
+            echo "No source changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/App.jsx src/engine/buildPersistence.js
+          git commit -m "Integrate V23 shooting animations into builder"
+          git push origin HEAD:v23-animations-shooting
